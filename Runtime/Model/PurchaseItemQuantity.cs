@@ -9,7 +9,7 @@ namespace Unity.Services.Economy.Model
     public class PurchaseItemQuantity
     {
         [Preserve] [JsonRequired] [JsonProperty("itemId")]
-                public EconomyReference Item;
+        public EconomyReference Item;
         
         [Preserve] [JsonRequired] [JsonProperty("amount")]
         public int Amount;

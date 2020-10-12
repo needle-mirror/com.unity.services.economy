@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Unity.GameBackend.Economy.Http;
-using Unity.GameBackend.Economy.Models;
+using Newtonsoft.Json;
+using Unity.Services.Economy.Internal.Http;
+using Unity.Services.Economy.Internal.Models;
+using Unity.Services.Economy.Model;
+using UnityEngine;
 
 namespace Unity.Services.Economy.Exceptions
 {
@@ -64,12 +67,14 @@ namespace Unity.Services.Economy.Exceptions
         
         internal static EconomyAppleAppStorePurchaseFailedException HandleAppleAppStoreFailedExceptions(HttpException<ErrorResponsePurchaseAppleappstoreFailed> e)
         {
-            return new EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, e.ActualError.Data, e);
+            RedeemAppleAppStorePurchaseResult convertedErrorData = Purchases.ConvertBackendApplePurchaseModelToSDKModel(e.ActualError.Data);
+            return new EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
         
         internal static EconomyGooglePlayStorePurchaseFailedException HandleGoogleStoreFailedExceptions(HttpException<ErrorResponsePurchaseGoogleplaystoreFailed> e)
         {
-            return new EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, e.ActualError.Data, e);
+            RedeemGooglePlayPurchaseResult convertedErrorData = Purchases.ConvertBackendGooglePurchaseModelToSDKModel(e.ActualError.Data);
+            return new EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
 
         internal static void HandleItemsPerFetchExceptions(int itemsPerFetch)

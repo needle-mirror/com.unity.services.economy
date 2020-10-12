@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using Unity.GameBackend.Economy.Apis.Currencies;
-using Unity.GameBackend.Economy.Apis.Inventory;
-using Unity.GameBackend.Economy.Apis.Purchases;
-using Unity.GameBackend.Economy.Http;
+using Unity.Services.Economy.Internal.Apis.Currencies;
+using Unity.Services.Economy.Internal.Apis.Inventory;
+using Unity.Services.Economy.Internal.Apis.Purchases;
+using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Authentication.Internal;
 using Unity.Services.Core.Internal;
 using UnityEngine;

@@ -5,7 +5,7 @@ packageName: com.unity.gamebackend.economy
 additionalProperties:
   unityVersion: "2019.4"
   packageVersion: "0.0.4-preview"
-  unityPackageNamespace: "Unity.GameBackend.Economy"
+  unityPackageNamespace: "Unity.Services.Economy.Internal"
   unityServiceName: "Economy"
   unityPackageDescription: Client API SDK Package for communicating with Economy
-  accessModifier: internal
+  internalAccessOnly: [services, apis, http, jsonobject, models]

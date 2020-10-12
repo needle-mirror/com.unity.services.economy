@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
-using Unity.GameBackend.Economy.Apis.Currencies;
-using Unity.GameBackend.Economy.Apis.Inventory;
-using Unity.GameBackend.Economy.Apis.Purchases;
+using Unity.Services.Economy.Internal.Apis.Currencies;
+using Unity.Services.Economy.Internal.Apis.Inventory;
+using Unity.Services.Economy.Internal.Apis.Purchases;
 using Unity.Services.Authentication.Internal;
-using Unity.Services.Economy.Exceptions;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 

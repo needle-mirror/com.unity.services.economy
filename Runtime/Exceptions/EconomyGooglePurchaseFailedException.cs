@@ -1,6 +1,5 @@
 using System;
-using Unity.GameBackend.Economy.Models;
-using Unity.Services.Economy;
+using Unity.Services.Economy.Model;
 
 namespace Unity.Services.Economy
 {
@@ -14,9 +13,9 @@ namespace Unity.Services.Economy
         /// <summary>
         /// Details on the status of the purchase and the rewards that the purchase gives the player. 
         /// </summary>
-        public new PlayerPurchaseGoogleplaystoreResponse Data { get; private set; }
+        public new RedeemGooglePlayPurchaseResult Data { get; private set; }
 
-        internal EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason reason, int serviceErrorCode, string description, PlayerPurchaseGoogleplaystoreResponse data, Exception e)
+        internal EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason reason, int serviceErrorCode, string description, RedeemGooglePlayPurchaseResult data, Exception e)
             : base(reason, serviceErrorCode, description, e)
         {
             Data = data;

@@ -10,8 +10,8 @@ namespace Unity.Services.Economy.Model
     {
         [Preserve]
         [JsonConstructor]
-        public RedeemAppleAppStorePurchaseResult(Verification verification, Rewards rewards)
-        {
+        public RedeemAppleAppStorePurchaseResult(AppleVerification verification, Rewards rewards)
+        { 
             Verification = verification;
             Rewards = rewards;
         }
@@ -20,7 +20,7 @@ namespace Unity.Services.Economy.Model
         /// The receipt verification details from the Apple App Store validation service.
         /// </summary>
         [Preserve]
-        public Verification Verification;
+        public AppleVerification Verification;
 
         /// <summary>
         /// The Rewards given in exchange for this purchase.

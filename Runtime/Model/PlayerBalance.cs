@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Unity.GameBackend.Economy.Models;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model

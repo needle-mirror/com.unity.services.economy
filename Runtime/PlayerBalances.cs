@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using Unity.GameBackend.Economy;
-using Unity.GameBackend.Economy.Apis.Currencies;
-using Unity.GameBackend.Economy.Currencies;
-using Unity.GameBackend.Economy.Http;
-using Unity.GameBackend.Economy.Models;
+using Unity.Services.Economy.Internal;
+using Unity.Services.Economy.Internal.Apis.Currencies;
+using Unity.Services.Economy.Internal.Currencies;
+using Unity.Services.Economy.Internal.Http;
+using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Exceptions;
 using Unity.Services.Economy.Model;
 

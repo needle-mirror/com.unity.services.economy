@@ -1,6 +1,5 @@
 using System;
-using Unity.GameBackend.Economy.Models;
-using Unity.Services.Economy;
+using Unity.Services.Economy.Model;
 
 namespace Unity.Services.Economy
 {
@@ -14,9 +13,9 @@ namespace Unity.Services.Economy
         /// Details on the status of the purchase and the rewards that the purchase gives the player. This Data takes the same form as
         /// an RedeemAppleAppStorePurchaseResult object.
         /// </summary>
-        public new PlayerPurchaseAppleappstoreResponse Data { get; private set; }
+        public new RedeemAppleAppStorePurchaseResult Data { get; private set; }
 
-        internal EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason reason, int serviceErrorCode, string description, PlayerPurchaseAppleappstoreResponse data, Exception e)
+        internal EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason reason, int serviceErrorCode, string description, RedeemAppleAppStorePurchaseResult data, Exception e)
             : base(reason, serviceErrorCode, description, e)
         {
             Data = data;

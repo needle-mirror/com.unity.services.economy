@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Unity.GameBackend.Economy.Models;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model

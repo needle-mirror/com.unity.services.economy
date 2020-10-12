@@ -1,12 +1,12 @@
 # Editor Tools
 
-The Game Economy package comes with some Editor tools that provide more ways to interact with your Game Economy.
+The Game Economy package comes with some Editor tools that provide more ways to interact with your economy.
 
 ## Scriptable Objects
 
-You can interact with your economy directly through the Unity Editor using the scriptable objects provided by the Game Economy package.
+You can interact with your economy directly through the Unity Editor using the scriptable objects provided by the Economy package.
 
-There are scriptable objects for balances, inventories and purchases.
+There are scriptable objects for balances, inventories and virtual purchases.
 
 For these objects to work you will need to follow the usual Game Economy setup flows - this includes configuring your Economy through the Unity Dashboard and signing in via Authentication.
 
@@ -37,6 +37,8 @@ This helper allows you to add and update players inventory items. When configuri
 - `Instance Data JSON` : **Only required for the Update action**. The instance data you want to add to the players inventory item you are updating. This must be valid JSON.
 
 ### Purchases Helper
-This helper allows you to make purchases. When configuring your event, trigger the `InvokeAsync()` method on this object.
+This helper allows you to make virtual purchases. When configuring your event, trigger the `InvokeAsync()` method on this object.
 
-- `Purchase ID` : The ID of the purchase you want to make.
+Note: This helper does not support real money purchases.
+
+- `Purchase ID` : The ID of the virtual purchase you want to make.

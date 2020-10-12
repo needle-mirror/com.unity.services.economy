@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using Unity.GameBackend.Economy;
-using Unity.GameBackend.Economy.Apis.Inventory;
-using Unity.GameBackend.Economy.Http;
-using Unity.GameBackend.Economy.Inventory;
-using Unity.GameBackend.Economy.Models;
+using Unity.Services.Economy.Internal;
+using Unity.Services.Economy.Internal.Apis.Inventory;
+using Unity.Services.Economy.Internal.Http;
+using Unity.Services.Economy.Internal.Inventory;
+using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Exceptions;
 using Unity.Services.Economy.Model;
 
@@ -42,7 +42,7 @@ namespace Unity.Services.Economy
         public class GetInventoryOptions
         {
             /// <summary>
-            /// The playersInventoryItem IDs of the items in the players inventory that you want to retrieve.
+            /// The PlayersInventoryItem IDs of the items in the players inventory that you want to retrieve.
             /// </summary>
             public List<string> PlayersInventoryItemIds = null;
 

@@ -10,7 +10,7 @@ namespace Unity.Services.Economy.Model
     {
         [Preserve]
         [JsonConstructor]
-        public RedeemGooglePlayPurchaseResult(Verification verification, Rewards rewards)
+        public RedeemGooglePlayPurchaseResult(GoogleVerification verification, Rewards rewards)
         {
             Verification = verification;
             Rewards = rewards;
@@ -20,7 +20,7 @@ namespace Unity.Services.Economy.Model
         /// The receipt verification details from the Google Play Store validation service.
         /// </summary>
         [Preserve]
-        public Verification Verification;
+        public GoogleVerification Verification;
 
         /// <summary>
         /// The Rewards given in exchange for this purchase.

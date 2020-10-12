@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Unity.GameBackend.Economy;
-using Unity.GameBackend.Economy.Apis.Purchases;
-using Unity.GameBackend.Economy.Http;
-using Unity.GameBackend.Economy.Models;
-using Unity.GameBackend.Economy.Purchases;
+using Unity.Services.Economy.Internal;
+using Unity.Services.Economy.Internal.Apis.Purchases;
+using Unity.Services.Economy.Internal.Http;
+using Unity.Services.Economy.Internal.Models;
+using Unity.Services.Economy.Internal.Purchases;
 using Unity.Services.Economy.Exceptions;
 using Unity.Services.Economy.Model;
 using UnityEngine;
@@ -40,7 +40,7 @@ namespace Unity.Services.Economy
         /// Makes the specified virtual purchase using the items in the players inventory.
         ///
         /// Takes a virtualPurchaseId. This is the ID of the purchase to make.
-        /// Takes an optional list of instanceIds. These are the instance IDs of the items in the players inventory that should be used towards the cost(s) of the purchase. If these are not supplied, the items
+        /// Takes an optional list of instanceIds. These are the `PlayersInventoryItems` IDs of the items in the players inventory that should be used towards the cost(s) of the purchase. If these are not supplied, the items
         /// used towards the cost(s) will be chosen automatically.
         /// 
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
@@ -153,8 +153,7 @@ namespace Unity.Services.Economy
             {
                 Response<PlayerPurchaseAppleappstoreResponse> response = await m_PurchasesApiClient.RedeemAppleAppStorePurchaseAsync(request);
 
-                string rawResponse = JsonConvert.SerializeObject(response.Result);
-                RedeemAppleAppStorePurchaseResult convertedResponse = JsonConvert.DeserializeObject<RedeemAppleAppStorePurchaseResult>(rawResponse);
+                RedeemAppleAppStorePurchaseResult convertedResponse = ConvertBackendApplePurchaseModelToSDKModel(response.Result);
 
                 TriggerEventsForApplePurchase(convertedResponse);
 
@@ -225,8 +224,7 @@ namespace Unity.Services.Economy
             /// </summary>    
             public string LocalCurrency { get; set; }
         }
-        
-        
+
         /// <summary>
         /// Redeems the specified Google Play Store Store purchase.
         /// 
@@ -260,9 +258,8 @@ namespace Unity.Services.Economy
             try
             {
                 Response<PlayerPurchaseGoogleplaystoreResponse> response = await m_PurchasesApiClient.RedeemGooglePlayPurchaseAsync(request);
-
-                string rawResponse = JsonConvert.SerializeObject(response.Result);
-                RedeemGooglePlayPurchaseResult convertedResponse = JsonConvert.DeserializeObject<RedeemGooglePlayPurchaseResult>(rawResponse);
+                
+                RedeemGooglePlayPurchaseResult convertedResponse = ConvertBackendGooglePurchaseModelToSDKModel(response.Result);
 
                 TriggerEventsForGooglePurchase(convertedResponse);
 
@@ -332,6 +329,20 @@ namespace Unity.Services.Economy
             {
                 Economy.PlayerInventory.FireInventoryItemUpdated(inventoryItemInstanceID);
             }
+        }
+        
+        internal static RedeemAppleAppStorePurchaseResult ConvertBackendApplePurchaseModelToSDKModel(PlayerPurchaseAppleappstoreResponse backendObject)
+        {
+            string rawResponse = JsonConvert.SerializeObject(backendObject);
+            RedeemAppleAppStorePurchaseResult convertedObject = JsonConvert.DeserializeObject<RedeemAppleAppStorePurchaseResult>(rawResponse);
+            return convertedObject;
+        }
+        
+        internal static RedeemGooglePlayPurchaseResult ConvertBackendGooglePurchaseModelToSDKModel(PlayerPurchaseGoogleplaystoreResponse backendObject)
+        {
+            string rawResponse = JsonConvert.SerializeObject(backendObject);
+            RedeemGooglePlayPurchaseResult convertedObject = JsonConvert.DeserializeObject<RedeemGooglePlayPurchaseResult>(rawResponse);
+            return convertedObject;
         }
     }
 }

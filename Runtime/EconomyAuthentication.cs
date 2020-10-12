@@ -1,4 +1,4 @@
-using Unity.GameBackend.Economy;
+using Unity.Services.Economy.Internal;
 using Unity.Services.Authentication;
 using Unity.Services.Authentication.Internal;
 

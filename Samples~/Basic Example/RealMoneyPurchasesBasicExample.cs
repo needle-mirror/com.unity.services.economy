@@ -40,5 +40,34 @@ namespace Unity.Services.Economy
                 Debug.LogError($"Purchase failed because {e.Message} with code {e.Reason}");
             }
         }
+        
+        async void RedeemGooglePlayStorePurchase()
+        {
+            try
+            {
+                Purchases.RedeemGooglePlayStorePurchaseArgs args = new Purchases.RedeemGooglePlayStorePurchaseArgs("PURCHASE_ID", "PURCHASE_DATA", "PURCHASE_DATA_SIGNATURE", 0, "USD");
+                RedeemGooglePlayPurchaseResult purchaseResult = await Economy.Purchases.RedeemGooglePlayPurchaseAsync(args);
+    
+                Debug.Log($"Purchase was successful");
+    
+                foreach (var reward in purchaseResult.Rewards.Currency)
+                {
+                    Debug.Log($"- purchase rewarded {reward.Amount} {reward.Id}");
+                }
+    
+                foreach (var reward in purchaseResult.Rewards.Inventory)
+                {
+                    Debug.Log($"- purchase rewarded {reward.Amount} {reward.Id}");
+                }
+            }
+            catch (EconomyGooglePlayStorePurchaseFailedException e)
+            {
+                Debug.LogError($"Purchase failed because {e.Message} with code {e.Reason}");
+            }
+            catch (EconomyException e)
+            {
+                Debug.LogError($"Purchase failed because {e.Message} with code {e.Reason}");
+            }
+        }
     }
 }

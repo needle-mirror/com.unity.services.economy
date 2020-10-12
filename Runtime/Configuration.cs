@@ -91,18 +91,29 @@ namespace Unity.Services.Economy
         /// Note that this will also fetch the associated Inventory Items/Currencies associated with this purchase.
         /// </summary>
         /// <param name="id">The ID of the purchase to retrieve</param>
-        /// <returns>A Virtual Purchase Definition for the specified purchase if it exists, or null otherwise.</returns>
+        /// <returns>A VirtualPurchaseDefinition for the specified purchase if it exists, or null otherwise.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id)
         {
             return (VirtualPurchaseDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
         }
 
+        /// <summary>
+        /// Gets all the real money purchases currently configured and published in the Economy Dashboard.
+        /// </summary>
+        /// <returns>A list of RealMoneyPurchaseDefinition</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<List<RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync()
         {
             return await remoteConfig.GetObjectsFromRemoteConfigAsync<RealMoneyPurchaseDefinition>(EconomyRemoteConfig.realMoneyPurchaseTypeString);
         }
         
+        /// <summary>
+        /// Gets a RealMoneyPurchaseDefinition for a specific real money purchase.
+        /// </summary>
+        /// <param name="id">The ID of the purchase to retrieve</param>
+        /// <returns>A RealMoneyPurchaseDefinition for the specified purchase if it exists, or null otherwise.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id)
         {
             return (RealMoneyPurchaseDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);

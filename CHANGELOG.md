@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.5] - 2020-10-12
+* Some models have been made internal as they were not designed to be used externally. This has meant we have needed to change some property types and rename some classes. Functionality change is minimal, with the exception of the `GoogleStore` object, detailed below. Here is a full list of changes:
+* The `Data` property on the `EconomyAppleAppStorePurchaseFailedException` class has changed type from `PlayerPurchaseAppleappstoreResponse` to `RedeemAppleAppStorePurchaseResult`.
+* The `Data` property on the `EconomyGooglePlayStorePurchaseFailedException` class has changed type from `PlayerPurchaseGoogleplaystoreResponse` to `RedeemGooglePlayPurchaseResult`.
+* The `Verification` property on the `RedeemAppleAppStorePurchaseResult` has changed type from `Verification` to `AppleVerification`.
+  * The `Store` property on the `AppleVerification` has changed type from `Store` to `AppleStore`.
+* The `Verification` property on the `RedeemGooglePlayPurchaseResult` has changed type from `Verification` to `GoogleVerification`.
+    * The `Store` property on the `GoogleVerification` has changed type from `Store` to `GoogleStore`. There is a functional change here - `GoogleStore` no longer contains the `Code` and `Message` properties - it only contains the `Receipt` property. `AppleStore` still contains the `Code` and `Message` properties. For more information on these models, see the documentation.
+* Updated Core and Authentication dependency versions
+
 ## [1.0.0] - 2020-08-23
 * Open Beta release
 * Renaming changes - Instance -> PlayersInventoryItem and Item -> InventoryItem
