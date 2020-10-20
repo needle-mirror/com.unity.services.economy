@@ -30,3 +30,7 @@ To get started:
 Environments are logical partitions for Unity Game Services that contain data associated with your project.
 
 You can set the target environment in the Economy Dashboard and in your initialization scripts. For more information on how to do this, please see the Environments documentation.
+
+## IL2CPP Builds
+
+Economy currently doesn't support using the `Faster (smaller) builds` option when building with IL2CPP as the scripting backend. Please use the `Faster runtime` option instead.

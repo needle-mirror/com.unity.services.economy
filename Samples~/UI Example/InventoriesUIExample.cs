@@ -16,7 +16,7 @@ public class InventoriesUIExample : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI m_GetConfigsText;
     [SerializeField]
-    TMP_InputField m_GetInventoryItemIdInput;
+    TMP_InputField m_GetConfigItemIdInput;
     
     // Get instance
     [SerializeField]
@@ -26,7 +26,7 @@ public class InventoriesUIExample : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI m_AddInventoryItemText;
     [SerializeField]
-    TMP_InputField m_AddInventoryItemIdInput;
+    TMP_InputField m_AddInventoryItemCustomIdInput;
     [SerializeField]
     TMP_InputField m_AddInventoryItemConfigIdInput;
     
@@ -70,7 +70,7 @@ public class InventoriesUIExample : MonoBehaviour
         
         string outputString = "";
         List<InventoryItemDefinition> items = await Economy.Configuration.GetInventoryItemsAsync();
-
+        ClearOutputTextBoxes();
         if (items.Count == 0)
         {
             m_GetConfigsText.text = "No items";
@@ -92,13 +92,14 @@ public class InventoriesUIExample : MonoBehaviour
             return;
         }
         
-        if (string.IsNullOrEmpty(m_GetInventoryItemIdInput.text))
+        if (string.IsNullOrEmpty(m_GetConfigItemIdInput.text))
         {
             Debug.Log("Please enter an item ID");
             return;
         }
         
-        InventoryItemDefinition inventoryItem = await Economy.Configuration.GetInventoryItemAsync(m_GetInventoryItemIdInput.text);
+        InventoryItemDefinition inventoryItem = await Economy.Configuration.GetInventoryItemAsync(m_GetConfigItemIdInput.text);
+        ClearOutputTextBoxes();
         if (inventoryItem == null)
         {
             m_GetConfigsText.text = "Item not found";
@@ -122,7 +123,8 @@ public class InventoriesUIExample : MonoBehaviour
             ItemsPerFetch = m_ItemsPerFetch
         };
         GetInventoryResult response = await Economy.PlayerInventory.GetInventoryAsync(options);
-
+        ClearOutputTextBoxes();
+        
         m_LatestGetInventoryResponse = response;
         m_HasNext = response.HasNext;
 
@@ -168,7 +170,8 @@ public class InventoriesUIExample : MonoBehaviour
 
         
         GetInventoryResult nextResponse = await m_LatestGetInventoryResponse.GetNextAsync(m_ItemsPerFetch);
-
+        ClearOutputTextBoxes();
+        
         m_LatestGetInventoryResponse = nextResponse;
         m_HasNext = nextResponse.HasNext;
 
@@ -190,9 +193,9 @@ public class InventoriesUIExample : MonoBehaviour
         string outputString = "";
         string playersInventoryItemId = null;
         
-        if (!string.IsNullOrEmpty(m_AddInventoryItemIdInput.text))
+        if (!string.IsNullOrEmpty(m_AddInventoryItemCustomIdInput.text))
         {
-            playersInventoryItemId = m_AddInventoryItemIdInput.text;
+            playersInventoryItemId = m_AddInventoryItemCustomIdInput.text;
         }
 
         PlayerInventory.AddInventoryItemOptions options = new PlayerInventory.AddInventoryItemOptions
@@ -200,6 +203,7 @@ public class InventoriesUIExample : MonoBehaviour
             PlayersInventoryItemId = playersInventoryItemId
         };
         PlayersInventoryItem playersInventoryItem = await Economy.PlayerInventory.AddInventoryItemAsync(m_AddInventoryItemConfigIdInput.text, options);
+        ClearOutputTextBoxes();
         
         if (playersInventoryItem != null)
         {
@@ -222,6 +226,8 @@ public class InventoriesUIExample : MonoBehaviour
         }
 
         await Economy.PlayerInventory.DeletePlayersInventoryItemAsync(m_DeletePlayersInventoryItemIdInput.text);
+        ClearOutputTextBoxes();
+        
         m_DeleteInstanceText.text = $"Deleted players inventory item with ID {m_DeletePlayersInventoryItemIdInput.text}";
     }
     
@@ -240,7 +246,8 @@ public class InventoriesUIExample : MonoBehaviour
         Dictionary<string, object> instanceData = JsonConvert.DeserializeObject<Dictionary<string, object>>(m_UpdatePlayersInventoryItemInstanceDataInput.text);
 
         PlayersInventoryItem instance = await Economy.PlayerInventory.UpdatePlayersInventoryItemAsync(m_UpdatePlayersInventoryItemIdInput.text, instanceData);
-
+        ClearOutputTextBoxes();
+        
         m_UpdatePlayersInventoryItemText.text = $"Updated instance {instance.PlayersInventoryItemId}\n";
 
         if (instance.InstanceData != null)
@@ -251,6 +258,15 @@ public class InventoriesUIExample : MonoBehaviour
                 m_UpdatePlayersInventoryItemText.text += $"{key} - {instance.InstanceData[key]} | ";
             }
         }
+    }
+
+    void ClearOutputTextBoxes()
+    {
+        m_GetConfigsText.text = "";
+        m_GetPlayersInventoryItemsText.text = "";
+        m_AddInventoryItemText.text = "";
+        m_DeleteInstanceText.text = "";
+        m_UpdatePlayersInventoryItemText.text = "";
     }
 
     static bool IsAuthenticationSignedIn()

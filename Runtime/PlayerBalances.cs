@@ -144,6 +144,10 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
+            catch (HttpException<ValidationErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
             catch (HttpException e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
@@ -198,6 +202,10 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
+            catch (HttpException<ValidationErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
             catch (HttpException e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
@@ -228,7 +236,7 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Used to set a write lock for optimistic concurrency</param>
         /// <returns>The updated player balance for the relevant currency.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        public async Task<PlayerBalance> SetBalanceAsync(string currencyId, int balance, SetBalanceOptions options = null)
+        public async Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
             
@@ -254,6 +262,10 @@ namespace Unity.Services.Economy
                 return convertedResponse;
             }
             catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException<ValidationErrorResponse> e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }

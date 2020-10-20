@@ -23,46 +23,61 @@ namespace Unity.Services.Economy.Exceptions
 
         internal static EconomyException HandleException(HttpException<BasicErrorResponse> e)
         {
-            var reason = e.ActualError?.Detail;
+            var message = e.ActualError?.Detail;
             var httpStatusCode = e.Response.StatusCode;
             var errorCode = e.ActualError?.Code ?? 0;
             
             if (e.Response.IsNetworkError)
             {
-                return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, reason ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
+                return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, message ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
             }
 
-            if (reason == null)
+            if (message == null)
             {
                 if (errorDetails.ContainsKey(httpStatusCode))
                 {
-                    reason = errorDetails[httpStatusCode];
+                    message = errorDetails[httpStatusCode];
                 }
                 else
                 {
-                    reason = e.Message;
+                    message = e.Message;
                 }
             }
 
-            return new EconomyException(httpStatusCode, errorCode, reason, e);
+            return new EconomyException(httpStatusCode, errorCode, message, e);
+        }
+        
+        internal static EconomyValidationException HandleException(HttpException<ValidationErrorResponse> e)
+        {
+            var message = "There was a validation error. Check 'Details' for more information.";
+
+            EconomyValidationException exception = new EconomyValidationException(e.Response.StatusCode, 
+                e.ActualError.Code, message, e.InnerException);
+
+            foreach (var error in e.ActualError.Errors)
+            {
+                exception.Details.Add(new EconomyValidationErrorDetail(error));
+            }
+
+            return exception;
         }
 
         internal static EconomyException HandleException(HttpException e)
         {
-            var reason = e.Response.ErrorMessage;
+            var message = e.Response.ErrorMessage;
             var httpStatusCode = e.Response.StatusCode;
             var errorCode = (int)e.Response.StatusCode + 14000;
             
             if (e.Response.IsNetworkError)
             {
-                return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, reason ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
+                return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, message ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
             }
 
-            if (reason == null)
+            if (message == null)
             {
-                reason = errorDetails.ContainsKey(httpStatusCode) ? errorDetails[httpStatusCode] : e.Response.ErrorMessage;
+                message = errorDetails.ContainsKey(httpStatusCode) ? errorDetails[httpStatusCode] : e.Response.ErrorMessage;
             }
-            return new EconomyException(httpStatusCode, errorCode, reason, e);
+            return new EconomyException(httpStatusCode, errorCode, message, e);
         }
         
         internal static EconomyAppleAppStorePurchaseFailedException HandleAppleAppStoreFailedExceptions(HttpException<ErrorResponsePurchaseAppleappstoreFailed> e)

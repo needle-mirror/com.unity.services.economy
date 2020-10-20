@@ -74,6 +74,10 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
+            catch (HttpException<ValidationErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
             catch (HttpException e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
@@ -164,6 +168,10 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleAppleAppStoreFailedExceptions(e);
             }
             catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException<ValidationErrorResponse> e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
@@ -270,6 +278,10 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleGoogleStoreFailedExceptions(e);
             }
             catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException<ValidationErrorResponse> e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }

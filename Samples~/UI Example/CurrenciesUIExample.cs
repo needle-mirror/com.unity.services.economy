@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Services.Core;
 using Unity.Services.Economy;
 using Unity.Services.Economy.Model;
 using Unity.Services.Authentication;
-using Unity.Services.Core;
 using UnityEngine;
 
 public class CurrenciesUIExample : MonoBehaviour
@@ -40,6 +40,8 @@ public class CurrenciesUIExample : MonoBehaviour
         AuthenticationService.Instance.SignedIn += delegate
         {
             Debug.Log("All signed in and ready to go!");
+            Debug.Log($"Player ID is {AuthenticationService.Instance.PlayerId}");
+            Debug.Log($"Access Token is {AuthenticationService.Instance.AccessToken}");
         };
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
@@ -50,11 +52,11 @@ public class CurrenciesUIExample : MonoBehaviour
         {
             return;
         }
-    
-        
+
         string allCurrencies = "";
         List<CurrencyDefinition> currencies = await Economy.Configuration.GetCurrenciesAsync();
-        
+        ClearOutputTextBoxes();
+
         if (currencies.Count == 0)
         {
             m_GetConfigsText.text = "No currencies";
@@ -83,6 +85,8 @@ public class CurrenciesUIExample : MonoBehaviour
         }
         
         CurrencyDefinition currency = await Economy.Configuration.GetCurrencyAsync(m_GetCurrencyIdInput.text);
+        ClearOutputTextBoxes();
+
         if (currency == null)
         {
             m_GetConfigsText.text = "Currency not found";
@@ -100,9 +104,10 @@ public class CurrenciesUIExample : MonoBehaviour
         }
         
         string outputString = "";
-		PlayerBalances.GetBalancesOptions options = new PlayerBalances.GetBalancesOptions
+        
+        PlayerBalances.GetBalancesOptions options = new PlayerBalances.GetBalancesOptions
         {
-            ItemsPerFetch = 5
+            ItemsPerFetch = m_ItemsPerFetch
         };
         GetBalancesResult result = await Economy.PlayerBalances.GetBalancesAsync(options);
 
@@ -127,7 +132,8 @@ public class CurrenciesUIExample : MonoBehaviour
                 {
                     outputString += $"{balance.CurrencyId}: {balance.Balance} (no longer exists in config)\n";
                 }
-
+                
+                ClearOutputTextBoxes();
                 m_GetBalancesText.text = outputString;
             }   
         }
@@ -165,7 +171,8 @@ public class CurrenciesUIExample : MonoBehaviour
                 var maxBalance = currency.Max > 0 ? currency.Max.ToString() : "Unlimited";
                 outputString += $"{currency.Name}: {balance.Balance} / {maxBalance}\n";
             }
-
+            
+            ClearOutputTextBoxes();
             m_GetBalancesText.text += outputString;
         }
         
@@ -187,12 +194,20 @@ public class CurrenciesUIExample : MonoBehaviour
         string outputString = "";
         
         PlayerBalance playerBalance = await Economy.PlayerBalances.SetBalanceAsync(m_SetBalanceCurrencyIdInput.text, int.Parse(m_SetBalanceNewBalanceInput.text));
+        ClearOutputTextBoxes();
         if (playerBalance != null)
         {
             outputString += $"{playerBalance.CurrencyId} has been set to {playerBalance.Balance}";
         }
 
         m_SetBalanceText.text = outputString;
+    }
+    
+    void ClearOutputTextBoxes()
+    {
+        m_GetConfigsText.text = "";
+        m_GetBalancesText.text = "";
+        m_SetBalanceText.text = "";
     }
 
     static bool IsAuthenticationSignedIn()

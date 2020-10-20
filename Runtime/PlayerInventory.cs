@@ -160,6 +160,10 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
+            catch (HttpException<ValidationErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
             catch (HttpException e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
@@ -204,6 +208,10 @@ namespace Unity.Services.Economy
                 FireInventoryItemUpdated(playersInventoryItemId);
             }
             catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException<ValidationErrorResponse> e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
@@ -256,6 +264,10 @@ namespace Unity.Services.Economy
                 return playersInventoryItem;
             }
             catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException<ValidationErrorResponse> e)
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }

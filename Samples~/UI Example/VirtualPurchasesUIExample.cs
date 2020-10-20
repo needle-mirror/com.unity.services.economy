@@ -10,7 +10,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
 
-public class PurchasesUIExample : MonoBehaviour
+public class VirtualPurchasesUIExample : MonoBehaviour
 {
     // Get config
     [SerializeField]
@@ -48,6 +48,7 @@ public class PurchasesUIExample : MonoBehaviour
         {
             outputString += $"{FormatPurchase(item)}\n";
         }
+        m_MakePurchaseText.text = "";
         m_GetConfigsText.text = outputString;
     }
     
@@ -67,6 +68,7 @@ public class PurchasesUIExample : MonoBehaviour
         VirtualPurchaseDefinition purchase = await Economy.Configuration.GetVirtualPurchaseAsync(m_GetPurchaseInput.text);
         if (purchase != null)
         {
+            m_MakePurchaseText.text = "";
             m_GetConfigsText.text = FormatPurchase(purchase);
         }
         else
@@ -91,6 +93,8 @@ public class PurchasesUIExample : MonoBehaviour
         }
         
         MakeVirtualPurchaseResult result = await Economy.Purchases.MakeVirtualPurchaseAsync(purchaseId);
+
+        m_GetConfigsText.text = "";
 
         m_MakePurchaseText.text = FormatMakePurchaseResult(result);  
     }

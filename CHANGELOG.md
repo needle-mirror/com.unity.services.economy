@@ -4,6 +4,11 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.6] - 2020-10-20
+* Fixed the UI samples and made them responsive to screen size.
+* Added a new exception type `EconomyValidationException` that inherits from `EconomyException`, see documentation for more details.
+* Fixed leak warnings.
+
 ## [1.0.0-pre.5] - 2020-10-12
 * Some models have been made internal as they were not designed to be used externally. This has meant we have needed to change some property types and rename some classes. Functionality change is minimal, with the exception of the `GoogleStore` object, detailed below. Here is a full list of changes:
 * The `Data` property on the `EconomyAppleAppStorePurchaseFailedException` class has changed type from `PlayerPurchaseAppleappstoreResponse` to `RedeemAppleAppStorePurchaseResult`.
