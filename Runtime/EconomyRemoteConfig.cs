@@ -195,8 +195,7 @@ namespace Unity.Services.Economy
                     m_CurrentRemoteConfigFetchTcs = null;
                     return task;
                 }
-
-                m_RuntimeImplementation.SetCustomUserID(m_EconomyAuthHandler.GetPlayerId());
+                
                 m_RuntimeImplementation.SetPlayerIdentityToken(m_EconomyAuthHandler.GetAccessToken());
 
                 IRuntimeConfigWrapper economyConfig = m_RuntimeImplementation.GetConfig(k_EconomyConfigKey);

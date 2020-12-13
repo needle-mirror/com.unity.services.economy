@@ -4,6 +4,10 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.7] - 2020-12-13
+* Added more detailed logging for exceptions.
+* Fixed a bug that was causing the created and modified dates to be set incorrectly in the SetBalancesAsync function.
+
 ## [1.0.0-pre.6] - 2020-10-20
 * Fixed the UI samples and made them responsive to screen size.
 * Added a new exception type `EconomyValidationException` that inherits from `EconomyException`, see documentation for more details.

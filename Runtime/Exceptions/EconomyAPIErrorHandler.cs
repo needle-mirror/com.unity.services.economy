@@ -43,6 +43,10 @@ namespace Unity.Services.Economy.Exceptions
                     message = e.Message;
                 }
             }
+            
+            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+            // but typically the outer most exception is most relevant to the problem
+            Debug.LogError("EconomyException: " + message);
 
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
@@ -52,12 +56,16 @@ namespace Unity.Services.Economy.Exceptions
             var message = "There was a validation error. Check 'Details' for more information.";
 
             EconomyValidationException exception = new EconomyValidationException(e.Response.StatusCode, 
-                e.ActualError.Code, message, e.InnerException);
+                e.ActualError.Code, message, e);
 
             foreach (var error in e.ActualError.Errors)
             {
                 exception.Details.Add(new EconomyValidationErrorDetail(error));
             }
+
+            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+            // but typically the outer most exception is most relevant to the problem
+            Debug.LogError("EconomyValidationException: " + message);
 
             return exception;
         }
@@ -75,20 +83,35 @@ namespace Unity.Services.Economy.Exceptions
 
             if (message == null)
             {
-                message = errorDetails.ContainsKey(httpStatusCode) ? errorDetails[httpStatusCode] : e.Response.ErrorMessage;
+                message = errorDetails.ContainsKey(httpStatusCode) ? errorDetails[httpStatusCode] : "An unknown error occurred in the Economy SDK.";
             }
+            
+            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+            // but typically the outer most exception is most relevant to the problem
+            Debug.LogError("EconomyException: " + message);    
+            
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
         
         internal static EconomyAppleAppStorePurchaseFailedException HandleAppleAppStoreFailedExceptions(HttpException<ErrorResponsePurchaseAppleappstoreFailed> e)
         {
             RedeemAppleAppStorePurchaseResult convertedErrorData = Purchases.ConvertBackendApplePurchaseModelToSDKModel(e.ActualError.Data);
+            
+            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+            // but typically the outer most exception is most relevant to the problem
+            Debug.LogError("EconomyAppleAppStorePurchaseFailedException: " + e.ActualError.Detail);    
+
             return new EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
         
         internal static EconomyGooglePlayStorePurchaseFailedException HandleGoogleStoreFailedExceptions(HttpException<ErrorResponsePurchaseGoogleplaystoreFailed> e)
         {
             RedeemGooglePlayPurchaseResult convertedErrorData = Purchases.ConvertBackendGooglePurchaseModelToSDKModel(e.ActualError.Data);
+            
+            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+            // but typically the outer most exception is most relevant to the problem
+            Debug.LogError("EconomyGooglePlayStorePurchaseFailedException: " + e.ActualError.Detail);    
+
             return new EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
 

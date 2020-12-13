@@ -252,10 +252,11 @@ namespace Unity.Services.Economy
             {
                 Response<CurrencyBalanceResponse> response = await m_CurrenciesApiClient.SetPlayerCurrencyBalanceAsync(request);
 
-                EconomyDate currencyResponseDate = new EconomyDate { Date = DateTime.Now };
+                EconomyDate created = response.Result.Created.Date == null ? null : new EconomyDate { Date = (DateTime)response.Result.Created.Date };
+                EconomyDate modified = response.Result.Modified.Date == null ? null : new EconomyDate { Date = (DateTime)response.Result.Modified.Date };
 
                 PlayerBalance convertedResponse = new PlayerBalance(response.Result.CurrencyId, response.Result.Balance,
-                    response.Result.WriteLock, currencyResponseDate, currencyResponseDate);
+                    response.Result.WriteLock, created, modified);
 
                 FireBalanceUpdatedEvent(currencyId);
 

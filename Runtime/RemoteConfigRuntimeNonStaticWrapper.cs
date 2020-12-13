@@ -7,7 +7,6 @@ namespace Unity.Services.Economy
     internal interface IRemoteConfigRuntimeWrapper
     {
         IRuntimeConfigWrapper GetConfig(string key);
-        void SetCustomUserID(string userID);
         void SetPlayerIdentityToken(string token);
         void FetchConfigs(string configType);
     }
@@ -50,11 +49,6 @@ namespace Unity.Services.Economy
         public IRuntimeConfigWrapper GetConfig(string key)
         {
             return new RuntimeConfigSealedClassWrapper(ConfigManager.GetConfig(key));
-        }
-
-        public void SetCustomUserID(string userID)
-        {
-            ConfigManager.SetCustomUserID(userID);
         }
 
         public void SetPlayerIdentityToken(string token)
