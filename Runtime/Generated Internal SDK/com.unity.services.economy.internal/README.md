@@ -50,6 +50,7 @@ Configuration can be set for specific APIs within a package. To set an API-level
 
 ```
 public ApiNameClient(IHttpClient httpClient,
+    IAccessToken accessToken,
 Configuration configuration = null)
 ```
 
@@ -114,13 +115,39 @@ catch(HttpException<RateLimitError> e)
 ```
 
 You will need to initialize the Core package in your code before using the generated code. (Instructions below.)
+## Unity Authentication Support
+
+### To install the Authentication SDK
+Since this is an internal package, you will need to use the internal packages registry.
+
+* Open your projects manifest.json file.
+* Add the following line to the 'dependencies' section:
+```json
+"com.unity.services.authentication": "0.7.1-preview"
+```
+
+### To use Unity Authentication
+To use authentication, you will need to import the package:
+```csharp
+using Unity.Services.Authentication;
+```
+
+Once imported, you will need to log in before using API calls.
 
 Sample Usage:
 ```csharp
 async void Start()
 {
     await UnityServices.InitializeAsync();
-    MakeAPICall();
+    await Authentication.SignInAnonymously();
+    if (Authentication.IsSignedIn)
+    {
+        MakeAPICall();
+    }
+    else
+    {
+        Debug.Log("Player was not signed in successfully?");
+    }
 
 }
 

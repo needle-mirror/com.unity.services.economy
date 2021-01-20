@@ -8,7 +8,6 @@ namespace Unity.Services.Economy
     {
         string GetPlayerId();
         string GetAccessToken();
-        void SetAuthenticationTokenForEconomyApi();
         void CheckSignedIn();
     }
     
@@ -33,14 +32,10 @@ namespace Unity.Services.Economy
             return m_AccessTokenComponent.AccessToken;
         }
 
-        public void SetAuthenticationTokenForEconomyApi()
-        {
-            EconomyService.Instance.Configuration.JWT = GetAccessToken();
-        }
-        
         public void CheckSignedIn()
         {
-            if (!AuthenticationService.Instance.IsSignedIn)
+            // When sign in completes, the access token is set. If sign out is called or the session expires, it is cleared.
+            if (GetAccessToken() == null)
             {
                 throw new EconomyException(EconomyExceptionReason.Unauthorized, Core.CommonErrorCodes.Forbidden, "You are not signed in to the Authentication Service. Please sign in.");
             }

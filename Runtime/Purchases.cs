@@ -52,12 +52,10 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             MakeVirtualPurchaseRequest request = new MakeVirtualPurchaseRequest(
                 Application.cloudProjectId, 
                 m_EconomyAuthentication.GetPlayerId(),
-                new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds));
+                playerPurchaseVirtualRequest: new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds));
 
             try
             {
@@ -146,12 +144,10 @@ namespace Unity.Services.Economy
 
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-            
             RedeemAppleAppStorePurchaseRequest request = new RedeemAppleAppStorePurchaseRequest(
                 Application.cloudProjectId, 
                 m_EconomyAuthentication.GetPlayerId(),
-                new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency));
+                playerPurchaseAppleappstoreRequest: new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency));
 
             try
             {
@@ -250,13 +246,11 @@ namespace Unity.Services.Economy
             }
             
             m_EconomyAuthentication.CheckSignedIn();
-
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
+            
             RedeemGooglePlayPurchaseRequest request = new RedeemGooglePlayPurchaseRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                new PlayerPurchaseGoogleplaystoreRequest(
+                playerPurchaseGoogleplaystoreRequest: new PlayerPurchaseGoogleplaystoreRequest(
                     args.RealMoneyPurchaseId, 
                     args.PurchaseData, 
                     args.PurchaseDataSignature,

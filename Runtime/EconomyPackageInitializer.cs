@@ -34,11 +34,13 @@ namespace Unity.Services.Economy
             };
             var configuration = new Unity.Services.Economy.Internal.Configuration(null, null, null, headers);
 
-            ICurrenciesApiClient currenciesApiClient = new CurrenciesApiClient(httpClient, configuration);
-            IInventoryApiClient inventoryApiClient = new InventoryApiClient(httpClient, configuration);
-            IPurchasesApiClient purchasesApiClient = new PurchasesApiClient(httpClient, configuration);
+            IAccessToken accessToken = registry.GetServiceComponent<IAccessToken>();
 
-            Economy.InitializeEconomy(registry.GetServiceComponent<IAccessToken>(), registry.GetServiceComponent<IPlayerId>(), currenciesApiClient, inventoryApiClient, purchasesApiClient);
+            ICurrenciesApiClient currenciesApiClient = new CurrenciesApiClient(httpClient, accessToken, configuration);
+            IInventoryApiClient inventoryApiClient = new InventoryApiClient(httpClient, accessToken, configuration);
+            IPurchasesApiClient purchasesApiClient = new PurchasesApiClient(httpClient, accessToken, configuration);
+
+            Economy.InitializeEconomy(accessToken, registry.GetServiceComponent<IPlayerId>(), currenciesApiClient, inventoryApiClient, purchasesApiClient);
             
             return Task.CompletedTask;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Unity.Services.Economy.Internal;
 using Unity.Services.Economy.Internal.Apis.Inventory;
@@ -82,15 +83,14 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
             
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
 
             GetPlayerInventoryRequest request = new GetPlayerInventoryRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                afterPlayersInventoryItemId,
-                options.ItemsPerFetch,
-                options.PlayersInventoryItemIds,
-                options.InventoryItemIds
+                after: afterPlayersInventoryItemId,
+                limit: options.ItemsPerFetch,
+                playersInventoryItemIds: options.PlayersInventoryItemIds,
+                inventoryItemIds: options.InventoryItemIds
             );
 
             try
@@ -140,12 +140,10 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             AddInventoryItemRequest request = new AddInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData));
+                addInventoryRequest: new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData));
 
             try
             {
@@ -194,13 +192,11 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             DeleteInventoryItemRequest request = new DeleteInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                new InventoryDeleteRequest(options?.WriteLock));
+                inventoryDeleteRequest: new InventoryDeleteRequest(options?.WriteLock));
 
             try
             {
@@ -245,13 +241,11 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             UpdateInventoryItemRequest request = new UpdateInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                new InventoryRequestUpdate(instanceData, options?.WriteLock));
+                inventoryRequestUpdate: new InventoryRequestUpdate(instanceData, options?.WriteLock));
 
             try
             {
@@ -287,6 +281,13 @@ namespace Unity.Services.Economy
             List<PlayersInventoryItem> playersInventoryItems = new List<PlayersInventoryItem>(responses.Count);
             foreach (var response in responses)
             {
+                // Temporary solution while https://jira.unity3d.com/browse/GBK-1564 is being fixed.
+                // Currently, if the user updates their item with empty json "{}", the returned
+                // instance data is a JArray (usually it is JSON), which causes an error when we deserialize it later.
+                if (response.InstanceData.obj is JArray)
+                {
+                    response.InstanceData.obj = null;
+                }
                 playersInventoryItems.Add(ConvertToPlayersInventoryItem(response));
             }
 

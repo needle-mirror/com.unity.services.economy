@@ -4,6 +4,10 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.8] - 2021-01-20
+* Fixed a bug that was causing errors when users signed in, signed out and then signed in again as a new user.
+* Removed Economy’s assembly dependency on the Authentication package
+
 ## [1.0.0-pre.7] - 2020-12-13
 * Added more detailed logging for exceptions.
 * Fixed a bug that was causing the created and modified dates to be set incorrectly in the SetBalancesAsync function.

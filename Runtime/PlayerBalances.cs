@@ -68,8 +68,6 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
             
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
-
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
             
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
                 Application.cloudProjectId, 
@@ -123,13 +121,11 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             IncrementPlayerCurrencyBalanceRequest request = new IncrementPlayerCurrencyBalanceRequest(
                 Application.cloudProjectId, 
                 m_EconomyAuthentication.GetPlayerId(), 
                 currencyId, 
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+                currencyModifyBalanceRequest: new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
                 );
 
             try
@@ -181,13 +177,11 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             DecrementPlayerCurrencyBalanceRequest request = new DecrementPlayerCurrencyBalanceRequest(
                 Application.cloudProjectId, 
                 m_EconomyAuthentication.GetPlayerId(), 
                 currencyId, 
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+                currencyModifyBalanceRequest: new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
             );
 
             try
@@ -240,13 +234,11 @@ namespace Unity.Services.Economy
         {
             m_EconomyAuthentication.CheckSignedIn();
             
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             SetPlayerCurrencyBalanceRequest request = new SetPlayerCurrencyBalanceRequest(
                 Application.cloudProjectId, 
                 m_EconomyAuthentication.GetPlayerId(), 
                 currencyId, 
-                new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock));
+                currencyBalanceRequest: new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock));
 
             try
             {
@@ -282,13 +274,11 @@ namespace Unity.Services.Economy
             
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(itemsPerFetch);
 
-            m_EconomyAuthentication.SetAuthenticationTokenForEconomyApi();
-
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                afterCurrencyId,
-                itemsPerFetch);
+                after: afterCurrencyId,
+                limit: itemsPerFetch);
 
             try
             {
