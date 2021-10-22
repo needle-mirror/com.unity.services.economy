@@ -1,0 +1,35 @@
+{
+  "name": "com.unity.services.economy",
+  "displayName": "Economy",
+  "version": "1.0.0-pre.4",
+  "unity": "2020.3",
+  "description": "Economy is a cloud service that enables game developers to create their in-game economy and gives them seamless purchases, currency conversion, player inventory management, and more. By using Economy, you have the power to integrate a fully-featured marketplace into your game, and manage it through a streamlined dashboard. \n\nEconomy can be configured through the Unity Dashboard. The package provides the ability to interact with the configuration from your game, and update player’s balances and inventories.",
+  "dependencies": {
+    "com.unity.services.authentication": "1.0.0-pre.4",
+    "com.unity.remote-config-runtime": "3.0.0-pre.7",
+    "com.unity.services.core": "1.1.0-pre.8"
+  },
+  "samples": [
+    {
+      "displayName": "Basic Example",
+      "description": "Basic example scripts demonstrating how to interact with the Economy package API's.",
+      "path": "Samples~/Basic Example"
+    },
+    {
+      "displayName": "UI Example",
+      "description": "Example scripts and UI elements demonstrating the Economy package.",
+      "path": "Samples~/UI Example"
+    }
+  ],
+  "relatedPackages": {
+    "com.unity.services.economy.tests": "1.0.0-pre.4"
+  },
+  "upmCi": {
+    "footprint": "c498376987dad73f13333794f4f29c7f809fd6db"
+  },
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/Catapult.mono.git",
+    "type": "git",
+    "revision": "cc5c525977c3d1fb3ccecf3e39faea319e0f0ac6"
+  }
+}
