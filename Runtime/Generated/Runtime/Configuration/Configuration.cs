@@ -48,7 +48,7 @@ namespace Unity.Services.Economy.Internal
 
             if(headers == null)
             {
-                Headers = headers;
+                Headers = new Dictionary<string, string>();
             }
             else
             {
