@@ -9,23 +9,27 @@ namespace Unity.Services.Economy.Model
     /// Provides paginated access to the list of retrieved player's inventory items.
     /// </summary>
     [Preserve]
-    public class GetInventoryResult: PageableResult<PlayersInventoryItem, GetInventoryResult>
+    public class GetInventoryResult : PageableResult<PlayersInventoryItem, GetInventoryResult>
     {
         [Preserve] List<string> m_PlayersInventoryItemIds;
         [Preserve] List<string> m_InventoryItemIds;
-        
+
+        readonly PlayerInventoryInternal m_PlayerInventoryInternal;
+
         /// <summary>
         /// The currently fetched items.
         /// </summary>
         [Preserve]
         public List<PlayersInventoryItem> PlayersInventoryItems => m_Results;
-        
+
         [Preserve]
-        public GetInventoryResult(List<PlayersInventoryItem> results, bool hasNext, List<string> inventoryItemIds, List<string> playersInventoryItemIds)
+        internal GetInventoryResult(List<PlayersInventoryItem> results, bool hasNext, List<string> inventoryItemIds,
+                                    List<string> playersInventoryItemIds, PlayerInventoryInternal playerInventoryInternal)
             : base(results, hasNext)
         {
             m_InventoryItemIds = inventoryItemIds;
             m_PlayersInventoryItemIds = playersInventoryItemIds;
+            m_PlayerInventoryInternal = playerInventoryInternal;
         }
 
         /// <summary>
@@ -37,14 +41,14 @@ namespace Unity.Services.Economy.Model
         [Preserve]
         protected override async Task<GetInventoryResult> GetNextResultsAsync(int itemsPerFetch)
         {
-            PlayerInventory.GetInventoryOptions options = new PlayerInventory.GetInventoryOptions
+            GetInventoryOptions options = new GetInventoryOptions
             {
                 PlayersInventoryItemIds = m_PlayersInventoryItemIds,
                 InventoryItemIds = m_InventoryItemIds,
                 ItemsPerFetch = itemsPerFetch
             };
-            
-            return await Economy.PlayerInventory.GetNextInventory(m_Results.Last().PlayersInventoryItemId, options);
+
+            return await m_PlayerInventoryInternal.GetNextInventory(m_Results.Last().PlayersInventoryItemId, options);
         }
     }
 }

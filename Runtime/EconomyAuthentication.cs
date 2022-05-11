@@ -1,27 +1,28 @@
-using Unity.Services.Economy.Internal;
-using Unity.Services.Authentication;
 using Unity.Services.Authentication.Internal;
 
 namespace Unity.Services.Economy
 {
-    internal interface IEconomyAuthentication
+    interface IEconomyAuthentication
     {
         string GetPlayerId();
         string GetAccessToken();
         void CheckSignedIn();
+        string configAssignmentHash { get; set; }
     }
-    
-    internal class EconomyAuthentication : IEconomyAuthentication
+
+    class EconomyAuthentication : IEconomyAuthentication
     {
         IPlayerId m_PlayerIdComponent;
         IAccessToken m_AccessTokenComponent;
+
+        public string configAssignmentHash { get; set; }
 
         public EconomyAuthentication(IPlayerId playerIdComponent, IAccessToken accessTokenComponent)
         {
             m_AccessTokenComponent = accessTokenComponent;
             m_PlayerIdComponent = playerIdComponent;
         }
-        
+
         public string GetPlayerId()
         {
             return m_PlayerIdComponent.PlayerId;

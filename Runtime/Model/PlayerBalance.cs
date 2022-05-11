@@ -18,7 +18,7 @@ namespace Unity.Services.Economy.Model
             Created = created;
             Modified = modified;
         }
-        
+
         /// <summary>
         /// The ID of the currency this balance represents.
         /// </summary>
@@ -32,7 +32,7 @@ namespace Unity.Services.Economy.Model
         /// </summary>
         [Preserve] public string WriteLock;
         /// <summary>
-        /// The date this balance was created as an EconomyDate object. 
+        /// The date this balance was created as an EconomyDate object.
         /// </summary>
         [Preserve] public EconomyDate Created;
         /// <summary>
@@ -47,7 +47,7 @@ namespace Unity.Services.Economy.Model
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<CurrencyDefinition> GetCurrencyDefinitionAsync()
         {
-            return await Economy.Configuration.GetCurrencyAsync(CurrencyId);
+            return await EconomyService.Instance.Configuration.GetCurrencyAsync(CurrencyId);
         }
     }
 }

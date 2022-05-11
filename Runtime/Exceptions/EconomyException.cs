@@ -5,7 +5,7 @@ using Unity.Services.Economy.Internal.Models;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Editor")]
 namespace Unity.Services.Economy
-{        
+{
     /// <summary>
     /// An enum of possible reasons that Economy would throw an exception. These are mapped to particular HTTP status
     /// codes.
@@ -14,7 +14,8 @@ namespace Unity.Services.Economy
     {
         Unknown = 0,
         NetworkError = 1,
-        
+        ConfigAssignmentHashInvalid = 3,
+
         InvalidArgument = 400,
         Unauthorized = 401,
         Forbidden = 403,
@@ -23,7 +24,7 @@ namespace Unity.Services.Economy
         Conflict = 409,
         UnprocessableTransaction = 422,
         RateLimited = 429,
-        
+
         InternalServerError = 500,
         NotImplemented = 501,
         BadGateway = 502,
@@ -37,19 +38,19 @@ namespace Unity.Services.Economy
     public class EconomyException : Core.RequestFailedException
     {
         internal static readonly string unknownError = "An unknown error occurred in the Economy SDK.";
-        
+
         /// <summary>
         /// The reason the exception was thrown, selected from the EconomyExceptionReason enum.
         /// </summary>
-        public EconomyExceptionReason Reason { get; private set; }
-        
-        internal EconomyException(EconomyExceptionReason reason, int serviceErrorCode, string description) 
+        public EconomyExceptionReason Reason { get; internal set; }
+
+        internal EconomyException(EconomyExceptionReason reason, int serviceErrorCode, string description)
             : base(serviceErrorCode, description ?? unknownError)
         {
             Reason = reason;
         }
-        
-        internal EconomyException(EconomyExceptionReason reason, int serviceErrorCode, string description, Exception inner) 
+
+        internal EconomyException(EconomyExceptionReason reason, int serviceErrorCode, string description, Exception inner)
             : base(serviceErrorCode, description ?? unknownError, inner)
         {
             Reason = reason;
@@ -67,21 +68,16 @@ namespace Unity.Services.Economy
             {
                 return (EconomyExceptionReason)httpStatusCode;
             }
-            
+
             return EconomyExceptionReason.Unknown;
         }
     }
-    
+
     /// <summary>
     /// Represents a validation error from the Economy service.
     /// </summary>
-    public class EconomyValidationException: EconomyException
+    public class EconomyValidationException : EconomyException
     {
-        /// <summary>
-        /// The reason the exception was thrown, selected from the EconomyExceptionReason enum.
-        /// </summary>
-        public EconomyExceptionReason Reason { get; private set; }
-        
         /// <summary>
         /// A list of errors returned from the API's Validation Error Response.
         /// </summary>
@@ -93,16 +89,16 @@ namespace Unity.Services.Economy
             Reason = GetEconomyExceptionReason(httpStatusCode);
             Details = new List<EconomyValidationErrorDetail>();
         }
-        
-        internal EconomyValidationException(long httpStatusCode, int serviceErrorCode, string description, 
-            List<EconomyValidationErrorDetail> details, Exception innerException)
+
+        internal EconomyValidationException(long httpStatusCode, int serviceErrorCode, string description,
+                                            List<EconomyValidationErrorDetail> details, Exception innerException)
             : base(httpStatusCode, serviceErrorCode, description ?? unknownError, innerException)
         {
             Reason = GetEconomyExceptionReason(httpStatusCode);
             Details = details;
         }
     }
-    
+
     public class EconomyValidationErrorDetail
     {
         /// <summary>

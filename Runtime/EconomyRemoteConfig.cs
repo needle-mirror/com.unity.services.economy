@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Unity.RemoteConfig;
-using Unity.Services.Authentication;
 using Unity.Services.Economy.Model;
+using Unity.Services.RemoteConfig;
 using UnityEngine;
 
 namespace Unity.Services.Economy
@@ -16,6 +15,7 @@ namespace Unity.Services.Economy
         internal const string inventoryItemTypeString = "INVENTORY_ITEM";
         internal const string virtualPurchaseTypeString = "VIRTUAL_PURCHASE";
         internal const string realMoneyPurchaseTypeString = "MONEY_PURCHASE";
+        internal IEconomyAuthentication economyAuthHandler;
 
         const string k_EconomyConfigKey = "economy";
 
@@ -23,12 +23,11 @@ namespace Unity.Services.Economy
         TaskCompletionSource<bool> m_CurrentRemoteConfigFetchTcs;
 
         IRemoteConfigRuntimeWrapper m_RuntimeImplementation;
-        IEconomyAuthentication m_EconomyAuthHandler;
 
         internal EconomyRemoteConfig(IRemoteConfigRuntimeWrapper remoteConfigRuntime, IEconomyAuthentication authHandler)
         {
             m_RuntimeImplementation = remoteConfigRuntime;
-            m_EconomyAuthHandler = authHandler;
+            economyAuthHandler = authHandler;
         }
 
         // Need both settings and serializer here as the two Newtonsoft APIs for strings and JTokens take different objects for their settings...
@@ -37,8 +36,9 @@ namespace Unity.Services.Economy
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             DateTimeZoneHandling = DateTimeZoneHandling.Utc
         };
-        
-        static JsonSerializer s_Serializer = new JsonSerializer { 
+
+        static JsonSerializer s_Serializer = new JsonSerializer
+        {
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             DateTimeZoneHandling = DateTimeZoneHandling.Utc
         };
@@ -60,14 +60,14 @@ namespace Unity.Services.Economy
             return DeserializeConfigurationObject(itemAsJson);
         }
 
-        static ConfigurationItemDefinition DeserializeConfigurationObject(string raw) 
+        static ConfigurationItemDefinition DeserializeConfigurationObject(string raw)
         {
             try
             {
                 JObject jObject = JObject.Parse(raw);
 
                 string type = jObject["type"]?.Value<string>();
-                
+
                 if (string.IsNullOrEmpty(type))
                 {
                     Debug.LogError("Economy item is missing a type, this shouldn't be possible. Returning null.");
@@ -95,7 +95,7 @@ namespace Unity.Services.Economy
                 return null;
             }
         }
-        
+
         static string GetTypeStringForObject(Type type)
         {
             if (type == typeof(CurrencyDefinition))
@@ -112,7 +112,7 @@ namespace Unity.Services.Economy
             {
                 return virtualPurchaseTypeString;
             }
-            
+
             if (type == typeof(RealMoneyPurchaseDefinition))
             {
                 return realMoneyPurchaseTypeString;
@@ -121,8 +121,8 @@ namespace Unity.Services.Economy
             Debug.Log("Unknown type used as generic for Configuration request");
             return "UNKNOWN";
         }
-        
-        internal async Task<List<T>> GetObjectsFromRemoteConfigAsync<T>(string typeString) where T: ConfigurationItemDefinition
+
+        internal async Task<List<T>> GetObjectsFromRemoteConfigAsync<T>(string typeString) where T : ConfigurationItemDefinition
         {
             await EnsureRemoteConfigIsFetchedAsync();
 
@@ -131,7 +131,7 @@ namespace Unity.Services.Economy
             return ParseSpecificObjectTypesFromFullConfig<T>(rawRemoteConfigEconomyObject, typeString);
         }
 
-        static List<T> ParseSpecificObjectTypesFromFullConfig<T>(JObject rawConfigObject, string typeString) where T: ConfigurationItemDefinition
+        static List<T> ParseSpecificObjectTypesFromFullConfig<T>(JObject rawConfigObject, string typeString) where T : ConfigurationItemDefinition
         {
             JEnumerable<JToken> items = rawConfigObject.PropertyValues();
 
@@ -185,7 +185,7 @@ namespace Unity.Services.Economy
 
                 m_CurrentRemoteConfigFetchTcs = new TaskCompletionSource<bool>();
 
-                if (string.IsNullOrEmpty(m_EconomyAuthHandler.GetPlayerId()))
+                if (economyAuthHandler.GetAccessToken() == null)
                 {
                     m_CurrentRemoteConfigFetchTcs.TrySetException(new EconomyException(EconomyExceptionReason.Unauthorized, Core.CommonErrorCodes.InvalidToken, "You are not signed in to the Authentication Service. Please sign in."));
 
@@ -195,8 +195,8 @@ namespace Unity.Services.Economy
                     m_CurrentRemoteConfigFetchTcs = null;
                     return task;
                 }
-                
-                m_RuntimeImplementation.SetPlayerIdentityToken(m_EconomyAuthHandler.GetAccessToken());
+
+                m_RuntimeImplementation.SetPlayerIdentityToken(economyAuthHandler.GetAccessToken());
 
                 IRuntimeConfigWrapper economyConfig = m_RuntimeImplementation.GetConfig(k_EconomyConfigKey);
                 economyConfig.FetchCompleted += EconomyConfigFetchCompletionHandler;
@@ -212,13 +212,14 @@ namespace Unity.Services.Economy
             {
                 var economyConfig = m_RuntimeImplementation.GetConfig(k_EconomyConfigKey);
                 economyConfig.FetchCompleted -= EconomyConfigFetchCompletionHandler;
-                
+
                 if (response.status == ConfigRequestStatus.Failed)
                 {
                     m_CurrentRemoteConfigFetchTcs.TrySetException(new EconomyException(EconomyExceptionReason.Unknown, Core.CommonErrorCodes.Unknown, "The request to refresh the economy remote configuration failed"));
                 }
                 else
                 {
+                    economyAuthHandler.configAssignmentHash = m_RuntimeImplementation.GetConfigAssignmentHash();
                     m_CurrentRemoteConfigFetchTcs.TrySetResult(true);
                 }
 

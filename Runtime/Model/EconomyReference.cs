@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
 
@@ -17,13 +16,17 @@ namespace Unity.Services.Economy.Model
         [JsonConstructor]
         public EconomyReference([JsonProperty("$ref_economy")] string reference)
         {
+            // We need to access the internal property "remoteConfig" - so we cast to a Configuration object to access
+            // internal properties
+            ConfigurationInternal configurationInternal = (ConfigurationInternal)EconomyService.Instance.Configuration;
+
             string referenceWithoutLeadingHash = reference.Substring(1);
-            m_ReferencedItem = Economy.Configuration.remoteConfig.GetEconomyItemWithKeyWithoutRefresh(referenceWithoutLeadingHash);
+            m_ReferencedItem = configurationInternal.remoteConfig.GetEconomyItemWithKeyWithoutRefresh(referenceWithoutLeadingHash);
         }
-        
+
         /// <summary>
         /// Gets the referenced configuration item, which will automatically be deserialized to its target type.
-        /// 
+        ///
         /// You can cast to this type by checking the <c>Type</c> parameter of the returned ConfigurationItemDefinition,
         /// and then casting to either InventoryItemDefinition or CurrencyDefinition as appropriate.
         /// </summary>

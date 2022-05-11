@@ -2,9 +2,9 @@
     "name": "Unity.Services.Economy",
     "rootNamespace": "",
     "references": [
-        "Unity.RemoteConfig",
         "Unity.Services.Core",
-        "Unity.Services.Core.Internal"
+        "Unity.Services.Core.Internal",
+        "Unity.Services.RemoteConfig"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

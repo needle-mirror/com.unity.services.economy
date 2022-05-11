@@ -1,0 +1,542 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.Services.Economy
+{
+    public class AddInventoryItemOptions
+    {
+        public System.Collections.Generic.Dictionary<string, object> InstanceData;
+        public string PlayersInventoryItemId;
+        public AddInventoryItemOptions() {}
+    }
+
+    [System.Obsolete(@"The interface provided by Economy.Configuration has been replaced by EconomyService.Instance.Configuration, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class Configuration
+    {
+        public Configuration() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetCurrenciesAsync() has been replaced by EconomyService.Instance.Configuration.GetCurrenciesAsync(), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetCurrenciesAsync>d__0))] public System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyDefinition>> GetCurrenciesAsync();
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetCurrencyAsync(string id) has been replaced by EconomyService.Instance.Configuration.GetCurrencyAsync(string id), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetCurrencyAsync>d__1))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyAsync(string id);
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetInventoryItemAsync(string id) has been replaced by EconomyService.Instance.Configuration.GetInventoryItemAsync(string id), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetInventoryItemAsync>d__3))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetInventoryItemAsync(string id);
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetInventoryItemsAsync() has been replaced by EconomyService.Instance.Configuration.GetInventoryItemsAsync(), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetInventoryItemsAsync>d__2))] public System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryItemDefinition>> GetInventoryItemsAsync();
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetRealMoneyPurchaseAsync(string id) has been replaced by EconomyService.Instance.Configuration.GetRealMoneyPurchaseAsync(string id), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetRealMoneyPurchaseAsync>d__7))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetRealMoneyPurchasesAsync() has been replaced by EconomyService.Instance.Configuration.GetRealMoneyPurchasesAsync(), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetRealMoneyPurchasesAsync>d__6))] public System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetVirtualPurchaseAsync(string id) has been replaced by EconomyService.Instance.Configuration.GetVirtualPurchaseAsync(string id), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetVirtualPurchaseAsync>d__5))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Configuration.GetVirtualPurchasesAsync() has been replaced by EconomyService.Instance.Configuration.GetVirtualPurchasesAsync(), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Configuration.<GetVirtualPurchasesAsync>d__4))] public System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
+    }
+
+    public class DecrementBalanceOptions
+    {
+        public string WriteLock;
+        public DecrementBalanceOptions() {}
+    }
+
+    public class DeletePlayersInventoryItemOptions
+    {
+        public string WriteLock;
+        public DeletePlayersInventoryItemOptions() {}
+    }
+
+    [System.Obsolete(@"The interface provided by Economy has moved to EconomyService.Instance, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static class Economy
+    {
+        [System.Obsolete(@"The interface provided by Economy.Configuration has been replaced by EconomyService.Instance.Configuration, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.Configuration Configuration;
+        [System.Obsolete(@"The interface provided by Economy.PlayerBalances has been replaced by EconomyService.Instance.PlayerBalances, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.PlayerBalances PlayerBalances;
+        [System.Obsolete(@"The interface provided by Economy.PlayerInventory has been replaced by EconomyService.Instance.PlayerInventory, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.PlayerInventory PlayerInventory;
+        [System.Obsolete(@"The interface provided by Economy.Purchases has been replaced by EconomyService.Instance.Purchases, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.Purchases Purchase;
+    }
+
+    public class EconomyAppleAppStorePurchaseFailedException : Unity.Services.Economy.EconomyException
+    {
+        public Unity.Services.Economy.Model.RedeemAppleAppStorePurchaseResult Data { get; }
+    }
+
+    public class EconomyException : Unity.Services.Core.RequestFailedException
+    {
+        public Unity.Services.Economy.EconomyExceptionReason Reason { get; }
+    }
+
+    public enum EconomyExceptionReason
+    {
+        public const Unity.Services.Economy.EconomyExceptionReason BadGateway = 502;
+        public const Unity.Services.Economy.EconomyExceptionReason ConfigAssignmentHashInvalid = 3;
+        public const Unity.Services.Economy.EconomyExceptionReason Conflict = 409;
+        public const Unity.Services.Economy.EconomyExceptionReason EntityNotFound = 404;
+        public const Unity.Services.Economy.EconomyExceptionReason Forbidden = 403;
+        public const Unity.Services.Economy.EconomyExceptionReason GatewayTimeout = 504;
+        public const Unity.Services.Economy.EconomyExceptionReason InternalServerError = 500;
+        public const Unity.Services.Economy.EconomyExceptionReason InvalidArgument = 400;
+        public const Unity.Services.Economy.EconomyExceptionReason NetworkError = 1;
+        public const Unity.Services.Economy.EconomyExceptionReason NotImplemented = 501;
+        public const Unity.Services.Economy.EconomyExceptionReason RateLimited = 429;
+        public const Unity.Services.Economy.EconomyExceptionReason RequestTimeOut = 408;
+        public const Unity.Services.Economy.EconomyExceptionReason ServiceUnavailable = 503;
+        public const Unity.Services.Economy.EconomyExceptionReason Unauthorized = 401;
+        public const Unity.Services.Economy.EconomyExceptionReason Unknown = 0;
+        public const Unity.Services.Economy.EconomyExceptionReason UnprocessableTransaction = 422;
+        public long value__;
+    }
+
+    public class EconomyGooglePlayStorePurchaseFailedException : Unity.Services.Economy.EconomyException
+    {
+        public Unity.Services.Economy.Model.RedeemGooglePlayPurchaseResult Data { get; }
+    }
+
+    public class EconomyInstance : Unity.Services.Economy.IEconomyService
+    {
+        public virtual Unity.Services.Economy.IEconomyConfigurationApiClient Configuration { get; }
+        public virtual Unity.Services.Economy.IEconomyPlayerBalancesApiClient PlayerBalances { get; }
+        public virtual Unity.Services.Economy.IEconomyPlayerInventoryApiClient PlayerInventory { get; }
+        public virtual Unity.Services.Economy.IEconomyPurchasesApiClientApi Purchases { get; }
+    }
+
+    public class EconomyRateLimitedException : Unity.Services.Economy.EconomyException
+    {
+        public int RetryAfter { get; }
+    }
+
+    public static class EconomyService
+    {
+        public static Unity.Services.Economy.IEconomyService Instance { get; }
+    }
+
+    public class EconomyValidationErrorDetail
+    {
+        public string Field { get; }
+        public System.Collections.Generic.List<string> Messages { get; }
+        public EconomyValidationErrorDetail(string field, System.Collections.Generic.List<string> messages) {}
+    }
+
+    public class EconomyValidationException : Unity.Services.Economy.EconomyException
+    {
+        public System.Collections.Generic.List<Unity.Services.Economy.EconomyValidationErrorDetail> Details { get; }
+    }
+
+    public class GetBalancesOptions
+    {
+        public int ItemsPerFetch;
+        public GetBalancesOptions() {}
+    }
+
+    public class GetInventoryOptions
+    {
+        public System.Collections.Generic.List<string> InventoryItemIds;
+        public int ItemsPerFetch;
+        public System.Collections.Generic.List<string> PlayersInventoryItemIds;
+        public GetInventoryOptions() {}
+    }
+
+    public interface IEconomyConfigurationApiClient
+    {
+        public abstract string GetConfigAssignmentHash();
+        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyDefinition>> GetCurrenciesAsync();
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyAsync(string id);
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetInventoryItemAsync(string id);
+        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryItemDefinition>> GetInventoryItemsAsync();
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
+        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
+        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
+    }
+
+    public interface IEconomyPlayerBalancesApiClient
+    {
+        public event System.Action<string> BalanceUpdated;
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, Unity.Services.Economy.DecrementBalanceOptions options = default(Unity.Services.Economy.DecrementBalanceOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetBalancesResult> GetBalancesAsync(Unity.Services.Economy.GetBalancesOptions options = default(Unity.Services.Economy.GetBalancesOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, Unity.Services.Economy.IncrementBalanceOptions options = default(Unity.Services.Economy.IncrementBalanceOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> SetBalanceAsync(string currencyId, long balance, Unity.Services.Economy.SetBalanceOptions options = default(Unity.Services.Economy.SetBalanceOptions));
+    }
+
+    public interface IEconomyPlayerInventoryApiClient
+    {
+        public event System.Action<string> PlayersInventoryItemUpdated;
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, Unity.Services.Economy.AddInventoryItemOptions options = default(Unity.Services.Economy.AddInventoryItemOptions));
+        public abstract System.Threading.Tasks.Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, Unity.Services.Economy.DeletePlayersInventoryItemOptions options = default(Unity.Services.Economy.DeletePlayersInventoryItemOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetInventoryAsync(Unity.Services.Economy.GetInventoryOptions options = default(Unity.Services.Economy.GetInventoryOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, System.Collections.Generic.Dictionary<string, object> instanceData, Unity.Services.Economy.UpdatePlayersInventoryItemOptions options = default(Unity.Services.Economy.UpdatePlayersInventoryItemOptions));
+    }
+
+    public interface IEconomyPurchasesApiClientApi
+    {
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, Unity.Services.Economy.MakeVirtualPurchaseOptions options = default(Unity.Services.Economy.MakeVirtualPurchaseOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(Unity.Services.Economy.RedeemAppleAppStorePurchaseArgs args);
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(Unity.Services.Economy.RedeemGooglePlayStorePurchaseArgs args);
+    }
+
+    public interface IEconomyService
+    {
+        public abstract Unity.Services.Economy.IEconomyConfigurationApiClient Configuration { get; }
+        public abstract Unity.Services.Economy.IEconomyPlayerBalancesApiClient PlayerBalances { get; }
+        public abstract Unity.Services.Economy.IEconomyPlayerInventoryApiClient PlayerInventory { get; }
+        public abstract Unity.Services.Economy.IEconomyPurchasesApiClientApi Purchases { get; }
+    }
+
+    public class IncrementBalanceOptions
+    {
+        public string WriteLock;
+        public IncrementBalanceOptions() {}
+    }
+
+    public class MakeVirtualPurchaseOptions
+    {
+        public System.Collections.Generic.List<string> PlayersInventoryItemIds;
+        public MakeVirtualPurchaseOptions() {}
+    }
+
+    [System.Obsolete(@"The interface provided by Economy.PlayerBalances has been replaced by EconomyService.Instance.PlayerBalances, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class PlayerBalances
+    {
+        public PlayerBalances() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerBalances.DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options) has been replaced by EconomyService.Instance.PlayerBalances.DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerBalances.<DecrementBalanceAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, Unity.Services.Economy.PlayerBalances.DecrementBalanceOptions options = default(Unity.Services.Economy.PlayerBalances.DecrementBalanceOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerBalances.GetBalancesAsync(GetBalancesOptions options) has been replaced by EconomyService.Instance.PlayerBalances.GetBalancesAsync(GetBalancesOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerBalances.<GetBalancesAsync>d__0))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetBalancesResult> GetBalancesAsync(Unity.Services.Economy.PlayerBalances.GetBalancesOptions options = default(Unity.Services.Economy.PlayerBalances.GetBalancesOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerBalances.IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options) has been replaced by EconomyService.Instance.PlayerBalances.IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerBalances.<IncrementBalanceAsync>d__1))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, Unity.Services.Economy.PlayerBalances.IncrementBalanceOptions options = default(Unity.Services.Economy.PlayerBalances.IncrementBalanceOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerBalances.SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options) has been replaced by EconomyService.Instance.PlayerBalances.SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerBalances.<SetBalanceAsync>d__3))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> SetBalanceAsync(string currencyId, long balance, Unity.Services.Economy.PlayerBalances.SetBalanceOptions options = default(Unity.Services.Economy.PlayerBalances.SetBalanceOptions));
+        [System.Obsolete(@"The model provided by Economy.PlayerBalances.DecrementBalanceOptions has been moved to EconomyService.Instance.DecrementBalanceOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class DecrementBalanceOptions : Unity.Services.Economy.DecrementBalanceOptions
+        {
+            public DecrementBalanceOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerBalances.GetBalancesOptions has been moved to EconomyService.Instance.GetBalancesOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class GetBalancesOptions : Unity.Services.Economy.GetBalancesOptions
+        {
+            public GetBalancesOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerBalances.IncrementBalanceOptions has been moved to EconomyService.Instance.IncrementBalanceOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class IncrementBalanceOptions : Unity.Services.Economy.IncrementBalanceOptions
+        {
+            public IncrementBalanceOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerBalances.SetBalanceOptions has been moved to EconomyService.Instance.SetBalanceOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class SetBalanceOptions : Unity.Services.Economy.SetBalanceOptions
+        {
+            public SetBalanceOptions() {}
+        }
+    }
+
+    [System.Obsolete(@"The interface provided by Economy.PlayerInventory has been replaced by EconomyService.Instance.PlayerInventory, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class PlayerInventory
+    {
+        public PlayerInventory() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerInventory.AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options) has been replaced by EconomyService.Instance.PlayerInventory.AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerInventory.<AddInventoryItemAsync>d__1))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, Unity.Services.Economy.PlayerInventory.AddInventoryItemOptions options = default(Unity.Services.Economy.PlayerInventory.AddInventoryItemOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerInventory.DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options) has been replaced by EconomyService.Instance.PlayerInventory.DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerInventory.<DeletePlayersInventoryItemAsync>d__2))] public System.Threading.Tasks.Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, Unity.Services.Economy.PlayerInventory.DeletePlayersInventoryItemOptions options = default(Unity.Services.Economy.PlayerInventory.DeletePlayersInventoryItemOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerInventory.GetInventoryAsync(GetInventoryOptions options) has been replaced by EconomyService.Instance.PlayerInventory.GetInventoryAsync(GetInventoryOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerInventory.<GetInventoryAsync>d__0))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetInventoryAsync(Unity.Services.Economy.PlayerInventory.GetInventoryOptions options = default(Unity.Services.Economy.PlayerInventory.GetInventoryOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.PlayerInventory.UpdatePlayersInventoryItemAsync(string playersInventoryItemId, Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options) has been replaced by EconomyService.Instance.PlayerInventory.UpdatePlayersInventoryItemAsync(string playersInventoryItemId, Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.PlayerInventory.<UpdatePlayersInventoryItemAsync>d__3))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, System.Collections.Generic.Dictionary<string, object> instanceData, Unity.Services.Economy.PlayerInventory.UpdatePlayersInventoryItemOptions options = default(Unity.Services.Economy.PlayerInventory.UpdatePlayersInventoryItemOptions));
+        [System.Obsolete(@"The model provided by Economy.PlayerInventory.AddInventoryItemOptions has been moved to EconomyService.Instance.AddInventoryItemOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class AddInventoryItemOptions : Unity.Services.Economy.AddInventoryItemOptions
+        {
+            public AddInventoryItemOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerInventory.DeletePlayersInventoryItemOptions has been moved to EconomyService.Instance.DeletePlayersInventoryItemOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class DeletePlayersInventoryItemOptions : Unity.Services.Economy.DeletePlayersInventoryItemOptions
+        {
+            public DeletePlayersInventoryItemOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerInventory.GetInventoryOptions has been moved to EconomyService.Instance.GetInventoryOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class GetInventoryOptions : Unity.Services.Economy.GetInventoryOptions
+        {
+            public GetInventoryOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.PlayerInventory.UpdatePlayersInventoryItemOptions has been moved to EconomyService.Instance.UpdatePlayersInventoryItemOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class UpdatePlayersInventoryItemOptions : Unity.Services.Economy.UpdatePlayersInventoryItemOptions
+        {
+            public UpdatePlayersInventoryItemOptions() {}
+        }
+    }
+
+    [System.Obsolete(@"The interface provided by Economy.Purchases has been replaced by EconomyService.Instance.Purchases, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class Purchases
+    {
+        public Purchases() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Purchases.MakeVirtualPurchaseAsync(string virtualPurchaseId, Services.Economy.MakeVirtualPurchaseOptions options) has been replaced by EconomyService.Instance.Purchases.MakeVirtualPurchaseAsync(string virtualPurchaseId, Services.Economy.MakeVirtualPurchaseOptions options), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Purchases.<MakeVirtualPurchaseAsync>d__0))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, Unity.Services.Economy.MakeVirtualPurchaseOptions options = default(Unity.Services.Economy.MakeVirtualPurchaseOptions));
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Purchases.RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args) has been replaced by EconomyService.Instance.Purchases.RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Purchases.<RedeemAppleAppStorePurchaseAsync>d__1))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(Unity.Services.Economy.Purchases.RedeemAppleAppStorePurchaseArgs args);
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"The interface provided by Economy.Purchases.RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args) has been replaced by EconomyService.Instance.Purchases.RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args), and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Purchases.<RedeemGooglePlayPurchaseAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(Unity.Services.Economy.Purchases.RedeemGooglePlayStorePurchaseArgs args);
+        [System.Obsolete(@"The model provided by Economy.Purchases.MakeVirtualPurchaseOptions has been moved to EconomyService.Instance.MakeVirtualPurchaseOptions, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class MakeVirtualPurchaseOptions : Unity.Services.Economy.MakeVirtualPurchaseOptions
+        {
+            public MakeVirtualPurchaseOptions() {}
+        }
+        [System.Obsolete(@"The model provided by Economy.Purchases.RedeemAppleAppStorePurchaseArgs has been moved to EconomyService.Instance.RedeemAppleAppStorePurchaseArgs, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class RedeemAppleAppStorePurchaseArgs : Unity.Services.Economy.RedeemAppleAppStorePurchaseArgs
+        {
+            public RedeemAppleAppStorePurchaseArgs(string realMoneyPurchaseId, string receipt, int localCost, string localCurrency) {}
+        }
+        [System.Obsolete(@"The model provided by Economy.Purchases.RedeemGooglePlayStorePurchaseArgs has been moved to EconomyService.Instance.RedeemGooglePlayStorePurchaseArgs, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public class RedeemGooglePlayStorePurchaseArgs : Unity.Services.Economy.RedeemGooglePlayStorePurchaseArgs
+        {
+            public RedeemGooglePlayStorePurchaseArgs(string realMoneyPurchaseId, string purchaseData, string purchaseDataSignature, int localCost, string localCurrency) {}
+        }
+    }
+
+    public class RedeemAppleAppStorePurchaseArgs
+    {
+        public int LocalCost { get; set; }
+        public string LocalCurrency { get; set; }
+        public string RealMoneyPurchaseId { get; set; }
+        public string Receipt { get; set; }
+        public RedeemAppleAppStorePurchaseArgs(string realMoneyPurchaseId, string receipt, int localCost, string localCurrency) {}
+    }
+
+    public class RedeemGooglePlayStorePurchaseArgs
+    {
+        public int LocalCost { get; set; }
+        public string LocalCurrency { get; set; }
+        public string PurchaseData { get; set; }
+        public string PurchaseDataSignature { get; set; }
+        public string RealMoneyPurchaseId { get; set; }
+        public RedeemGooglePlayStorePurchaseArgs(string realMoneyPurchaseId, string purchaseData, string purchaseDataSignature, int localCost, string localCurrency) {}
+    }
+
+    public class SetBalanceOptions
+    {
+        public string WriteLock;
+        public SetBalanceOptions() {}
+    }
+
+    public class UpdatePlayersInventoryItemOptions
+    {
+        public string WriteLock;
+        public UpdatePlayersInventoryItemOptions() {}
+    }
+}
+
+namespace Unity.Services.Economy.Model
+{
+    public class AppleStore
+    {
+        [UnityEngine.Scripting.Preserve] public string Code;
+        [UnityEngine.Scripting.Preserve] public string Message;
+        [UnityEngine.Scripting.Preserve] public string Receipt;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public AppleStore(string code, string message, string receipt) {}
+    }
+
+    public class AppleVerification
+    {
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.AppleVerification.StatusOptions Status;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.AppleStore Store;
+        [UnityEngine.Scripting.Preserve] public AppleVerification(Unity.Services.Economy.Model.AppleVerification.StatusOptions status, Unity.Services.Economy.Model.AppleStore store) {}
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))] public enum StatusOptions
+        {
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_ALREADY_REDEEMED")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions INVALIDALREADYREDEEMED = 3;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_ANOTHER_PLAYER")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions INVALIDANOTHERPLAYER = 5;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_CONFIGURATION")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions INVALIDCONFIGURATION = 6;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_PRODUCT_ID_MISMATCH")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions INVALIDPRODUCTIDMISMATCH = 7;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_VERIFICATION_FAILED")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions INVALIDVERIFICATIONFAILED = 4;
+            [System.Runtime.Serialization.EnumMember(Value = @"VALID")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions VALID = 1;
+            [System.Runtime.Serialization.EnumMember(Value = @"VALID_NOT_REDEEMED")] public const Unity.Services.Economy.Model.AppleVerification.StatusOptions VALIDNOTREDEEMED = 2;
+            public int value__;
+        }
+    }
+
+    [UnityEngine.Scripting.Preserve] public class ConfigurationItemDefinition
+    {
+        [Newtonsoft.Json.JsonProperty(@"created")] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Created;
+        [Newtonsoft.Json.JsonProperty(@"customData")] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.Dictionary<string, object> CustomData;
+        [Newtonsoft.Json.JsonProperty(@"id")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Id;
+        [Newtonsoft.Json.JsonProperty(@"modified")] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
+        [Newtonsoft.Json.JsonProperty(@"name")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Name;
+        [Newtonsoft.Json.JsonProperty(@"type")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Type;
+        public ConfigurationItemDefinition() {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class Costs
+    {
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyExchangeItem> Currency;
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryExchangeItem> Inventory;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public Costs(System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyExchangeItem> currencies, System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryExchangeItem> inventory) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class CurrencyDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
+    {
+        [Newtonsoft.Json.JsonProperty(@"initial")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public int Initial;
+        [Newtonsoft.Json.JsonProperty(@"max")] [UnityEngine.Scripting.Preserve] public int Max;
+        public CurrencyDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.CurrencyDefinition.<GetPlayerBalanceAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> GetPlayerBalanceAsync();
+    }
+
+    [UnityEngine.Scripting.Preserve] public class CurrencyExchangeItem
+    {
+        [UnityEngine.Scripting.Preserve] public int Amount;
+        [UnityEngine.Scripting.Preserve] public string Id;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public CurrencyExchangeItem(string id, int amount) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class EconomyDate
+    {
+        [Newtonsoft.Json.JsonProperty(@"date")] [UnityEngine.Scripting.Preserve] public System.DateTime Date;
+        public EconomyDate() {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class EconomyReference
+    {
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public EconomyReference([Newtonsoft.Json.JsonProperty(@"$ref_economy")] string reference) {}
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.ConfigurationItemDefinition GetReferencedConfigurationItem();
+    }
+
+    [UnityEngine.Scripting.Preserve] public class GetBalancesResult : Unity.Services.Economy.Model.PageableResult<Unity.Services.Economy.Model.PlayerBalance, Unity.Services.Economy.Model.GetBalancesResult>
+    {
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PlayerBalance> Balances { get; }
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.GetBalancesResult.<GetNextResultsAsync>d__4))] [UnityEngine.Scripting.Preserve] protected virtual System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetBalancesResult> GetNextResultsAsync(int itemsPerFetch);
+    }
+
+    [UnityEngine.Scripting.Preserve] public class GetInventoryResult : Unity.Services.Economy.Model.PageableResult<Unity.Services.Economy.Model.PlayersInventoryItem, Unity.Services.Economy.Model.GetInventoryResult>
+    {
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PlayersInventoryItem> PlayersInventoryItems { get; }
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.GetInventoryResult.<GetNextResultsAsync>d__6))] [UnityEngine.Scripting.Preserve] protected virtual System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetNextResultsAsync(int itemsPerFetch);
+    }
+
+    public class GoogleStore
+    {
+        [UnityEngine.Scripting.Preserve] public string Receipt;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public GoogleStore(string receipt) {}
+    }
+
+    public class GoogleVerification
+    {
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.GoogleVerification.StatusOptions Status;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.GoogleStore Store;
+        [UnityEngine.Scripting.Preserve] public GoogleVerification(Unity.Services.Economy.Model.GoogleVerification.StatusOptions status, Unity.Services.Economy.Model.GoogleStore store) {}
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))] public enum StatusOptions
+        {
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_ALREADY_REDEEMED")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions INVALIDALREADYREDEEMED = 3;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_ANOTHER_PLAYER")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions INVALIDANOTHERPLAYER = 5;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_CONFIGURATION")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions INVALIDCONFIGURATION = 6;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_PRODUCT_ID_MISMATCH")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions INVALIDPRODUCTIDMISMATCH = 7;
+            [System.Runtime.Serialization.EnumMember(Value = @"INVALID_VERIFICATION_FAILED")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions INVALIDVERIFICATIONFAILED = 4;
+            [System.Runtime.Serialization.EnumMember(Value = @"VALID")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions VALID = 1;
+            [System.Runtime.Serialization.EnumMember(Value = @"VALID_NOT_REDEEMED")] public const Unity.Services.Economy.Model.GoogleVerification.StatusOptions VALIDNOTREDEEMED = 2;
+            public int value__;
+        }
+    }
+
+    [UnityEngine.Scripting.Preserve] public class InventoryExchangeItem
+    {
+        [UnityEngine.Scripting.Preserve] public int Amount;
+        [UnityEngine.Scripting.Preserve] public string Id;
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<string> PlayersInventoryItemIds;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public InventoryExchangeItem(string id, int amount, System.Collections.Generic.List<string> playersInventoryItemIds) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class InventoryItemDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
+    {
+        public InventoryItemDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.InventoryItemDefinition.<GetAllPlayersInventoryItemsAsync>d__0))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetAllPlayersInventoryItemsAsync();
+    }
+
+    [UnityEngine.Scripting.Preserve] public class MakeVirtualPurchaseResult
+    {
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.Costs Costs;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.Rewards Rewards;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public MakeVirtualPurchaseResult(Unity.Services.Economy.Model.Costs costs, Unity.Services.Economy.Model.Rewards rewards) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public abstract class PageableResult<T, TSelf> where TSelf : Unity.Services.Economy.Model.PageableResult<T, TSelf>
+    {
+        [UnityEngine.Scripting.Preserve] public bool HasNext;
+        [UnityEngine.Scripting.Preserve] protected System.Collections.Generic.List<T> m_Results;
+        [UnityEngine.Scripting.Preserve] protected PageableResult(System.Collections.Generic.List<T> results, bool hasNext) {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PageableResult<>))] [UnityEngine.Scripting.Preserve] public System.Threading.Tasks.Task<TSelf> GetNextAsync(int itemsPerFetch = 20);
+        [UnityEngine.Scripting.Preserve] protected abstract System.Threading.Tasks.Task<TSelf> GetNextResultsAsync(int itemsPerFetch);
+    }
+
+    [UnityEngine.Scripting.Preserve] public class PlayerBalance
+    {
+        [UnityEngine.Scripting.Preserve] public long Balance;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Created;
+        [UnityEngine.Scripting.Preserve] public string CurrencyId;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
+        [UnityEngine.Scripting.Preserve] public string WriteLock;
+        [UnityEngine.Scripting.Preserve] public PlayerBalance(string currencyId = default(string), long balance = 0, string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayerBalance.<GetCurrencyDefinitionAsync>d__6))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyDefinitionAsync();
+    }
+
+    [UnityEngine.Scripting.Preserve] public class PlayersInventoryItem
+    {
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Created;
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.Dictionary<string, object> InstanceData;
+        [UnityEngine.Scripting.Preserve] public string InventoryItemId;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
+        [UnityEngine.Scripting.Preserve] public string PlayersInventoryItemId;
+        [UnityEngine.Scripting.Preserve] public string WriteLock;
+        [UnityEngine.Scripting.Preserve] public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), System.Collections.Generic.Dictionary<string, object> instanceData = default(System.Collections.Generic.Dictionary<string, object>), string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayersInventoryItem.<GetItemDefinitionAsync>d__7))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetItemDefinitionAsync();
+    }
+
+    [UnityEngine.Scripting.Preserve] public class PurchaseItemQuantity
+    {
+        [Newtonsoft.Json.JsonProperty(@"amount")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public int Amount;
+        [Newtonsoft.Json.JsonProperty(@"itemId")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyReference Item;
+        public PurchaseItemQuantity() {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class RealMoneyPurchaseDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
+    {
+        [Newtonsoft.Json.JsonProperty(@"rewards")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Rewards;
+        [Newtonsoft.Json.JsonProperty(@"storeIdentifiers")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.StoreIdentifiers StoreIdentifiers;
+        public RealMoneyPurchaseDefinition() {}
+    }
+
+    public class RedeemAppleAppStorePurchaseResult
+    {
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.Rewards Rewards;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.AppleVerification Verification;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public RedeemAppleAppStorePurchaseResult(Unity.Services.Economy.Model.AppleVerification verification, Unity.Services.Economy.Model.Rewards rewards) {}
+    }
+
+    public class RedeemGooglePlayPurchaseResult
+    {
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.Rewards Rewards;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.GoogleVerification Verification;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public RedeemGooglePlayPurchaseResult(Unity.Services.Economy.Model.GoogleVerification verification, Unity.Services.Economy.Model.Rewards rewards) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class Rewards
+    {
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyExchangeItem> Currency;
+        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryExchangeItem> Inventory;
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public Rewards(System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyExchangeItem> currencies, System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryExchangeItem> inventory) {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class StoreIdentifiers
+    {
+        [Newtonsoft.Json.JsonProperty(@"appleAppStore")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string AppleAppStore;
+        [Newtonsoft.Json.JsonProperty(@"googlePlayStore")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string GooglePlayStore;
+        public StoreIdentifiers() {}
+    }
+
+    [UnityEngine.Scripting.Preserve] public class VirtualPurchaseDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
+    {
+        [Newtonsoft.Json.JsonProperty(@"costs")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Costs;
+        [Newtonsoft.Json.JsonProperty(@"rewards")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Rewards;
+        public VirtualPurchaseDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<CanPlayerAffordPurchaseAsync>d__4))] public System.Threading.Tasks.Task<bool> CanPlayerAffordPurchaseAsync();
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__3))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(System.Collections.Generic.List<Unity.Services.Economy.Model.PlayersInventoryItem> playersInventoryItems);
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(Unity.Services.Economy.MakeVirtualPurchaseOptions options = default(Unity.Services.Economy.MakeVirtualPurchaseOptions));
+    }
+}
+
+namespace Unity.Services.Economy.Tools
+{
+    [UnityEngine.CreateAssetMenu(fileName = @"PlayerBalancesHelper", menuName = @"Economy Tools/Player Balances Helper")] public class PlayerBalancesHelper : UnityEngine.ScriptableObject
+    {
+        [UnityEngine.Header(@"Currencies Helper")] public Unity.Services.Economy.Tools.PlayerBalancesHelper.CurrencyAction action;
+        public int amount;
+        public string currencyId;
+        public PlayerBalancesHelper() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Tools.PlayerBalancesHelper.<InvokeAsync>d__4))] public void InvokeAsync();
+        public enum CurrencyAction
+        {
+            public const Unity.Services.Economy.Tools.PlayerBalancesHelper.CurrencyAction Decrement = 2;
+            public const Unity.Services.Economy.Tools.PlayerBalancesHelper.CurrencyAction Increment = 1;
+            public const Unity.Services.Economy.Tools.PlayerBalancesHelper.CurrencyAction Set = 0;
+            public int value__;
+        }
+    }
+
+    [UnityEngine.CreateAssetMenu(fileName = @"PlayerInventoriesHelper", menuName = @"Economy Tools/Player Inventories Helper")] public class PlayerInventoriesHelper : UnityEngine.ScriptableObject
+    {
+        [UnityEngine.Header(@"Inventories Helper")] public Unity.Services.Economy.Tools.PlayerInventoriesHelper.InventoriesAction action;
+        [UnityEngine.Header(@"Update Instance Settings")] [UnityEngine.TextArea] public string instanceDataJson;
+        [UnityEngine.Header(@"Add Instance Settings")] public string inventoryItemId;
+        public string playersInventoryItemId;
+        public PlayerInventoriesHelper() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Tools.PlayerInventoriesHelper.<InvokeAsync>d__5))] public void InvokeAsync();
+        public enum InventoriesAction
+        {
+            public const Unity.Services.Economy.Tools.PlayerInventoriesHelper.InventoriesAction Add = 0;
+            public const Unity.Services.Economy.Tools.PlayerInventoriesHelper.InventoriesAction Delete = 2;
+            public const Unity.Services.Economy.Tools.PlayerInventoriesHelper.InventoriesAction Update = 1;
+            public int value__;
+        }
+    }
+
+    [UnityEngine.CreateAssetMenu(fileName = @"PurchasesHelper", menuName = @"Economy Tools/Purchases Helper")] public class PurchasesHelper : UnityEngine.ScriptableObject
+    {
+        [UnityEngine.Header(@"Make Purchase")] public string purchaseId;
+        public PurchasesHelper() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Tools.PurchasesHelper.<InvokeAsync>d__1))] public void InvokeAsync();
+    }
+}

@@ -4,20 +4,43 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.0.0-pre.8] - 2021-01-20
+## [2.0.1-exp.2] - 2022-05-11
+* Add missing samples file
+
+## [2.0.1-exp.1] - 2022-05-10
+**Breaking Change:** Code in the `Unity.Services.Economy.Editor.Settings` namespace has been made internal as it was never meant to be public.
+* Support has been added for the breaking changes in 2.0.0-pre.1 - the old interface will still work but is marked obsolete.
+
+## [2.0.0-pre.2] - 2022-03-22
+* Update license
+
+## [2.0.0-pre.1] - 2022-03-14
+### Breaking Changes
+* The Economy service is now accessed using `EconomyService.Instance.<API>` e.g, `EconomyService.Instance.PlayerBalances`
+* The `GetBalancesResult` and `GetInventoryResult` constructors have been made internal
+* `Options` and `Args` classes have been extracted out of their parent classes so they are accessed differently. For example, `GetBalancesOptions` is accessed using `GetBalancesOptions` instead of `PlayerBalances.GetBalancesOptions`
+* Moved all Economy exception types into the namespace `Unity.Services.Economy`
+
+### New Features
+* Support for Game Overrides added
+* Added specific rate limited exception `EconomyRateLimitedException` with retry-after details
+* Added the Project Settings tab with link to Economy dashboard
+* Renamed UI sample and added stripped down code sample
+
+## [1.0.0-pre.8] - 2022-01-20
 * Fixed a bug that was causing errors when users signed in, signed out and then signed in again as a new user.
 * Removed Economy’s assembly dependency on the Authentication package
 
-## [1.0.0-pre.7] - 2020-12-13
+## [1.0.0-pre.7] - 2021-12-13
 * Added more detailed logging for exceptions.
 * Fixed a bug that was causing the created and modified dates to be set incorrectly in the SetBalancesAsync function.
 
-## [1.0.0-pre.6] - 2020-10-20
+## [1.0.0-pre.6] - 2021-10-20
 * Fixed the UI samples and made them responsive to screen size.
 * Added a new exception type `EconomyValidationException` that inherits from `EconomyException`, see documentation for more details.
 * Fixed leak warnings.
 
-## [1.0.0-pre.5] - 2020-10-12
+## [1.0.0-pre.5] - 2021-10-12
 * Some models have been made internal as they were not designed to be used externally. This has meant we have needed to change some property types and rename some classes. Functionality change is minimal, with the exception of the `GoogleStore` object, detailed below. Here is a full list of changes:
 * The `Data` property on the `EconomyAppleAppStorePurchaseFailedException` class has changed type from `PlayerPurchaseAppleappstoreResponse` to `RedeemAppleAppStorePurchaseResult`.
 * The `Data` property on the `EconomyGooglePlayStorePurchaseFailedException` class has changed type from `PlayerPurchaseGoogleplaystoreResponse` to `RedeemGooglePlayPurchaseResult`.
@@ -27,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
     * The `Store` property on the `GoogleVerification` has changed type from `Store` to `GoogleStore`. There is a functional change here - `GoogleStore` no longer contains the `Code` and `Message` properties - it only contains the `Receipt` property. `AppleStore` still contains the `Code` and `Message` properties. For more information on these models, see the documentation.
 * Updated Core and Authentication dependency versions
 
-## [1.0.0] - 2020-08-23
+## [1.0.0] - 2021-08-23
 * Open Beta release
 * Renaming changes - Instance -> PlayersInventoryItem and Item -> InventoryItem
 * Allows users to redeem Google Play Store in-app purchases

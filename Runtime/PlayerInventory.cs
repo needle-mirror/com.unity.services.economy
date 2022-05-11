@@ -2,29 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 using Unity.Services.Economy.Internal;
 using Unity.Services.Economy.Internal.Apis.Inventory;
 using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Economy.Internal.Inventory;
 using Unity.Services.Economy.Internal.Models;
-using Unity.Services.Economy.Exceptions;
 using Unity.Services.Economy.Model;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 
 namespace Unity.Services.Economy
 {
+    public interface IEconomyPlayerInventoryApiClient
+    {
+        event Action<string> PlayersInventoryItemUpdated;
+        Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null);
+        Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null);
+        Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null);
+        Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId,
+            Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options = null);
+    }
+
     /// <summary>
     /// The PlayerInventory methods provide access to the current player's inventory items, and allow you to update them.
     /// </summary>
-    public class PlayerInventory {
-
+    class PlayerInventoryInternal : IEconomyPlayerInventoryApiClient
+    {
         readonly IInventoryApiClient m_InventoryApiClient;
         readonly IEconomyAuthentication m_EconomyAuthentication;
 
-        internal PlayerInventory(IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
+        internal PlayerInventoryInternal(IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
         {
             m_InventoryApiClient = inventoryApiClient;
             m_EconomyAuthentication = economyAuthentication;
@@ -36,27 +44,6 @@ namespace Unity.Services.Economy
         /// Note that this will NOT fire for balance changes from elsewhere not in this instance of the SDK, for example other
         /// server-side updates or updates from other devices.
         public event Action<string> PlayersInventoryItemUpdated;
-        
-        /// <summary>
-        /// Options for a GetInventoryAsync call.
-        /// </summary>
-        public class GetInventoryOptions
-        {
-            /// <summary>
-            /// The PlayersInventoryItem IDs of the items in the players inventory that you want to retrieve.
-            /// </summary>
-            public List<string> PlayersInventoryItemIds = null;
-
-            /// <summary>
-            /// The configuration IDs of the items you want to retrieve.
-            /// </summary>
-            public List<string> InventoryItemIds = null;
-
-            /// <summary>
-            /// Used to specify the number of items to fetch per request. Defaults to 20 items.
-            /// </summary>
-            public int ItemsPerFetch = 20;
-        }
 
         /// <summary>
         /// Gets the inventory items in the inventory of the player that is currently signed in.
@@ -68,6 +55,7 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Use to set request options. See GetInventoryOptions for more details.</param>
         /// <returns>A GetInventoryResult object, with properties as specified above.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null)
         {
             return await GetNextInventory(null, options);
@@ -79,27 +67,28 @@ namespace Unity.Services.Economy
             {
                 options = new GetInventoryOptions();
             }
-            
+
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
 
             GetPlayerInventoryRequest request = new GetPlayerInventoryRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                after: afterPlayersInventoryItemId,
-                limit: options.ItemsPerFetch,
-                playersInventoryItemIds: options.PlayersInventoryItemIds,
-                inventoryItemIds: options.InventoryItemIds
+                m_EconomyAuthentication.configAssignmentHash,
+                afterPlayersInventoryItemId,
+                options.ItemsPerFetch,
+                options.PlayersInventoryItemIds,
+                options.InventoryItemIds
             );
 
             try
             {
                 Response<PlayerInventoryResponse> response = await m_InventoryApiClient.GetPlayerInventoryAsync(request);
-                
+
                 List<PlayersInventoryItem> playersInventoryItems = ConvertToPlayersInventoryItems(response.Result.Results);
 
-                return new GetInventoryResult(playersInventoryItems, ResponseHasNextLinks(response.Result), options.PlayersInventoryItemIds, options.InventoryItemIds);
+                return new GetInventoryResult(playersInventoryItems, ResponseHasNextLinks(response.Result), options.PlayersInventoryItemIds, options.InventoryItemIds, this);
             }
             catch (HttpException<BasicErrorResponse> e)
             {
@@ -109,22 +98,6 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
-        }
-        
-        /// <summary>
-        /// Options for a AddInventoryItemAsync call.
-        /// </summary>
-        public class AddInventoryItemOptions
-        {
-            /// <summary>
-            /// Sets the ID of the created PlayersInventoryItem. If not supplied, one will be generated.
-            /// </summary>
-            public string PlayersInventoryItemId = null;
-            
-            /// <summary>
-            /// Dictionary of instance data.
-            /// </summary>
-            public Dictionary<string, object> InstanceData = null;
         }
 
         /// <summary>
@@ -136,14 +109,17 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Use to set the PlayersInventoryItem ID for the created instance and instance data.</param>
         /// <returns>The created player inventory item.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             AddInventoryItemRequest request = new AddInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                addInventoryRequest: new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData));
+                m_EconomyAuthentication.configAssignmentHash,
+                new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData));
 
             try
             {
@@ -166,20 +142,8 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
-
         }
 
-        /// <summary>
-        /// Options for a DeletePlayersInventoryItemAsync call.
-        /// </summary>
-        public class DeletePlayersInventoryItemOptions
-        {
-            /// <summary>
-            /// A write lock for optimistic concurrency.
-            /// </summary>
-            public string WriteLock = null;
-        }
-        
         /// <summary>
         /// Deletes an item in the player's inventory.
         ///
@@ -188,15 +152,18 @@ namespace Unity.Services.Economy
         /// <param name="playersInventoryItemId">PlayersInventoryItem ID for the created inventory item</param>
         /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             DeleteInventoryItemRequest request = new DeleteInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                inventoryDeleteRequest: new InventoryDeleteRequest(options?.WriteLock));
+                m_EconomyAuthentication.configAssignmentHash,
+                new InventoryDeleteRequest(options?.WriteLock));
 
             try
             {
@@ -216,17 +183,6 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
         }
-        
-        /// <summary>
-        /// Options for a UpdatePlayersInventoryItemAsync call.
-        /// </summary>
-        public class UpdatePlayersInventoryItemOptions
-        {
-            /// <summary>
-            /// A write lock for optimistic concurrency.
-            /// </summary>
-            public string WriteLock = null;
-        }
 
         /// <summary>
         /// Updates the instance data of an item in the player's inventory.
@@ -237,24 +193,27 @@ namespace Unity.Services.Economy
         /// <param name="instanceData">Instance data</param>
         /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             UpdateInventoryItemRequest request = new UpdateInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                inventoryRequestUpdate: new InventoryRequestUpdate(instanceData, options?.WriteLock));
+                m_EconomyAuthentication.configAssignmentHash,
+                new InventoryRequestUpdate(instanceData, options?.WriteLock));
 
             try
             {
                 Response<InventoryResponse> response = await m_InventoryApiClient.UpdateInventoryItemAsync(request);
-            
+
                 PlayersInventoryItem playersInventoryItem = ConvertToPlayersInventoryItem(response.Result);
 
                 FireInventoryItemUpdated(playersInventoryItemId);
-                
+
                 return playersInventoryItem;
             }
             catch (HttpException<BasicErrorResponse> e)
@@ -281,13 +240,6 @@ namespace Unity.Services.Economy
             List<PlayersInventoryItem> playersInventoryItems = new List<PlayersInventoryItem>(responses.Count);
             foreach (var response in responses)
             {
-                // Temporary solution while https://jira.unity3d.com/browse/GBK-1564 is being fixed.
-                // Currently, if the user updates their item with empty json "{}", the returned
-                // instance data is a JArray (usually it is JSON), which causes an error when we deserialize it later.
-                if (response.InstanceData.obj is JArray)
-                {
-                    response.InstanceData.obj = null;
-                }
                 playersInventoryItems.Add(ConvertToPlayersInventoryItem(response));
             }
 
@@ -302,8 +254,8 @@ namespace Unity.Services.Economy
                 InventoryItemId = response.InventoryItemId,
                 InstanceData = response.InstanceData.GetAs<Dictionary<string, object>>(),
                 WriteLock = response.WriteLock,
-                Modified = response.Modified.Date == null ? null : new EconomyDate{Date = response.Modified.Date.Value},
-                Created = response.Created.Date == null ? null : new EconomyDate{Date = response.Created.Date.Value}
+                Modified = response.Modified.Date == null ? null : new EconomyDate {Date = response.Modified.Date.Value},
+                Created = response.Created.Date == null ? null : new EconomyDate {Date = response.Created.Date.Value}
             };
         }
 
@@ -311,5 +263,64 @@ namespace Unity.Services.Economy
         {
             PlayersInventoryItemUpdated?.Invoke(playersInventoryItemId);
         }
+    }
+
+    /// <summary>
+    /// Options for a GetInventoryAsync call.
+    /// </summary>
+    public class GetInventoryOptions
+    {
+        /// <summary>
+        /// The PlayersInventoryItem IDs of the items in the players inventory that you want to retrieve.
+        /// </summary>
+        public List<string> PlayersInventoryItemIds = null;
+
+        /// <summary>
+        /// The configuration IDs of the items you want to retrieve.
+        /// </summary>
+        public List<string> InventoryItemIds = null;
+
+        /// <summary>
+        /// Used to specify the number of items to fetch per request. Defaults to 20 items.
+        /// </summary>
+        public int ItemsPerFetch = 20;
+    }
+
+    /// <summary>
+    /// Options for a AddInventoryItemAsync call.
+    /// </summary>
+    public class AddInventoryItemOptions
+    {
+        /// <summary>
+        /// Sets the ID of the created PlayersInventoryItem. If not supplied, one will be generated.
+        /// </summary>
+        public string PlayersInventoryItemId = null;
+
+        /// <summary>
+        /// Dictionary of instance data.
+        /// </summary>
+        public Dictionary<string, object> InstanceData = null;
+    }
+
+    /// <summary>
+    /// Options for a DeletePlayersInventoryItemAsync call.
+    /// </summary>
+    public class DeletePlayersInventoryItemOptions
+    {
+        /// <summary>
+        /// A write lock for optimistic concurrency.
+        /// </summary>
+        public string WriteLock = null;
+    }
+
+    /// <summary>
+    /// Options for a UpdatePlayersInventoryItemAsync call.
+    /// </summary>
+    public class UpdatePlayersInventoryItemOptions
+    {
+        /// <summary>
+        /// A write lock for optimistic concurrency.
+        /// </summary>
+        public string WriteLock = null;
     }
 }

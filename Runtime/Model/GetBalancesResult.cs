@@ -6,7 +6,7 @@ using UnityEngine.Scripting;
 namespace Unity.Services.Economy.Model
 {
     /// <summary>
-    /// Provides paginated access to the list of balances retrieved and allows you to retrieve the next page. 
+    /// Provides paginated access to the list of balances retrieved and allows you to retrieve the next page.
     /// </summary>
     [Preserve]
     public class GetBalancesResult : PageableResult<PlayerBalance, GetBalancesResult>
@@ -16,8 +16,14 @@ namespace Unity.Services.Economy.Model
         /// </summary>
         [Preserve] public List<PlayerBalance> Balances => m_Results;
 
-        [Preserve] public GetBalancesResult(List<PlayerBalance> results, bool hasNext)
-            : base(results, hasNext) { }
+        readonly PlayerBalancesInternal m_PlayerBalancesInternal;
+
+        [Preserve]
+        internal GetBalancesResult(List<PlayerBalance> results, bool hasNext, PlayerBalancesInternal playerBalancesInternal)
+            : base(results, hasNext)
+        {
+            m_PlayerBalancesInternal = playerBalancesInternal;
+        }
 
         /// <summary>
         /// Fetches the next set of results.
@@ -28,7 +34,7 @@ namespace Unity.Services.Economy.Model
         [Preserve]
         protected override async Task<GetBalancesResult> GetNextResultsAsync(int itemsPerFetch)
         {
-            return await Economy.PlayerBalances.GetNextBalancesAsync(Balances.Last().CurrencyId, itemsPerFetch);
+            return await m_PlayerBalancesInternal.GetNextBalancesAsync(Balances.Last().CurrencyId, itemsPerFetch);
         }
     }
 }

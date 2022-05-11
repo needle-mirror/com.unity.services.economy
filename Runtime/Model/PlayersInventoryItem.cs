@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
@@ -12,8 +11,8 @@ namespace Unity.Services.Economy.Model
     public class PlayersInventoryItem
     {
         [Preserve]
-        public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), Dictionary<string, object> instanceData = default(Dictionary<string, object>), 
-            string writeLock = default(string), EconomyDate created = default(EconomyDate), EconomyDate modified = default(EconomyDate))
+        public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), Dictionary<string, object> instanceData = default(Dictionary<string, object>),
+                                    string writeLock = default(string), EconomyDate created = default(EconomyDate), EconomyDate modified = default(EconomyDate))
         {
             PlayersInventoryItemId = playersInventoryItemId;
             InventoryItemId = inventoryItemId;
@@ -22,7 +21,7 @@ namespace Unity.Services.Economy.Model
             Created = created;
             Modified = modified;
         }
-        
+
         /// <summary>
         /// The ID of the unique item specific to this player's inventory.
         /// </summary>
@@ -55,7 +54,7 @@ namespace Unity.Services.Economy.Model
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<InventoryItemDefinition> GetItemDefinitionAsync()
         {
-            return await Economy.Configuration.GetInventoryItemAsync(InventoryItemId);
+            return await EconomyService.Instance.Configuration.GetInventoryItemAsync(InventoryItemId);
         }
     }
 }

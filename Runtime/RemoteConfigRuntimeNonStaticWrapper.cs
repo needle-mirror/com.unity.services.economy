@@ -1,24 +1,25 @@
 using System;
 using Newtonsoft.Json.Linq;
-using Unity.RemoteConfig;
+using Unity.Services.RemoteConfig;
 
 namespace Unity.Services.Economy
 {
-    internal interface IRemoteConfigRuntimeWrapper
+    interface IRemoteConfigRuntimeWrapper
     {
         IRuntimeConfigWrapper GetConfig(string key);
         void SetPlayerIdentityToken(string token);
         void FetchConfigs(string configType);
+        string GetConfigAssignmentHash();
     }
 
-    internal interface IRuntimeConfigWrapper
+    interface IRuntimeConfigWrapper
     {
         event Action<ConfigResponse> FetchCompleted;
         JObject config { get; }
         string GetJson(string key);
     }
 
-    internal class RuntimeConfigSealedClassWrapper : IRuntimeConfigWrapper
+    class RuntimeConfigSealedClassWrapper : IRuntimeConfigWrapper
     {
         RuntimeConfig m_RuntimeConfig;
 
@@ -26,7 +27,7 @@ namespace Unity.Services.Economy
         {
             m_RuntimeConfig = config;
         }
-        
+
         public event Action<ConfigResponse> FetchCompleted
         {
             add { m_RuntimeConfig.FetchCompleted += value; }
@@ -34,31 +35,36 @@ namespace Unity.Services.Economy
         }
 
         public JObject config => m_RuntimeConfig.config;
-        
+
         public string GetJson(string key)
         {
             return m_RuntimeConfig.GetJson(key);
         }
     }
-    
-    internal class RemoteConfigRuntimeNonStaticWrapper: IRemoteConfigRuntimeWrapper
+
+    class RemoteConfigRuntimeNonStaticWrapper : IRemoteConfigRuntimeWrapper
     {
         struct UserAttributes {}
         struct AppAttributes {}
-        
+
         public IRuntimeConfigWrapper GetConfig(string key)
         {
-            return new RuntimeConfigSealedClassWrapper(ConfigManager.GetConfig(key));
+            return new RuntimeConfigSealedClassWrapper(RemoteConfigService.Instance.GetConfig(key));
         }
 
         public void SetPlayerIdentityToken(string token)
         {
-            ConfigManager.SetPlayerIdentityToken(token);
+            RemoteConfigService.Instance.SetPlayerIdentityToken(token);
         }
 
         public void FetchConfigs(string configType)
         {
-            ConfigManager.FetchConfigs(configType, new UserAttributes(), new AppAttributes());
+            RemoteConfigService.Instance.FetchConfigs(configType, new UserAttributes(), new AppAttributes());
+        }
+
+        public string GetConfigAssignmentHash()
+        {
+            return RemoteConfigService.Instance.appConfig.configAssignmentHash;
         }
     }
 }

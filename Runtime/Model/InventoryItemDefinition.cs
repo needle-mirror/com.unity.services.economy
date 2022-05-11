@@ -8,7 +8,7 @@ namespace Unity.Services.Economy.Model
     /// <summary>
     /// Represents a single inventory item configuration.
     /// </summary>
-    [Preserve] 
+    [Preserve]
     public class InventoryItemDefinition : ConfigurationItemDefinition
     {
         /// <summary>
@@ -17,11 +17,11 @@ namespace Unity.Services.Economy.Model
         /// <returns>A GetInventoryResult with all the PlayersInventoryItems of this inventory item</returns>
         public async Task<GetInventoryResult> GetAllPlayersInventoryItemsAsync()
         {
-            PlayerInventory.GetInventoryOptions options = new PlayerInventory.GetInventoryOptions
+            GetInventoryOptions options = new GetInventoryOptions
             {
                 InventoryItemIds = new List<string> { Id }
             };
-            return await Economy.PlayerInventory.GetInventoryAsync(options);
+            return await EconomyService.Instance.PlayerInventory.GetInventoryAsync(options);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Unity.Services.Economy
     public class EconomyGooglePlayStorePurchaseFailedException : EconomyException
     {
         /// <summary>
-        /// Details on the status of the purchase and the rewards that the purchase gives the player. 
+        /// Details on the status of the purchase and the rewards that the purchase gives the player.
         /// </summary>
         public new RedeemGooglePlayPurchaseResult Data { get; private set; }
 

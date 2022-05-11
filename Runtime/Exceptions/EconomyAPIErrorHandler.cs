@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Model;
 using UnityEngine;
 
-namespace Unity.Services.Economy.Exceptions
+namespace Unity.Services.Economy
 {
     static class EconomyAPIErrorHandler
     {
-        static Dictionary<long, string> errorDetails = new Dictionary<long, string>
+        static Dictionary<long, string> s_ErrorDetails = new Dictionary<long, string>
         {
             { 400, "Some of the arguments passed to the Economy request were invalid. Please check the requirements and try again." },
             { 401, "Permission denied when making a request to the Economy SDK. Have you signed in with the Authentication SDK?" },
@@ -18,7 +17,7 @@ namespace Unity.Services.Economy.Exceptions
             { 404, "The requested entity was not found - please make sure it exists then try again." },
             { 409, "There was a conflict when updating the entity. Please make sure any write locks are using the correct values." },
             { 422, "Either the costs for a purchase were not met, you tried to exceed a currency maximum/minimum or this purchase has already been redeemed." },
-            { 429, "Too many requests have been sent, so this device has been rate limited. Please try again later." }
+            { 429, "Too many requests have been sent, so this device has been rate limited. See exception details for retry-after time." }
         };
 
         internal static EconomyException HandleException(HttpException<BasicErrorResponse> e)
@@ -26,7 +25,7 @@ namespace Unity.Services.Economy.Exceptions
             var message = e.ActualError?.Detail;
             var httpStatusCode = e.Response.StatusCode;
             var errorCode = e.ActualError?.Code ?? 0;
-            
+
             if (e.Response.IsNetworkError)
             {
                 return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, message ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
@@ -34,28 +33,53 @@ namespace Unity.Services.Economy.Exceptions
 
             if (message == null)
             {
-                if (errorDetails.ContainsKey(httpStatusCode))
+                if (s_ErrorDetails.ContainsKey(httpStatusCode))
                 {
-                    message = errorDetails[httpStatusCode];
+                    message = s_ErrorDetails[httpStatusCode];
                 }
                 else
                 {
                     message = e.Message;
                 }
             }
-            
+
+            // Error code for an invalid config assignment hash (hash used for Game Overrides)
+            if (errorCode == 10116)
+            {
+                message = "Configuration assignment hash not found. Fetching your Economy configuration again should resolve this issue.";
+                // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+                // but typically the outer most exception is most relevant to the problem
+                Debug.LogError("EconomyException: " + message);
+                return new EconomyException(EconomyExceptionReason.ConfigAssignmentHashInvalid, errorCode, message, e);
+            }
+
+            if (httpStatusCode == 429)
+            {
+                var retryAfter = 60;
+                if (e.Response.Headers != null &&
+                    e.Response.Headers.TryGetValue("Retry-After", out var retryAfterString))
+                {
+                    int.TryParse(retryAfterString, out retryAfter);
+                }
+
+                // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
+                // but typically the outer most exception is most relevant to the problem
+                Debug.LogError("EconomyRateLimitedException: " + s_ErrorDetails[429]);
+                return new EconomyRateLimitedException(EconomyExceptionReason.RateLimited, errorCode, message, retryAfter, e);
+            }
+
             // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
             // but typically the outer most exception is most relevant to the problem
             Debug.LogError("EconomyException: " + message);
 
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
-        
+
         internal static EconomyValidationException HandleException(HttpException<ValidationErrorResponse> e)
         {
             var message = "There was a validation error. Check 'Details' for more information.";
 
-            EconomyValidationException exception = new EconomyValidationException(e.Response.StatusCode, 
+            EconomyValidationException exception = new EconomyValidationException(e.Response.StatusCode,
                 e.ActualError.Code, message, e);
 
             foreach (var error in e.ActualError.Errors)
@@ -75,7 +99,7 @@ namespace Unity.Services.Economy.Exceptions
             var message = e.Response.ErrorMessage;
             var httpStatusCode = e.Response.StatusCode;
             var errorCode = (int)e.Response.StatusCode + 14000;
-            
+
             if (e.Response.IsNetworkError)
             {
                 return new EconomyException(EconomyExceptionReason.NetworkError, Core.CommonErrorCodes.TransportError, message ?? "The request to the Economy service failed - make sure you're connected to an internet connection and try again.", e);
@@ -83,34 +107,34 @@ namespace Unity.Services.Economy.Exceptions
 
             if (message == null)
             {
-                message = errorDetails.ContainsKey(httpStatusCode) ? errorDetails[httpStatusCode] : "An unknown error occurred in the Economy SDK.";
+                message = s_ErrorDetails.ContainsKey(httpStatusCode) ? s_ErrorDetails[httpStatusCode] : "An unknown error occurred in the Economy SDK.";
             }
-            
+
             // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
             // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyException: " + message);    
-            
+            Debug.LogError("EconomyException: " + message);
+
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
-        
+
         internal static EconomyAppleAppStorePurchaseFailedException HandleAppleAppStoreFailedExceptions(HttpException<ErrorResponsePurchaseAppleappstoreFailed> e)
         {
-            RedeemAppleAppStorePurchaseResult convertedErrorData = Purchases.ConvertBackendApplePurchaseModelToSDKModel(e.ActualError.Data);
-            
+            RedeemAppleAppStorePurchaseResult convertedErrorData = PurchasesInternal.ConvertBackendApplePurchaseModelToSDKModel(e.ActualError.Data);
+
             // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
             // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyAppleAppStorePurchaseFailedException: " + e.ActualError.Detail);    
+            Debug.LogError("EconomyAppleAppStorePurchaseFailedException: " + e.ActualError.Detail);
 
             return new EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
-        
+
         internal static EconomyGooglePlayStorePurchaseFailedException HandleGoogleStoreFailedExceptions(HttpException<ErrorResponsePurchaseGoogleplaystoreFailed> e)
         {
-            RedeemGooglePlayPurchaseResult convertedErrorData = Purchases.ConvertBackendGooglePurchaseModelToSDKModel(e.ActualError.Data);
-            
+            RedeemGooglePlayPurchaseResult convertedErrorData = PurchasesInternal.ConvertBackendGooglePurchaseModelToSDKModel(e.ActualError.Data);
+
             // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
             // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyGooglePlayStorePurchaseFailedException: " + e.ActualError.Detail);    
+            Debug.LogError("EconomyGooglePlayStorePurchaseFailedException: " + e.ActualError.Detail);
 
             return new EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }

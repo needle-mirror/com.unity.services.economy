@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
-using Unity.Services.Authentication;
 using Unity.Services.Economy.Model;
 using UnityEngine;
 
@@ -9,18 +8,31 @@ using UnityEngine;
 
 namespace Unity.Services.Economy
 {
+    public interface IEconomyConfigurationApiClient
+    {
+        Task<List<CurrencyDefinition>> GetCurrenciesAsync();
+        Task<CurrencyDefinition> GetCurrencyAsync(string id);
+        Task<List<InventoryItemDefinition>> GetInventoryItemsAsync();
+        Task<InventoryItemDefinition> GetInventoryItemAsync(string id);
+        Task<List<VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
+        Task<VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
+        Task<List<RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
+        Task<RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
+        string GetConfigAssignmentHash();
+    }
+
     /// <summary>
     /// This class allows you to retrieve items from the global economy configuration as it is set up in the Unity Dashboard.
     /// </summary>
-    public class Configuration
+    class ConfigurationInternal : IEconomyConfigurationApiClient
     {
         internal EconomyRemoteConfig remoteConfig;
 
-        internal Configuration(IEconomyAuthentication economyAuthHandler)
+        internal ConfigurationInternal(IEconomyAuthentication economyAuthHandler)
         {
             remoteConfig = new EconomyRemoteConfig(new RemoteConfigRuntimeNonStaticWrapper(), economyAuthHandler);
         }
-        
+
         /// <summary>
         /// Gets the Currencies that have been configured and published in the Unity Dashboard.
         /// </summary>
@@ -39,7 +51,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<CurrencyDefinition> GetCurrencyAsync(string id)
         {
-            CurrencyDefinition currency = (CurrencyDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
+            CurrencyDefinition currency = (CurrencyDefinition)await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
             if (currency == null)
             {
                 return null;
@@ -65,7 +77,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<InventoryItemDefinition> GetInventoryItemAsync(string id)
         {
-            InventoryItemDefinition inventoryItem = (InventoryItemDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
+            InventoryItemDefinition inventoryItem = (InventoryItemDefinition)await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
             if (inventoryItem == null)
             {
                 return null;
@@ -95,7 +107,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id)
         {
-            return (VirtualPurchaseDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
+            return (VirtualPurchaseDefinition)await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
         }
 
         /// <summary>
@@ -107,7 +119,7 @@ namespace Unity.Services.Economy
         {
             return await remoteConfig.GetObjectsFromRemoteConfigAsync<RealMoneyPurchaseDefinition>(EconomyRemoteConfig.realMoneyPurchaseTypeString);
         }
-        
+
         /// <summary>
         /// Gets a RealMoneyPurchaseDefinition for a specific real money purchase.
         /// </summary>
@@ -116,7 +128,16 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         public async Task<RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id)
         {
-            return (RealMoneyPurchaseDefinition) await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
+            return (RealMoneyPurchaseDefinition)await remoteConfig.GetEconomyItemWithKeyUsingRefreshAsync(id);
+        }
+
+        /// <summary>
+        /// Returns the most up to date config assignment hash that Economy has.
+        /// </summary>
+        /// <returns>A config assignment hash or null if Economy doesn't have one</returns>
+        public string GetConfigAssignmentHash()
+        {
+            return remoteConfig.economyAuthHandler.configAssignmentHash;
         }
     }
 }

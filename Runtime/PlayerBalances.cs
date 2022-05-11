@@ -8,22 +8,30 @@ using Unity.Services.Economy.Internal.Apis.Currencies;
 using Unity.Services.Economy.Internal.Currencies;
 using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Economy.Internal.Models;
-using Unity.Services.Economy.Exceptions;
 using Unity.Services.Economy.Model;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 
 namespace Unity.Services.Economy
 {
+    public interface IEconomyPlayerBalancesApiClient
+    {
+        event Action<string> BalanceUpdated;
+        Task<GetBalancesResult> GetBalancesAsync(GetBalancesOptions options = null);
+        Task<PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options = null);
+        Task<PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options = null);
+        Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null);
+    }
+
     /// <summary>
     /// The PlayerBalances methods provide access to the current player's balances, and allow you to update them.
     /// </summary>
-    public class PlayerBalances
+    internal class PlayerBalancesInternal : IEconomyPlayerBalancesApiClient
     {
         readonly ICurrenciesApiClient m_CurrenciesApiClient;
         readonly IEconomyAuthentication m_EconomyAuthentication;
 
-        internal PlayerBalances(ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
+        internal PlayerBalancesInternal(ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
         {
             m_CurrenciesApiClient = currenciesApiClient;
             m_EconomyAuthentication = economyAuthWrapper;
@@ -38,17 +46,6 @@ namespace Unity.Services.Economy
         public event Action<string> BalanceUpdated;
 
         /// <summary>
-        /// Options for a GetBalancesAsync call.
-        /// </summary>
-        public class GetBalancesOptions
-        {
-            /// <summary>
-            /// The number of items to fetch per call
-            /// </summary>
-            public int ItemsPerFetch = 20;
-        }
-        
-        /// <summary>
         /// Gets the current balances for the currently signed in player.
         /// The balances are available on the returned object using the <code>Balances</code> property.
         /// The results are paginated - the first set of results are initially returned, and more can be requested with the <code>GetNextAsync</code> method.
@@ -58,29 +55,32 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Use to set the number of items to fetch per call.</param>
         /// <returns>A GetBalancesResult object, with properties as specified above.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<GetBalancesResult> GetBalancesAsync(GetBalancesOptions options = null)
         {
             if (options == null)
             {
                 options = new GetBalancesOptions();
             }
-            
+
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
-            
+
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
-                Application.cloudProjectId, 
-                m_EconomyAuthentication.GetPlayerId(), 
-                limit: options.ItemsPerFetch);
+                Application.cloudProjectId,
+                m_EconomyAuthentication.GetPlayerId(),
+                limit: options.ItemsPerFetch,
+                configAssignmentHash: m_EconomyAuthentication.configAssignmentHash
+            );
 
             try
             {
                 Response<PlayerCurrencyBalanceResponse> response = await m_CurrenciesApiClient.GetPlayerCurrenciesAsync(request);
                 List<PlayerBalance> playerBalances = ConvertToPlayerBalances(response.Result.Results);
 
-                GetBalancesResult result = new GetBalancesResult(playerBalances, !string.IsNullOrEmpty(response.Result.Links?.Next));
-                
+                GetBalancesResult result = new GetBalancesResult(playerBalances, !string.IsNullOrEmpty(response.Result.Links?.Next), this);
+
                 return result;
             }
             catch (HttpException<BasicErrorResponse> e)
@@ -91,23 +91,11 @@ namespace Unity.Services.Economy
             {
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
-            
         }
 
         /// <summary>
-        /// Options for a IncrementBalanceAsync call.
-        /// </summary>
-        public class IncrementBalanceOptions
-        {
-            /// <summary>
-            /// A write lock for optimistic concurrency.
-            /// </summary>
-            public string WriteLock = null;
-        }
-        
-        /// <summary>
         /// Increments the balance of the specified currency for the currently logged in user.
-        /// 
+        ///
         /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optomistic concurrency.
         /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
@@ -117,23 +105,26 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
         /// <returns>The updated player balance for the relevant currency.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             IncrementPlayerCurrencyBalanceRequest request = new IncrementPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId, 
-                m_EconomyAuthentication.GetPlayerId(), 
-                currencyId, 
-                currencyModifyBalanceRequest: new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
-                );
+                Application.cloudProjectId,
+                m_EconomyAuthentication.GetPlayerId(),
+                currencyId,
+                m_EconomyAuthentication.configAssignmentHash,
+                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+            );
 
             try
             {
                 Response<CurrencyBalanceResponse> response = await m_CurrenciesApiClient.IncrementPlayerCurrencyBalanceAsync(request);
-                
+
                 FireBalanceUpdatedEvent(currencyId);
-                
+
                 return ConvertToPlayerBalance(response.Result);
             }
             catch (HttpException<BasicErrorResponse> e)
@@ -149,21 +140,10 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
         }
-        
-        /// <summary>
-        /// Options for a DecrementBalanceAsync call.
-        /// </summary>
-        public class DecrementBalanceOptions
-        {
-            /// <summary>
-            /// A write lock for optimistic concurrency.
-            /// </summary>
-            public string WriteLock = null;
-        }
 
         /// <summary>
         /// Decrements the balance of the specified currency for the currently logged in user.
-        /// 
+        ///
         /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
         /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
@@ -173,23 +153,26 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
         /// <returns>The updated player balance for the relevant currency.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             DecrementPlayerCurrencyBalanceRequest request = new DecrementPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId, 
-                m_EconomyAuthentication.GetPlayerId(), 
-                currencyId, 
-                currencyModifyBalanceRequest: new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+                Application.cloudProjectId,
+                m_EconomyAuthentication.GetPlayerId(),
+                currencyId,
+                m_EconomyAuthentication.configAssignmentHash,
+                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
             );
 
             try
             {
                 Response<CurrencyBalanceResponse> response = await m_CurrenciesApiClient.DecrementPlayerCurrencyBalanceAsync(request);
-                
+
                 FireBalanceUpdatedEvent(currencyId);
-                
+
                 return ConvertToPlayerBalance(response.Result);
             }
             catch (HttpException<BasicErrorResponse> e)
@@ -207,20 +190,9 @@ namespace Unity.Services.Economy
         }
 
         /// <summary>
-        /// Options for a SetBalancesAsync call.
-        /// </summary>
-        public class SetBalanceOptions
-        {
-            /// <summary>
-            /// A write lock for optimistic concurrency
-            /// </summary>
-            public string WriteLock = null;
-        }
-        
-        /// <summary>
         /// Sets the balance of the specified currency for the currently logged in user.
         /// Will throw an exception if the currency doesn't exist, or if the set amount will take the balance above/below the maximum/minimum allowed for that currency.
-        /// 
+        ///
         /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
         /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
@@ -230,15 +202,18 @@ namespace Unity.Services.Economy
         /// <param name="options">(Optional) Used to set a write lock for optimistic concurrency</param>
         /// <returns>The updated player balance for the relevant currency.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             SetPlayerCurrencyBalanceRequest request = new SetPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId, 
-                m_EconomyAuthentication.GetPlayerId(), 
-                currencyId, 
-                currencyBalanceRequest: new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock));
+                Application.cloudProjectId,
+                m_EconomyAuthentication.GetPlayerId(),
+                currencyId,
+                m_EconomyAuthentication.configAssignmentHash,
+                new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock));
 
             try
             {
@@ -267,25 +242,26 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
         }
-        
+
         internal async Task<GetBalancesResult> GetNextBalancesAsync(string afterCurrencyId, int itemsPerFetch = 20)
         {
             m_EconomyAuthentication.CheckSignedIn();
-            
+
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(itemsPerFetch);
 
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                after: afterCurrencyId,
-                limit: itemsPerFetch);
+                m_EconomyAuthentication.configAssignmentHash,
+                afterCurrencyId,
+                itemsPerFetch);
 
             try
             {
                 Response<PlayerCurrencyBalanceResponse> response = await m_CurrenciesApiClient.GetPlayerCurrenciesAsync(request);
                 List<PlayerBalance> playerBalances = ConvertToPlayerBalances(response.Result.Results);
 
-                GetBalancesResult result = new GetBalancesResult(playerBalances, !string.IsNullOrEmpty(response.Result.Links?.Next));
+                GetBalancesResult result = new GetBalancesResult(playerBalances, !string.IsNullOrEmpty(response.Result.Links?.Next), this);
 
                 return result;
             }
@@ -298,11 +274,11 @@ namespace Unity.Services.Economy
                 throw EconomyAPIErrorHandler.HandleException(e);
             }
         }
-        
+
         internal static List<PlayerBalance> ConvertToPlayerBalances(List<CurrencyBalanceResponse> currencyBalanceResponses)
         {
             List<PlayerBalance> convertedBalances = new List<PlayerBalance>();
-            
+
             foreach (var balanceResponse in currencyBalanceResponses)
             {
                 convertedBalances.Add(ConvertToPlayerBalance(balanceResponse));
@@ -328,5 +304,49 @@ namespace Unity.Services.Economy
 
             return convertedBalance;
         }
+    }
+
+    /// <summary>
+    /// Options for a GetBalancesAsync call.
+    /// </summary>
+    public class GetBalancesOptions
+    {
+        /// <summary>
+        /// The number of items to fetch per call
+        /// </summary>
+        public int ItemsPerFetch = 20;
+    }
+
+    /// <summary>
+    /// Options for a IncrementBalanceAsync call.
+    /// </summary>
+    public class IncrementBalanceOptions
+    {
+        /// <summary>
+        /// A write lock for optimistic concurrency.
+        /// </summary>
+        public string WriteLock = null;
+    }
+
+    /// <summary>
+    /// Options for a DecrementBalanceAsync call.
+    /// </summary>
+    public class DecrementBalanceOptions
+    {
+        /// <summary>
+        /// A write lock for optimistic concurrency.
+        /// </summary>
+        public string WriteLock = null;
+    }
+
+    /// <summary>
+    /// Options for a SetBalancesAsync call.
+    /// </summary>
+    public class SetBalanceOptions
+    {
+        /// <summary>
+        /// A write lock for optimistic concurrency
+        /// </summary>
+        public string WriteLock = null;
     }
 }

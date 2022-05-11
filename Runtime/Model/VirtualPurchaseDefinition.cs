@@ -17,26 +17,26 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// A list of costs associated with this purchase.
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("costs")] 
+        [Preserve][JsonRequired][JsonProperty("costs")]
         public List<PurchaseItemQuantity> Costs;
 
         /// <summary>
         /// A list of rewards associated with this purchase.
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("rewards")]
+        [Preserve][JsonRequired][JsonProperty("rewards")]
         public List<PurchaseItemQuantity> Rewards;
-        
+
         /// <summary>
         /// Make this purchase. Optionally takes instance IDs of items to use in the purchase.
         /// </summary>
         /// <param name="options">(Optional) Use to set a list of item instance IDs to use in this purchase</param>
         /// <returns>A MakeVirtualPurchaseResult containing details of the purchase</returns>
         /// <exception cref="EconomyException">Thrown if purchase is unsuccessful</exception>
-        public async Task<MakeVirtualPurchaseResult> MakePurchaseAsync(Purchases.MakeVirtualPurchaseOptions options = null)
+        public async Task<MakeVirtualPurchaseResult> MakePurchaseAsync(MakeVirtualPurchaseOptions options = null)
         {
-            return await Economy.Purchases.MakeVirtualPurchaseAsync(Id, options);
+            return await EconomyService.Instance.Purchases.MakeVirtualPurchaseAsync(Id, options);
         }
-        
+
         /// <summary>
         /// Make this purchase using the PlayersInventoryItems provided to pay the inventory item cost.
         /// </summary>
@@ -46,7 +46,7 @@ namespace Unity.Services.Economy.Model
         public async Task<MakeVirtualPurchaseResult> MakePurchaseAsync(List<PlayersInventoryItem> playersInventoryItems)
         {
             List<string> playerInventoryItemIds = playersInventoryItems.Select(i => i.PlayersInventoryItemId).ToList();
-            return await Economy.Purchases.MakeVirtualPurchaseAsync(Id, new Purchases.MakeVirtualPurchaseOptions{ PlayersInventoryItemIds = playerInventoryItemIds });
+            return await EconomyService.Instance.Purchases.MakeVirtualPurchaseAsync(Id, new MakeVirtualPurchaseOptions{ PlayersInventoryItemIds = playerInventoryItemIds });
         }
 
         /// <summary>
