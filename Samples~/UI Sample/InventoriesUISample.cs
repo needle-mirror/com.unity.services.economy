@@ -33,14 +33,6 @@ public class InventoriesUISample : MonoBehaviour
     [SerializeField]
     TMP_InputField m_DeletePlayersInventoryItemIdInput;
 
-    // Update instance
-    [SerializeField]
-    TextMeshProUGUI m_UpdatePlayersInventoryItemText;
-    [SerializeField]
-    TMP_InputField m_UpdatePlayersInventoryItemIdInput;
-    [SerializeField]
-    TMP_InputField m_UpdatePlayersInventoryItemInstanceDataInput;
-
     private GetInventoryResult m_LatestGetInventoryResponse;
     bool m_HasNext;
 
@@ -132,19 +124,17 @@ public class InventoriesUISample : MonoBehaviour
         }
         else
         {
-            foreach (var playersInventoryItem in response.PlayersInventoryItems)
+            foreach (var instance in response.PlayersInventoryItems)
             {
-                outputString += $"{playersInventoryItem.InventoryItemId}: {playersInventoryItem.PlayersInventoryItemId}\n";
-                if (playersInventoryItem.InstanceData != null)
+                outputString += $"{instance.InventoryItemId}: {instance.PlayersInventoryItemId}";
+                if (!string.IsNullOrEmpty(instance.InstanceData.GetAsString()))
                 {
-                    outputString += "Custom Data: ";
-                    foreach (var key in playersInventoryItem.InstanceData.Keys)
-                    {
-                        outputString += $"{key} - {playersInventoryItem.InstanceData[key]} | ";
-                    }
+                    outputString += $"Custom Data: {instance.InstanceData.GetAsString()}";
                 }
+
                 outputString += "\n";
             }
+
             m_GetPlayersInventoryItemsText.text = outputString;
         }
     }
@@ -237,43 +227,12 @@ public class InventoriesUISample : MonoBehaviour
         m_DeleteInstanceText.text = $"Deleted players inventory item with ID {m_DeletePlayersInventoryItemIdInput.text}";
     }
 
-    public async void UpdateInstance()
-    {
-        if (!IsAuthenticationSignedIn())
-        {
-            return;
-        }
-        ;
-
-        if (string.IsNullOrEmpty(m_UpdatePlayersInventoryItemIdInput.text))
-        {
-            Debug.Log("Please enter the players inventory item ID of the item you want to update.");
-        }
-
-        Dictionary<string, object> instanceData = JsonConvert.DeserializeObject<Dictionary<string, object>>(m_UpdatePlayersInventoryItemInstanceDataInput.text);
-
-        PlayersInventoryItem instance = await EconomyService.Instance.PlayerInventory.UpdatePlayersInventoryItemAsync(m_UpdatePlayersInventoryItemIdInput.text, instanceData);
-        ClearOutputTextBoxes();
-
-        m_UpdatePlayersInventoryItemText.text = $"Updated instance {instance.PlayersInventoryItemId}\n";
-
-        if (instance.InstanceData != null)
-        {
-            m_UpdatePlayersInventoryItemText.text += $"Custom Data: ";
-            foreach (var key in instance.InstanceData.Keys)
-            {
-                m_UpdatePlayersInventoryItemText.text += $"{key} - {instance.InstanceData[key]} | ";
-            }
-        }
-    }
-
     void ClearOutputTextBoxes()
     {
         m_GetConfigsText.text = "";
         m_GetPlayersInventoryItemsText.text = "";
         m_AddInventoryItemText.text = "";
         m_DeleteInstanceText.text = "";
-        m_UpdatePlayersInventoryItemText.text = "";
     }
 
     static bool IsAuthenticationSignedIn()

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -44,6 +45,36 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "receipt", EmitDefaultValue = false)]
         public string Receipt{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseGoogleplaystoreResponseVerificationStore into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Receipt != null)
+            {
+                var receiptStringValue = Receipt;
+                serializedModel += "receipt," + receiptStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseGoogleplaystoreResponseVerificationStore as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Receipt != null)
+            {
+                var receiptStringValue = Receipt.ToString();
+                dictionary.Add("receipt", receiptStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

@@ -83,7 +83,7 @@ namespace Unity.Services.Economy
             Economy.Configuration = new Configuration();
             Economy.PlayerBalances = new PlayerBalances();
             Economy.PlayerInventory = new PlayerInventory();
-            Economy.Purchase = new Purchases();
+            Economy.Purchases = new Purchases();
         }
     }
 }

@@ -115,8 +115,8 @@ namespace Unity.Services.Economy
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                m_EconomyAuthentication.configAssignmentHash,
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash
             );
 
             try
@@ -163,8 +163,8 @@ namespace Unity.Services.Economy
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                m_EconomyAuthentication.configAssignmentHash,
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock)
+                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash
             );
 
             try
@@ -212,8 +212,8 @@ namespace Unity.Services.Economy
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                m_EconomyAuthentication.configAssignmentHash,
-                new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock));
+                new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {

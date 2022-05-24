@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of PlayerPurchaseGoogleplaystoreResponseVerification.
         /// </summary>
-        /// <param name="status">Status of the receipt verification. VALID: The purchase was valid. VALID_NOT_REDEEMED: The purchase was valid but seen before, but had not yet been redeemed. INVALID_ALREADY_REDEEMED: The purchase has already been redeemed. INVALID_VERIFICATION_FAILED: The receipt verification Service returned that the receipt data was not valid. INVALID_ANOTHER_PLAYER: The receipt has previously been used by a different player and validated. INVALID_CONFIGURATION: The service configuration is invalid, further information in the details section of the response. INVALID_PRODUCT_ID_MISMATCH: The purchase configuration store product identifier does not match the one in the receipt.</param>
+        /// <param name="status">Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.</param>
         /// <param name="store">store param</param>
         [Preserve]
         public PlayerPurchaseGoogleplaystoreResponseVerification(StatusOptions status, PlayerPurchaseGoogleplaystoreResponseVerificationStore store)
@@ -40,24 +41,24 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Status of the receipt verification. VALID: The purchase was valid. VALID_NOT_REDEEMED: The purchase was valid but seen before, but had not yet been redeemed. INVALID_ALREADY_REDEEMED: The purchase has already been redeemed. INVALID_VERIFICATION_FAILED: The receipt verification Service returned that the receipt data was not valid. INVALID_ANOTHER_PLAYER: The receipt has previously been used by a different player and validated. INVALID_CONFIGURATION: The service configuration is invalid, further information in the details section of the response. INVALID_PRODUCT_ID_MISMATCH: The purchase configuration store product identifier does not match the one in the receipt.
+        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.
         /// </summary>
         [Preserve]
         [JsonConverter(typeof(StringEnumConverter))]
         [DataMember(Name = "status", IsRequired = true, EmitDefaultValue = true)]
         public StatusOptions Status{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter store of PlayerPurchaseGoogleplaystoreResponseVerification
         /// </summary>
         [Preserve]
         [DataMember(Name = "store", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseGoogleplaystoreResponseVerificationStore Store{ get; }
     
-
         /// <summary>
-        /// Status of the receipt verification. VALID: The purchase was valid. VALID_NOT_REDEEMED: The purchase was valid but seen before, but had not yet been redeemed. INVALID_ALREADY_REDEEMED: The purchase has already been redeemed. INVALID_VERIFICATION_FAILED: The receipt verification Service returned that the receipt data was not valid. INVALID_ANOTHER_PLAYER: The receipt has previously been used by a different player and validated. INVALID_CONFIGURATION: The service configuration is invalid, further information in the details section of the response. INVALID_PRODUCT_ID_MISMATCH: The purchase configuration store product identifier does not match the one in the receipt.
+        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.
         /// </summary>
-        /// <value>Status of the receipt verification. VALID: The purchase was valid. VALID_NOT_REDEEMED: The purchase was valid but seen before, but had not yet been redeemed. INVALID_ALREADY_REDEEMED: The purchase has already been redeemed. INVALID_VERIFICATION_FAILED: The receipt verification Service returned that the receipt data was not valid. INVALID_ANOTHER_PLAYER: The receipt has previously been used by a different player and validated. INVALID_CONFIGURATION: The service configuration is invalid, further information in the details section of the response. INVALID_PRODUCT_ID_MISMATCH: The purchase configuration store product identifier does not match the one in the receipt.</value>
+        /// <value>Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.</value>
         [Preserve]
         [JsonConverter(typeof(StringEnumConverter))]
         public enum StatusOptions
@@ -67,45 +68,73 @@ namespace Unity.Services.Economy.Internal.Models
             /// </summary>
             [EnumMember(Value = "VALID")]
             VALID = 1,
-
             /// <summary>
             /// Enum VALIDNOTREDEEMED for value: VALID_NOT_REDEEMED
             /// </summary>
             [EnumMember(Value = "VALID_NOT_REDEEMED")]
             VALIDNOTREDEEMED = 2,
-
             /// <summary>
             /// Enum INVALIDALREADYREDEEMED for value: INVALID_ALREADY_REDEEMED
             /// </summary>
             [EnumMember(Value = "INVALID_ALREADY_REDEEMED")]
             INVALIDALREADYREDEEMED = 3,
-
             /// <summary>
             /// Enum INVALIDVERIFICATIONFAILED for value: INVALID_VERIFICATION_FAILED
             /// </summary>
             [EnumMember(Value = "INVALID_VERIFICATION_FAILED")]
             INVALIDVERIFICATIONFAILED = 4,
-
             /// <summary>
             /// Enum INVALIDANOTHERPLAYER for value: INVALID_ANOTHER_PLAYER
             /// </summary>
             [EnumMember(Value = "INVALID_ANOTHER_PLAYER")]
             INVALIDANOTHERPLAYER = 5,
-
             /// <summary>
             /// Enum INVALIDCONFIGURATION for value: INVALID_CONFIGURATION
             /// </summary>
             [EnumMember(Value = "INVALID_CONFIGURATION")]
             INVALIDCONFIGURATION = 6,
-
             /// <summary>
             /// Enum INVALIDPRODUCTIDMISMATCH for value: INVALID_PRODUCT_ID_MISMATCH
             /// </summary>
             [EnumMember(Value = "INVALID_PRODUCT_ID_MISMATCH")]
             INVALIDPRODUCTIDMISMATCH = 7
-
         }
 
+        /// <summary>
+        /// Formats a PlayerPurchaseGoogleplaystoreResponseVerification into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Status != null)
+            {
+                var statusStringValue = Status;
+                serializedModel += "status," + statusStringValue + ",";
+            }
+            if (Store != null)
+            {
+                var storeStringValue = Store.ToString();
+                serializedModel += "store," + storeStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseGoogleplaystoreResponseVerification as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Status != null)
+            {
+                var statusStringValue = Status.ToString();
+                dictionary.Add("status", statusStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

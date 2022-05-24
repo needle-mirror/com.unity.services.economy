@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of ModifiedMetadata.
         /// </summary>
-        /// <param name="date">Date time in ISO 8601 format. Null if there is no associated value.</param>
+        /// <param name="date">Date time in ISO 8601 format. &#x60;null&#x60; if there is no associated value.</param>
         [Preserve]
         public ModifiedMetadata(DateTime? date)
         {
@@ -38,12 +39,42 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Date time in ISO 8601 format. Null if there is no associated value.
+        /// Date time in ISO 8601 format. &#x60;null&#x60; if there is no associated value.
         /// </summary>
         [Preserve]
         [DataMember(Name = "date", IsRequired = true, EmitDefaultValue = true)]
         public DateTime? Date{ get; }
     
+        /// <summary>
+        /// Formats a ModifiedMetadata into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Date != null)
+            {
+                var dateStringValue = Date.ToString();
+                serializedModel += "date," + dateStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a ModifiedMetadata as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Date != null)
+            {
+                var dateStringValue = Date.ToString();
+                dictionary.Add("date", dateStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

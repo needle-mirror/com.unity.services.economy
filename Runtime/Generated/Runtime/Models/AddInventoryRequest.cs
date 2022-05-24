@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,9 +31,9 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of AddInventoryRequest.
         /// </summary>
-        /// <param name="inventoryItemId">Resource ID of the config Inventory Item.</param>
-        /// <param name="playersInventoryItemId">Players inventory item ID for the item being created. If not given ID will be automatically generated. An ID must be unique for a player.</param>
-        /// <param name="instanceData">Instance data to be saved against the new inventory item. Max size when serialized 5kb.</param>
+        /// <param name="inventoryItemId">Resource ID of the inventory item.</param>
+        /// <param name="playersInventoryItemId">A &#x60;playersInventoryItemId&#x60; for the item being created. If not given, Economy automatically generates the ID. An ID must be unique for a player.</param>
+        /// <param name="instanceData">Instance data to be saved against the new inventory item. Max size when serialized 5 KB.</param>
         [Preserve]
         public AddInventoryRequest(string inventoryItemId, string playersInventoryItemId = default, object instanceData = default)
         {
@@ -42,25 +43,72 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Resource ID of the config Inventory Item.
+        /// Resource ID of the inventory item.
         /// </summary>
         [Preserve]
         [DataMember(Name = "inventoryItemId", IsRequired = true, EmitDefaultValue = true)]
         public string InventoryItemId{ get; }
+        
         /// <summary>
-        /// Players inventory item ID for the item being created. If not given ID will be automatically generated. An ID must be unique for a player.
+        /// A &#x60;playersInventoryItemId&#x60; for the item being created. If not given, Economy automatically generates the ID. An ID must be unique for a player.
         /// </summary>
         [Preserve]
         [DataMember(Name = "playersInventoryItemId", EmitDefaultValue = false)]
         public string PlayersInventoryItemId{ get; }
+        
         /// <summary>
-        /// Instance data to be saved against the new inventory item. Max size when serialized 5kb.
+        /// Instance data to be saved against the new inventory item. Max size when serialized 5 KB.
         /// </summary>
-        [Preserve]
-        [JsonConverter(typeof(JsonObjectConverter))]
+        [Preserve][JsonConverter(typeof(JsonObjectConverter))]
         [DataMember(Name = "instanceData", EmitDefaultValue = false)]
         public JsonObject InstanceData{ get; }
     
+        /// <summary>
+        /// Formats a AddInventoryRequest into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (InventoryItemId != null)
+            {
+                var inventoryItemIdStringValue = InventoryItemId;
+                serializedModel += "inventoryItemId," + inventoryItemIdStringValue + ",";
+            }
+            if (PlayersInventoryItemId != null)
+            {
+                var playersInventoryItemIdStringValue = PlayersInventoryItemId;
+                serializedModel += "playersInventoryItemId," + playersInventoryItemIdStringValue + ",";
+            }
+            if (InstanceData != null)
+            {
+                var instanceDataStringValue = InstanceData.ToString();
+                serializedModel += "instanceData," + instanceDataStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a AddInventoryRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (InventoryItemId != null)
+            {
+                var inventoryItemIdStringValue = InventoryItemId.ToString();
+                dictionary.Add("inventoryItemId", inventoryItemIdStringValue);
+            }
+            
+            if (PlayersInventoryItemId != null)
+            {
+                var playersInventoryItemIdStringValue = PlayersInventoryItemId.ToString();
+                dictionary.Add("playersInventoryItemId", playersInventoryItemIdStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of InventoryDeleteRequest.
         /// </summary>
-        /// <param name="writeLock">The write lock for the inventory instance.</param>
+        /// <param name="writeLock">The write lock for the inventory item instance.</param>
         [Preserve]
         public InventoryDeleteRequest(string writeLock = default)
         {
@@ -38,12 +39,42 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// The write lock for the inventory instance.
+        /// The write lock for the inventory item instance.
         /// </summary>
         [Preserve]
         [DataMember(Name = "writeLock", EmitDefaultValue = false)]
         public string WriteLock{ get; }
     
+        /// <summary>
+        /// Formats a InventoryDeleteRequest into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (WriteLock != null)
+            {
+                var writeLockStringValue = WriteLock;
+                serializedModel += "writeLock," + writeLockStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a InventoryDeleteRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (WriteLock != null)
+            {
+                var writeLockStringValue = WriteLock.ToString();
+                dictionary.Add("writeLock", writeLockStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

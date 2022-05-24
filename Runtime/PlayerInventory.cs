@@ -21,7 +21,7 @@ namespace Unity.Services.Economy
         Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null);
         Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null);
         Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId,
-            Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options = null);
+            object instanceData, UpdatePlayersInventoryItemOptions options = null);
     }
 
     /// <summary>
@@ -118,8 +118,8 @@ namespace Unity.Services.Economy
             AddInventoryItemRequest request = new AddInventoryItemRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                m_EconomyAuthentication.configAssignmentHash,
-                new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData));
+                new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {
@@ -162,8 +162,8 @@ namespace Unity.Services.Economy
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                m_EconomyAuthentication.configAssignmentHash,
-                new InventoryDeleteRequest(options?.WriteLock));
+                new InventoryDeleteRequest(options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {
@@ -195,7 +195,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
-        public async Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, Dictionary<string, object> instanceData, UpdatePlayersInventoryItemOptions options = null)
+        public async Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, object instanceData, UpdatePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
 
@@ -203,8 +203,8 @@ namespace Unity.Services.Economy
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                m_EconomyAuthentication.configAssignmentHash,
-                new InventoryRequestUpdate(instanceData, options?.WriteLock));
+                new InventoryRequestUpdate(instanceData, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {
@@ -252,7 +252,7 @@ namespace Unity.Services.Economy
             {
                 PlayersInventoryItemId = response.PlayersInventoryItemId,
                 InventoryItemId = response.InventoryItemId,
-                InstanceData = response.InstanceData.GetAs<Dictionary<string, object>>(),
+                InstanceData = response.InstanceData,
                 WriteLock = response.WriteLock,
                 Modified = response.Modified.Date == null ? null : new EconomyDate {Date = response.Modified.Date.Value},
                 Created = response.Created.Date == null ? null : new EconomyDate {Date = response.Created.Date.Value}
@@ -299,7 +299,7 @@ namespace Unity.Services.Economy
         /// <summary>
         /// Dictionary of instance data.
         /// </summary>
-        public Dictionary<string, object> InstanceData = null;
+        public object InstanceData = null;
     }
 
     /// <summary>

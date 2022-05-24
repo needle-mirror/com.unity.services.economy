@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Services.Economy.Internal.Http;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
@@ -11,7 +12,7 @@ namespace Unity.Services.Economy.Model
     public class PlayersInventoryItem
     {
         [Preserve]
-        public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), Dictionary<string, object> instanceData = default(Dictionary<string, object>),
+        public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), IDeserializable instanceData = default(IDeserializable),
                                     string writeLock = default(string), EconomyDate created = default(EconomyDate), EconomyDate modified = default(EconomyDate))
         {
             PlayersInventoryItemId = playersInventoryItemId;
@@ -33,7 +34,7 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// Any instance data specific to this unique item in the player's inventory.
         /// </summary>
-        [Preserve] public Dictionary<string, object> InstanceData;
+        [Preserve] public IDeserializable InstanceData;
         /// <summary>
         /// The current WriteLock string.
         /// </summary>

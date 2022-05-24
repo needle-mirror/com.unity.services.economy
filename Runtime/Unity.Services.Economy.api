@@ -5,7 +5,7 @@ namespace Unity.Services.Economy
 {
     public class AddInventoryItemOptions
     {
-        public System.Collections.Generic.Dictionary<string, object> InstanceData;
+        public object InstanceData;
         public string PlayersInventoryItemId;
         public AddInventoryItemOptions() {}
     }
@@ -40,7 +40,7 @@ namespace Unity.Services.Economy
         [System.Obsolete(@"The interface provided by Economy.Configuration has been replaced by EconomyService.Instance.Configuration, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.Configuration Configuration;
         [System.Obsolete(@"The interface provided by Economy.PlayerBalances has been replaced by EconomyService.Instance.PlayerBalances, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.PlayerBalances PlayerBalances;
         [System.Obsolete(@"The interface provided by Economy.PlayerInventory has been replaced by EconomyService.Instance.PlayerInventory, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.PlayerInventory PlayerInventory;
-        [System.Obsolete(@"The interface provided by Economy.Purchases has been replaced by EconomyService.Instance.Purchases, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.Purchases Purchase;
+        [System.Obsolete(@"The interface provided by Economy.Purchases has been replaced by EconomyService.Instance.Purchases, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] public static Unity.Services.Economy.Purchases Purchases;
     }
 
     public class EconomyAppleAppStorePurchaseFailedException : Unity.Services.Economy.EconomyException
@@ -151,7 +151,7 @@ namespace Unity.Services.Economy
         public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, Unity.Services.Economy.AddInventoryItemOptions options = default(Unity.Services.Economy.AddInventoryItemOptions));
         public abstract System.Threading.Tasks.Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, Unity.Services.Economy.DeletePlayersInventoryItemOptions options = default(Unity.Services.Economy.DeletePlayersInventoryItemOptions));
         public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetInventoryAsync(Unity.Services.Economy.GetInventoryOptions options = default(Unity.Services.Economy.GetInventoryOptions));
-        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, System.Collections.Generic.Dictionary<string, object> instanceData, Unity.Services.Economy.UpdatePlayersInventoryItemOptions options = default(Unity.Services.Economy.UpdatePlayersInventoryItemOptions));
+        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, object instanceData, Unity.Services.Economy.UpdatePlayersInventoryItemOptions options = default(Unity.Services.Economy.UpdatePlayersInventoryItemOptions));
     }
 
     public interface IEconomyPurchasesApiClientApi
@@ -280,6 +280,28 @@ namespace Unity.Services.Economy
     {
         public string WriteLock;
         public UpdatePlayersInventoryItemOptions() {}
+    }
+}
+
+namespace Unity.Services.Economy.Internal.Http
+{
+    public class DeserializationSettings
+    {
+        public Unity.Services.Economy.Internal.Http.MissingMemberHandling MissingMemberHandling;
+        public DeserializationSettings() {}
+    }
+
+    [Newtonsoft.Json.JsonConverter(typeof(Unity.Services.Economy.Internal.Http.JsonObjectConverter))] [UnityEngine.Scripting.Preserve] public interface IDeserializable
+    {
+        public abstract T GetAs<T>(Unity.Services.Economy.Internal.Http.DeserializationSettings deserializationSettings = default(Unity.Services.Economy.Internal.Http.DeserializationSettings));
+        public abstract string GetAsString();
+    }
+
+    public enum MissingMemberHandling
+    {
+        public const Unity.Services.Economy.Internal.Http.MissingMemberHandling Error = 0;
+        public const Unity.Services.Economy.Internal.Http.MissingMemberHandling Ignore = 1;
+        public int value__;
     }
 }
 
@@ -436,12 +458,12 @@ namespace Unity.Services.Economy.Model
     [UnityEngine.Scripting.Preserve] public class PlayersInventoryItem
     {
         [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Created;
-        [UnityEngine.Scripting.Preserve] public System.Collections.Generic.Dictionary<string, object> InstanceData;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Internal.Http.IDeserializable InstanceData;
         [UnityEngine.Scripting.Preserve] public string InventoryItemId;
         [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
         [UnityEngine.Scripting.Preserve] public string PlayersInventoryItemId;
         [UnityEngine.Scripting.Preserve] public string WriteLock;
-        [UnityEngine.Scripting.Preserve] public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), System.Collections.Generic.Dictionary<string, object> instanceData = default(System.Collections.Generic.Dictionary<string, object>), string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
+        [UnityEngine.Scripting.Preserve] public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), Unity.Services.Economy.Internal.Http.IDeserializable instanceData = default(Unity.Services.Economy.Internal.Http.IDeserializable), string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
         [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayersInventoryItem.<GetItemDefinitionAsync>d__7))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetItemDefinitionAsync();
     }
 

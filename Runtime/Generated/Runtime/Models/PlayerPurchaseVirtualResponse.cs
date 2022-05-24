@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -40,18 +41,48 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter costs of PlayerPurchaseVirtualResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "costs", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseVirtualResponseCosts Costs{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter rewards of PlayerPurchaseVirtualResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "rewards", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseVirtualResponseRewards Rewards{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseVirtualResponse into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Costs != null)
+            {
+                var costsStringValue = Costs.ToString();
+                serializedModel += "costs," + costsStringValue + ",";
+            }
+            if (Rewards != null)
+            {
+                var rewardsStringValue = Rewards.ToString();
+                serializedModel += "rewards," + rewardsStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseVirtualResponse as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            return dictionary;
+        }
     }
 }
-

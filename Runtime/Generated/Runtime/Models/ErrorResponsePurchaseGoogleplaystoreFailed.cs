@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -21,14 +22,14 @@ using Unity.Services.Economy.Internal.Http;
 namespace Unity.Services.Economy.Internal.Models
 {
     /// <summary>
-    /// An error response sent back upon a redeem google play purchase.
+    /// An error response sent back upon a redeem Google Play purchase.
     /// </summary>
     [Preserve]
     [DataContract(Name = "error-response-purchase-googleplaystore-failed")]
     internal class ErrorResponsePurchaseGoogleplaystoreFailed
     {
         /// <summary>
-        /// An error response sent back upon a redeem google play purchase.
+        /// An error response sent back upon a redeem Google Play purchase.
         /// </summary>
         /// <param name="type">type param</param>
         /// <param name="title">title param</param>
@@ -50,48 +51,144 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter type of ErrorResponsePurchaseGoogleplaystoreFailed
         /// </summary>
         [Preserve]
         [DataMember(Name = "type", IsRequired = true, EmitDefaultValue = true)]
         public string Type{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter title of ErrorResponsePurchaseGoogleplaystoreFailed
         /// </summary>
         [Preserve]
         [DataMember(Name = "title", IsRequired = true, EmitDefaultValue = true)]
         public string Title{ get; }
+        
         /// <summary>
         /// e.g 409
         /// </summary>
         [Preserve]
         [DataMember(Name = "status", IsRequired = true, EmitDefaultValue = true)]
         public int Status{ get; }
+        
         /// <summary>
         /// e.g. 10204
         /// </summary>
         [Preserve]
         [DataMember(Name = "code", IsRequired = true, EmitDefaultValue = true)]
         public int Code{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter detail of ErrorResponsePurchaseGoogleplaystoreFailed
         /// </summary>
         [Preserve]
         [DataMember(Name = "detail", IsRequired = true, EmitDefaultValue = true)]
         public string Detail{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter instance of ErrorResponsePurchaseGoogleplaystoreFailed
         /// </summary>
         [Preserve]
         [DataMember(Name = "instance", EmitDefaultValue = false)]
         public string Instance{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter data of ErrorResponsePurchaseGoogleplaystoreFailed
         /// </summary>
         [Preserve]
         [DataMember(Name = "data", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseGoogleplaystoreResponse Data{ get; }
     
+        /// <summary>
+        /// Formats a ErrorResponsePurchaseGoogleplaystoreFailed into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Type != null)
+            {
+                var typeStringValue = Type;
+                serializedModel += "type," + typeStringValue + ",";
+            }
+            if (Title != null)
+            {
+                var titleStringValue = Title;
+                serializedModel += "title," + titleStringValue + ",";
+            }
+            if (Status != null)
+            {
+                var statusStringValue = Status.ToString();
+                serializedModel += "status," + statusStringValue + ",";
+            }
+            if (Code != null)
+            {
+                var codeStringValue = Code.ToString();
+                serializedModel += "code," + codeStringValue + ",";
+            }
+            if (Detail != null)
+            {
+                var detailStringValue = Detail;
+                serializedModel += "detail," + detailStringValue + ",";
+            }
+            if (Instance != null)
+            {
+                var instanceStringValue = Instance;
+                serializedModel += "instance," + instanceStringValue + ",";
+            }
+            if (Data != null)
+            {
+                var dataStringValue = Data.ToString();
+                serializedModel += "data," + dataStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a ErrorResponsePurchaseGoogleplaystoreFailed as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Type != null)
+            {
+                var typeStringValue = Type.ToString();
+                dictionary.Add("type", typeStringValue);
+            }
+            
+            if (Title != null)
+            {
+                var titleStringValue = Title.ToString();
+                dictionary.Add("title", titleStringValue);
+            }
+            
+            if (Status != null)
+            {
+                var statusStringValue = Status.ToString();
+                dictionary.Add("status", statusStringValue);
+            }
+            
+            if (Code != null)
+            {
+                var codeStringValue = Code.ToString();
+                dictionary.Add("code", codeStringValue);
+            }
+            
+            if (Detail != null)
+            {
+                var detailStringValue = Detail.ToString();
+                dictionary.Add("detail", detailStringValue);
+            }
+            
+            if (Instance != null)
+            {
+                var instanceStringValue = Instance.ToString();
+                dictionary.Add("instance", instanceStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

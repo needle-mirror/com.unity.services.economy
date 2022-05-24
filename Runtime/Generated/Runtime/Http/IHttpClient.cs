@@ -28,6 +28,7 @@ namespace Unity.Services.Economy.Internal.Http
         /// <param name="requestTimeout">Request timeout value.</param>
         /// <returns> </returns>
         Task<HttpClientResponse> MakeRequestAsync(string method, string url, byte[] body, Dictionary<string, string> headers, int requestTimeout);
+
         /// <summary>Performs an asynchronous Http request for multipart uploads</summary>
         /// <param name="method">The HTTP method.</param>
         /// <param name="url">The HTTP request URL.</param>

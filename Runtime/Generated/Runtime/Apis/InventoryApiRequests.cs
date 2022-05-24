@@ -97,6 +97,25 @@ namespace Unity.Services.Economy.Internal.Inventory
         }
 
         /// <summary>
+        /// Helper function to add a provided map of keys and values, representing a model, to the
+        /// provided query params.
+        /// </summary>
+        /// <param name="queryParams">A `List/<string/>` of the query parameters.</param>
+        /// <param name="modelVars">A `Dictionary` representing the vars of the model</param>
+        /// <returns>Returns a `List/<string/>`</returns>
+        [Preserve]
+        public List<string> AddParamsToQueryParams(List<string> queryParams, Dictionary<string, string> modelVars)
+        {
+            foreach(var key in modelVars.Keys)
+            {
+                string escapedValue = UnityWebRequest.EscapeURL(modelVars[key]);
+                queryParams.Add($"{UnityWebRequest.EscapeURL(key)}={escapedValue}");
+            }
+
+            return queryParams;
+        }
+
+        /// <summary>
         /// Helper function to add a provided key and value to the provided
         /// query params and to escape the values correctly if it is a URL.
         /// </summary>
@@ -251,7 +270,7 @@ namespace Unity.Services.Economy.Internal.Inventory
 
     /// <summary>
     /// AddInventoryItemRequest
-    /// Add Inventory Item
+    /// Add inventory item
     /// </summary>
     [Preserve]
     internal class AddInventoryItemRequest : InventoryApiBaseRequest
@@ -264,44 +283,46 @@ namespace Unity.Services.Economy.Internal.Inventory
         [Preserve]
         
         public string PlayerId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for addInventoryRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.AddInventoryRequest AddInventoryRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// AddInventoryItem Request Object.
-        /// Add Inventory Item
+        /// Add inventory item
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
         /// <param name="addInventoryRequest">AddInventoryRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public AddInventoryItemRequest(string projectId, string playerId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.AddInventoryRequest addInventoryRequest = default(Unity.Services.Economy.Internal.Models.AddInventoryRequest))
+        public AddInventoryItemRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.AddInventoryRequest addInventoryRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
             
             PlayerId = playerId;
+            AddInventoryRequest = addInventoryRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        AddInventoryRequest = addInventoryRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -324,11 +345,7 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(AddInventoryRequest != null)
-            {
-                return ConstructBody(AddInventoryRequest);
-            }
-            return null;
+            return ConstructBody(AddInventoryRequest);
         }
 
         /// <summary>
@@ -391,7 +408,7 @@ namespace Unity.Services.Economy.Internal.Inventory
     }
     /// <summary>
     /// DeleteInventoryItemRequest
-    /// Delete Inventory Item
+    /// Delete player&#39;s inventory item
     /// </summary>
     [Preserve]
     internal class DeleteInventoryItemRequest : InventoryApiBaseRequest
@@ -408,27 +425,27 @@ namespace Unity.Services.Economy.Internal.Inventory
         [Preserve]
         
         public string PlayersInventoryItemId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for inventoryDeleteRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.InventoryDeleteRequest InventoryDeleteRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// DeleteInventoryItem Request Object.
-        /// Delete Inventory Item
+        /// Delete player&#39;s inventory item
         /// </summary>
-        /// <param name="projectId">projectId param</param>
-        /// <param name="playerId">playerId param</param>
-        /// <param name="playersInventoryItemId">playersInventoryItemId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="playersInventoryItemId">The `playersInventoryItemId` of the item to be updated.</param>
         /// <param name="inventoryDeleteRequest">InventoryDeleteRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest = default(Unity.Services.Economy.Internal.Models.InventoryDeleteRequest))
+        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
@@ -436,19 +453,21 @@ namespace Unity.Services.Economy.Internal.Inventory
             PlayerId = playerId;
             
             PlayersInventoryItemId = playersInventoryItemId;
+            InventoryDeleteRequest = inventoryDeleteRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        InventoryDeleteRequest = inventoryDeleteRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory/{playersInventoryItemId}";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -471,11 +490,7 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(InventoryDeleteRequest != null)
-            {
-                return ConstructBody(InventoryDeleteRequest);
-            }
-            return null;
+            return ConstructBody(InventoryDeleteRequest);
         }
 
         /// <summary>
@@ -537,7 +552,7 @@ namespace Unity.Services.Economy.Internal.Inventory
     }
     /// <summary>
     /// GetPlayerInventoryRequest
-    /// List Player Inventory
+    /// List player inventory
     /// </summary>
     [Preserve]
     internal class GetPlayerInventoryRequest : InventoryApiBaseRequest
@@ -574,15 +589,15 @@ namespace Unity.Services.Economy.Internal.Inventory
 
         /// <summary>
         /// GetPlayerInventory Request Object.
-        /// List Player Inventory
+        /// List player inventory
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
-        /// <param name="after">The Players inventory item ID after which to retrieve the next page of balances.</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="after">The `playersInventoryItemId` after which to retrieve the next page of balances.</param>
         /// <param name="limit">Number of items to be returned. Defaults to 20.</param>
-        /// <param name="playersInventoryItemIds">List of Players inventory item IDs in array notation, e.g. `playersInventoryItemIds[]=ID1&playersInventoryItemIds[]=ID2`</param>
-        /// <param name="inventoryItemIds">List of Inventory IDs in array notation, e.g. `inventoryItemIds[]=ID1&inventoryItemIds[]=ID2`</param>
+        /// <param name="playersInventoryItemIds">List of `playersInventoryItemIds` in array notation, for example, `playersInventoryItemIds[]=ID1&playersInventoryItemIds[]=ID2`.</param>
+        /// <param name="inventoryItemIds">List of inventory item IDs in array notation, for example, `inventoryItemIds[]=ID1&inventoryItemIds[]=ID2`.</param>
         [Preserve]
         public GetPlayerInventoryRequest(string projectId, string playerId, string configAssignmentHash = default(string), string after = default(string), int? limit = default(int?), List<string> playersInventoryItemIds = default(List<string>), List<string> inventoryItemIds = default(List<string>))
         {
@@ -591,31 +606,40 @@ namespace Unity.Services.Economy.Internal.Inventory
             
             PlayerId = playerId;
             ConfigAssignmentHash = configAssignmentHash;
-                        After = after;
-                        Limit = limit;
-                        PlayersInventoryItemIds = playersInventoryItemIds;
-                        InventoryItemIds = inventoryItemIds;
+            
+            After = after;
+            
+            Limit = limit;
+            
+            PlayersInventoryItemIds = playersInventoryItemIds;
+            
+            InventoryItemIds = inventoryItemIds;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
+                        
             if(!string.IsNullOrEmpty(After))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "after", After);
             }
+                        
             var limitStringValue = Limit.ToString();
             queryParams = AddParamsToQueryParams(queryParams, "limit", limitStringValue);
+            
             if(PlayersInventoryItemIds != null)
             {
                 var playersInventoryItemIdsStringValues = PlayersInventoryItemIds.Select(v => v.ToString()).ToList();
                 queryParams = AddParamsToQueryParams(queryParams, "playersInventoryItemIds", playersInventoryItemIdsStringValues, "form", true);
             }
+            
             if(InventoryItemIds != null)
             {
                 var inventoryItemIdsStringValues = InventoryItemIds.Select(v => v.ToString()).ToList();
@@ -706,7 +730,7 @@ namespace Unity.Services.Economy.Internal.Inventory
     }
     /// <summary>
     /// UpdateInventoryItemRequest
-    /// Player Inventory Item
+    /// Update player&#39;s inventory item
     /// </summary>
     [Preserve]
     internal class UpdateInventoryItemRequest : InventoryApiBaseRequest
@@ -723,27 +747,27 @@ namespace Unity.Services.Economy.Internal.Inventory
         [Preserve]
         
         public string PlayersInventoryItemId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for inventoryRequestUpdate </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.InventoryRequestUpdate InventoryRequestUpdate { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// UpdateInventoryItem Request Object.
-        /// Player Inventory Item
+        /// Update player&#39;s inventory item
         /// </summary>
-        /// <param name="projectId">projectId param</param>
-        /// <param name="playerId">playerId param</param>
-        /// <param name="playersInventoryItemId">playersInventoryItemId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="playersInventoryItemId">The `playersInventoryItemId` of the item to be updated.</param>
         /// <param name="inventoryRequestUpdate">InventoryRequestUpdate param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public UpdateInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.InventoryRequestUpdate inventoryRequestUpdate = default(Unity.Services.Economy.Internal.Models.InventoryRequestUpdate))
+        public UpdateInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryRequestUpdate inventoryRequestUpdate, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
@@ -751,19 +775,21 @@ namespace Unity.Services.Economy.Internal.Inventory
             PlayerId = playerId;
             
             PlayersInventoryItemId = playersInventoryItemId;
+            InventoryRequestUpdate = inventoryRequestUpdate;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        InventoryRequestUpdate = inventoryRequestUpdate;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory/{playersInventoryItemId}";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -786,11 +812,7 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(InventoryRequestUpdate != null)
-            {
-                return ConstructBody(InventoryRequestUpdate);
-            }
-            return null;
+            return ConstructBody(InventoryRequestUpdate);
         }
 
         /// <summary>

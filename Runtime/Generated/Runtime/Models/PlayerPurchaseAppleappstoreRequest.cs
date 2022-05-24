@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -31,8 +32,8 @@ namespace Unity.Services.Economy.Internal.Models
         /// Creates an instance of PlayerPurchaseAppleappstoreRequest.
         /// </summary>
         /// <param name="id">ID of the purchase.</param>
-        /// <param name="receipt">Receipt data returned from the App Store as a result of a successful purchase. This should be base64 encoded.</param>
-        /// <param name="localCost">The cost of the purchase as an integer in the minor currency format, e.g. $1.99 USD would be 199</param>
+        /// <param name="receipt">Receipt data returned from the Apple App Store as a result of a successful purchase. This should be base64 encoded.</param>
+        /// <param name="localCost">The cost of the purchase as an integer in the minor currency format, for example, $1.99 USD would be 199.</param>
         /// <param name="localCurrency">The ISO-4217 currency code with which the player purchased the IAP.</param>
         [Preserve]
         public PlayerPurchaseAppleappstoreRequest(string id, string receipt, int localCost, string localCurrency)
@@ -49,18 +50,21 @@ namespace Unity.Services.Economy.Internal.Models
         [Preserve]
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = true)]
         public string Id{ get; }
+        
         /// <summary>
-        /// Receipt data returned from the App Store as a result of a successful purchase. This should be base64 encoded.
+        /// Receipt data returned from the Apple App Store as a result of a successful purchase. This should be base64 encoded.
         /// </summary>
         [Preserve]
         [DataMember(Name = "receipt", IsRequired = true, EmitDefaultValue = true)]
         public string Receipt{ get; }
+        
         /// <summary>
-        /// The cost of the purchase as an integer in the minor currency format, e.g. $1.99 USD would be 199
+        /// The cost of the purchase as an integer in the minor currency format, for example, $1.99 USD would be 199.
         /// </summary>
         [Preserve]
         [DataMember(Name = "localCost", IsRequired = true, EmitDefaultValue = true)]
         public int LocalCost{ get; }
+        
         /// <summary>
         /// The ISO-4217 currency code with which the player purchased the IAP.
         /// </summary>
@@ -68,6 +72,69 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "localCurrency", IsRequired = true, EmitDefaultValue = true)]
         public string LocalCurrency{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseAppleappstoreRequest into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Id != null)
+            {
+                var idStringValue = Id;
+                serializedModel += "id," + idStringValue + ",";
+            }
+            if (Receipt != null)
+            {
+                var receiptStringValue = Receipt;
+                serializedModel += "receipt," + receiptStringValue + ",";
+            }
+            if (LocalCost != null)
+            {
+                var localCostStringValue = LocalCost.ToString();
+                serializedModel += "localCost," + localCostStringValue + ",";
+            }
+            if (LocalCurrency != null)
+            {
+                var localCurrencyStringValue = LocalCurrency;
+                serializedModel += "localCurrency," + localCurrencyStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseAppleappstoreRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Id != null)
+            {
+                var idStringValue = Id.ToString();
+                dictionary.Add("id", idStringValue);
+            }
+            
+            if (Receipt != null)
+            {
+                var receiptStringValue = Receipt.ToString();
+                dictionary.Add("receipt", receiptStringValue);
+            }
+            
+            if (LocalCost != null)
+            {
+                var localCostStringValue = LocalCost.ToString();
+                dictionary.Add("localCost", localCostStringValue);
+            }
+            
+            if (LocalCurrency != null)
+            {
+                var localCurrencyStringValue = LocalCurrency.ToString();
+                dictionary.Add("localCurrency", localCurrencyStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

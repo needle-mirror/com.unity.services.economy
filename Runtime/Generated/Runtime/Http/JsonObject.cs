@@ -22,7 +22,8 @@ namespace Unity.Services.Economy.Internal.Http
     /// hide internal Json implementation details.
     /// </summary>
     [Preserve]
-    internal class JsonObject
+    [JsonConverter(typeof(JsonObjectConverter))]
+    internal class JsonObject : IDeserializable
     {
         /// <summary>
         /// Constructor sets object as the internal object.
@@ -45,10 +46,16 @@ namespace Unity.Services.Economy.Internal.Http
         {
             try
             {
+                if (obj == null)
+                {
+                    return "";
+                }
+
                 if (obj.GetType() == typeof(String))
                 {
                     return obj.ToString();
                 }
+                
                 return JsonConvert.SerializeObject(obj);
             }
             catch (System.Exception)
@@ -96,6 +103,17 @@ namespace Unity.Services.Economy.Internal.Http
             {
                 throw new DeserializationException("Unable to deserialize object.");
             }
+        }
+
+        /// <summary>
+        /// Overload for returning the object as a defined type but without
+        /// needing to specify DeserializationSettings.
+        /// </summary>
+        /// <typeparam name="T">The type to cast internal object to.</typeparam>
+        /// <returns>The internal object case to type T.</returns>
+        public T GetAs<T>()
+        {
+            return this.GetAs<T>(null);
         }
 
         private List<string> ValidateObject<T>(T objectToCheck, List<string> errors = null)

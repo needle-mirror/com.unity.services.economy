@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of PlayerCurrencyBalanceResponseLinks.
         /// </summary>
-        /// <param name="next">Contains the URL path for requesting the next page of results. This value is null when there are no pages remaining.</param>
+        /// <param name="next">Contains the URL path for requesting the next page of results. This value is &#x60;null&#x60; when there are no pages remaining.</param>
         [Preserve]
         public PlayerCurrencyBalanceResponseLinks(string next)
         {
@@ -38,12 +39,42 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Contains the URL path for requesting the next page of results. This value is null when there are no pages remaining.
+        /// Contains the URL path for requesting the next page of results. This value is &#x60;null&#x60; when there are no pages remaining.
         /// </summary>
         [Preserve]
         [DataMember(Name = "next", IsRequired = true, EmitDefaultValue = true)]
         public string Next{ get; }
     
+        /// <summary>
+        /// Formats a PlayerCurrencyBalanceResponseLinks into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Next != null)
+            {
+                var nextStringValue = Next;
+                serializedModel += "next," + nextStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerCurrencyBalanceResponseLinks as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Next != null)
+            {
+                var nextStringValue = Next.ToString();
+                dictionary.Add("next", nextStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

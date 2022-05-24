@@ -17,6 +17,7 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using Unity.Services.Economy.Internal.Helpers;
 using Unity.Services.Economy.Internal.Scheduler;
+using Task = System.Threading.Tasks.Task;
 
 namespace Unity.Services.Economy.Internal.Http
 {
@@ -25,15 +26,6 @@ namespace Unity.Services.Economy.Internal.Http
     /// </summary>
     internal class HttpClient : IHttpClient
     {
-        private static readonly HashSet<string> DisallowedHeaders = new HashSet<string>
-        {
-            "accept-charset", "access-control-request-headers", "access-control-request-method", "connection", "date",
-            "dnt", "expect", "host", "keep-alive", "origin", "referer", "te", "trailer", "transfer-encoding", "upgrade",
-            "via", "content-length", "x-unity-version", "user-agent", "cookie", "cookie2"
-        };
-
-        private static readonly List<int> ErrorCodes = new List<int> {408, 500, 502, 503, 504};
-
         /// <summary>Default Constructor.</summary>
         public HttpClient()
         {
@@ -54,60 +46,7 @@ namespace Unity.Services.Economy.Internal.Http
             return await CreateWebRequestAsync(method.ToUpper(), url, body, headers, requestTimeout, boundary);
         }
 
-        private IEnumerator ProcessRequest(string method, string url, IDictionary<string, string> headers, byte[] body,
-            int requestTimeout, Action<HttpClientResponse> onCompleted)
-        {
-            UnityWebRequestAsyncOperation SetupRequest(int attempt)
-            {
-                var webRequest = CreateWebRequest(method, url, body, headers, requestTimeout);
-                return webRequest.SendWebRequest();
-            }
-
-            bool ShouldRetry(UnityWebRequestAsyncOperation request)
-            {
-                var responseCode = (int) request.webRequest.responseCode;
-                return ErrorCodes.Contains(responseCode);
-            }
-
-            void AsyncOpCompleted(UnityWebRequestAsyncOperation request)
-            {
-                var internalResponse = UnityWebRequestHelpers.CreateHttpClientResponse(request);
-                onCompleted(internalResponse);
-            }
-
-            yield return AsyncOpRetry.FromCreateAsync(SetupRequest)
-                .WithRetryCondition(ShouldRetry)
-                .WhenComplete(AsyncOpCompleted)
-                .Run();
-        }
-
-        private UnityWebRequest CreateWebRequest(string method, string url, byte[] body,
-            IDictionary<string, string> headers, int requestTimeout = 10)
-        {
-            using (var request = new UnityWebRequest(url, method))
-            {
-                foreach (var header in headers)
-                {
-                    if (DisallowedHeaders.Contains(header.Key.ToLower()))
-                    {
-                        continue;
-                    }
-
-                    request.SetRequestHeader(header.Key, header.Value);
-                }
-
-                request.timeout = requestTimeout;
-                if (body != null && (method == UnityWebRequest.kHttpVerbPOST || method == UnityWebRequest.kHttpVerbPUT ||
-                                    method == "PATCH"))
-                {
-                    request.uploadHandler = new UploadHandlerRaw(body);
-                }
-
-                request.downloadHandler = new DownloadHandlerBuffer();
-                return request;
-            }
-        }
-
+        // Create and make an asynchronous UnityWebRequest
         private async Task<HttpClientResponse> CreateWebRequestAsync(string method, string url, byte[] body,
             IDictionary<string, string> headers, int requestTimeout)
         {
@@ -129,14 +68,15 @@ namespace Unity.Services.Economy.Internal.Http
                         }
 
                         request.downloadHandler = new DownloadHandlerBuffer();
-                        return await request.SendWebRequest();
+                        return await SendWebRequest(request);
                     }
-                    
+
                 }, CancellationToken.None, TaskCreationOptions.None,
                 Scheduler.ThreadHelper.TaskScheduler);
             return result;
         }
 
+        // Create and make an asynchronous UnityWebRequest for a multipart body
         private async Task<HttpClientResponse> CreateWebRequestAsync(string method, string url,
             List<IMultipartFormSection> body,
             IDictionary<string, string> headers, int requestTimeout, string boundary = null)
@@ -157,12 +97,13 @@ namespace Unity.Services.Economy.Internal.Http
                     request = SetupMultipartRequest(request, body, boundaryBytes);
                     request.downloadHandler = new DownloadHandlerBuffer();
 
-                    return await request.SendWebRequest();
+                    return await SendWebRequest(request);
                 }, CancellationToken.None, TaskCreationOptions.None,
                 Scheduler.ThreadHelper.TaskScheduler);
             return result;
         }
 
+        // Serialize the body of a multipart form request
         private static UnityWebRequest SetupMultipartRequest(UnityWebRequest request,
             List<IMultipartFormSection> multipartFormSections, byte[] boundary)
         {
@@ -181,22 +122,10 @@ namespace Unity.Services.Economy.Internal.Http
             return request;
         }
 
-        internal static HttpClientResponse CreateHttpClientResponse(UnityWebRequestAsyncOperation unityResponse)
+        // Send a request
+        private UnityWebRequestAsyncOperation SendWebRequest(UnityWebRequest request)
         {
-            var response = unityResponse.webRequest;
-            var result = new HttpClientResponse(
-                response.GetResponseHeaders(),
-                response.responseCode,
-#if UNITY_2020_1_OR_NEWER
-                response.result == UnityWebRequest.Result.ProtocolError,
-                response.result == UnityWebRequest.Result.ConnectionError,
-#else
-                response.isHttpError,
-                response.isNetworkError,
-#endif
-                response.downloadHandler.data,
-                response.error);
-            return result;
+            return request.SendWebRequest();
         }
     }
 }

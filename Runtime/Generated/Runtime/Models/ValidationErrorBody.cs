@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -40,18 +41,60 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter field of ValidationErrorBody
         /// </summary>
         [Preserve]
         [DataMember(Name = "field", IsRequired = true, EmitDefaultValue = true)]
         public string Field{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter messages of ValidationErrorBody
         /// </summary>
         [Preserve]
         [DataMember(Name = "messages", IsRequired = true, EmitDefaultValue = true)]
         public List<string> Messages{ get; }
     
+        /// <summary>
+        /// Formats a ValidationErrorBody into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Field != null)
+            {
+                var fieldStringValue = Field;
+                serializedModel += "field," + fieldStringValue + ",";
+            }
+            if (Messages != null)
+            {
+                var messagesStringValue = Messages.ToString();
+                serializedModel += "messages," + messagesStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a ValidationErrorBody as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Field != null)
+            {
+                var fieldStringValue = Field.ToString();
+                dictionary.Add("field", fieldStringValue);
+            }
+            
+            if (Messages != null)
+            {
+                var messagesStringValue = Messages.ToString();
+                dictionary.Add("messages", messagesStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

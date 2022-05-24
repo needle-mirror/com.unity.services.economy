@@ -24,7 +24,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
     {
             /// <summary>
             /// Async Operation.
-            /// Add Inventory Item.
+            /// Add inventory item.
             /// </summary>
             /// <param name="request">Request object for AddInventoryItem.</param>
             /// <param name="operationConfiguration">Configuration for AddInventoryItem.</param>
@@ -34,7 +34,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
             /// <summary>
             /// Async Operation.
-            /// Delete Inventory Item.
+            /// Delete player&#39;s inventory item.
             /// </summary>
             /// <param name="request">Request object for DeleteInventoryItem.</param>
             /// <param name="operationConfiguration">Configuration for DeleteInventoryItem.</param>
@@ -44,7 +44,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
             /// <summary>
             /// Async Operation.
-            /// List Player Inventory.
+            /// List player inventory.
             /// </summary>
             /// <param name="request">Request object for GetPlayerInventory.</param>
             /// <param name="operationConfiguration">Configuration for GetPlayerInventory.</param>
@@ -54,7 +54,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
             /// <summary>
             /// Async Operation.
-            /// Player Inventory Item.
+            /// Update player&#39;s inventory item.
             /// </summary>
             /// <param name="request">Request object for UpdateInventoryItem.</param>
             /// <param name="operationConfiguration">Configuration for UpdateInventoryItem.</param>
@@ -83,10 +83,6 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
                 // global configuration to ensure we have the correct
                 // combination of headers and a base path (if it is set).
                 Configuration globalConfiguration = new Configuration("https://economy.services.api.unity.com", 10, 4, null);
-                if (EconomyService.Instance != null)
-                {
-                    globalConfiguration = EconomyService.Instance.Configuration;
-                }
                 return Configuration.MergeConfigurations(_configuration, globalConfiguration);
             }
             set { _configuration = value; }
@@ -112,7 +108,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
         /// <summary>
         /// Async Operation.
-        /// Add Inventory Item.
+        /// Add inventory item.
         /// </summary>
         /// <param name="request">Request object for AddInventoryItem.</param>
         /// <param name="operationConfiguration">Configuration for AddInventoryItem.</param>
@@ -139,7 +135,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
         /// <summary>
         /// Async Operation.
-        /// Delete Inventory Item.
+        /// Delete player&#39;s inventory item.
         /// </summary>
         /// <param name="request">Request object for DeleteInventoryItem.</param>
         /// <param name="operationConfiguration">Configuration for DeleteInventoryItem.</param>
@@ -166,7 +162,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
         /// <summary>
         /// Async Operation.
-        /// List Player Inventory.
+        /// List player inventory.
         /// </summary>
         /// <param name="request">Request object for GetPlayerInventory.</param>
         /// <param name="operationConfiguration">Configuration for GetPlayerInventory.</param>
@@ -193,7 +189,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
 
         /// <summary>
         /// Async Operation.
-        /// Player Inventory Item.
+        /// Update player&#39;s inventory item.
         /// </summary>
         /// <param name="request">Request object for UpdateInventoryItem.</param>
         /// <param name="operationConfiguration">Configuration for UpdateInventoryItem.</param>

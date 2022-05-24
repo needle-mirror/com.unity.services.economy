@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,8 +31,8 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of CurrencyModifyBalanceRequest.
         /// </summary>
-        /// <param name="currencyId">Resource ID for the currency.</param>
-        /// <param name="amount">The value to increment or decrement by. Zero is allowed but will result in no change to the currency balance.</param>
+        /// <param name="currencyId">Resource ID of the currency.</param>
+        /// <param name="amount">The value by which to increment or decrement. Zero is allowed but results in no change to the currency balance.</param>
         /// <param name="writeLock">The write lock for the currency balance.</param>
         [Preserve]
         public CurrencyModifyBalanceRequest(string currencyId, long amount, string writeLock = default)
@@ -42,17 +43,19 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Resource ID for the currency.
+        /// Resource ID of the currency.
         /// </summary>
         [Preserve]
         [DataMember(Name = "currencyId", IsRequired = true, EmitDefaultValue = true)]
         public string CurrencyId{ get; }
+        
         /// <summary>
-        /// The value to increment or decrement by. Zero is allowed but will result in no change to the currency balance.
+        /// The value by which to increment or decrement. Zero is allowed but results in no change to the currency balance.
         /// </summary>
         [Preserve]
         [DataMember(Name = "amount", IsRequired = true, EmitDefaultValue = true)]
         public long Amount{ get; }
+        
         /// <summary>
         /// The write lock for the currency balance.
         /// </summary>
@@ -60,6 +63,58 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "writeLock", EmitDefaultValue = false)]
         public string WriteLock{ get; }
     
+        /// <summary>
+        /// Formats a CurrencyModifyBalanceRequest into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (CurrencyId != null)
+            {
+                var currencyIdStringValue = CurrencyId;
+                serializedModel += "currencyId," + currencyIdStringValue + ",";
+            }
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                serializedModel += "amount," + amountStringValue + ",";
+            }
+            if (WriteLock != null)
+            {
+                var writeLockStringValue = WriteLock;
+                serializedModel += "writeLock," + writeLockStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a CurrencyModifyBalanceRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (CurrencyId != null)
+            {
+                var currencyIdStringValue = CurrencyId.ToString();
+                dictionary.Add("currencyId", currencyIdStringValue);
+            }
+            
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                dictionary.Add("amount", amountStringValue);
+            }
+            
+            if (WriteLock != null)
+            {
+                var writeLockStringValue = WriteLock.ToString();
+                dictionary.Add("writeLock", writeLockStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

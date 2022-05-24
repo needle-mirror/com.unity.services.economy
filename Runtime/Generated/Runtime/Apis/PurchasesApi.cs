@@ -24,7 +24,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
     {
             /// <summary>
             /// Async Operation.
-            /// Make purchase.
+            /// Make virtual purchase.
             /// </summary>
             /// <param name="request">Request object for MakeVirtualPurchase.</param>
             /// <param name="operationConfiguration">Configuration for MakeVirtualPurchase.</param>
@@ -34,7 +34,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
 
             /// <summary>
             /// Async Operation.
-            /// Redeem Apple App Store Purchase.
+            /// Redeem Apple App Store purchase.
             /// </summary>
             /// <param name="request">Request object for RedeemAppleAppStorePurchase.</param>
             /// <param name="operationConfiguration">Configuration for RedeemAppleAppStorePurchase.</param>
@@ -44,7 +44,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
 
             /// <summary>
             /// Async Operation.
-            /// Redeem Google Play Purchase.
+            /// Redeem Google Play purchase.
             /// </summary>
             /// <param name="request">Request object for RedeemGooglePlayPurchase.</param>
             /// <param name="operationConfiguration">Configuration for RedeemGooglePlayPurchase.</param>
@@ -73,10 +73,6 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
                 // global configuration to ensure we have the correct
                 // combination of headers and a base path (if it is set).
                 Configuration globalConfiguration = new Configuration("https://economy.services.api.unity.com", 10, 4, null);
-                if (EconomyService.Instance != null)
-                {
-                    globalConfiguration = EconomyService.Instance.Configuration;
-                }
                 return Configuration.MergeConfigurations(_configuration, globalConfiguration);
             }
             set { _configuration = value; }
@@ -102,7 +98,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
 
         /// <summary>
         /// Async Operation.
-        /// Make purchase.
+        /// Make virtual purchase.
         /// </summary>
         /// <param name="request">Request object for MakeVirtualPurchase.</param>
         /// <param name="operationConfiguration">Configuration for MakeVirtualPurchase.</param>
@@ -129,7 +125,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
 
         /// <summary>
         /// Async Operation.
-        /// Redeem Apple App Store Purchase.
+        /// Redeem Apple App Store purchase.
         /// </summary>
         /// <param name="request">Request object for RedeemAppleAppStorePurchase.</param>
         /// <param name="operationConfiguration">Configuration for RedeemAppleAppStorePurchase.</param>
@@ -156,7 +152,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
 
         /// <summary>
         /// Async Operation.
-        /// Redeem Google Play Purchase.
+        /// Redeem Google Play purchase.
         /// </summary>
         /// <param name="request">Request object for RedeemGooglePlayPurchase.</param>
         /// <param name="operationConfiguration">Configuration for RedeemGooglePlayPurchase.</param>

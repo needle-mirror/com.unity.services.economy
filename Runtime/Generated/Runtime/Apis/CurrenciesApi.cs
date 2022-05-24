@@ -24,7 +24,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
     {
             /// <summary>
             /// Async Operation.
-            /// Decrement Currency Balance.
+            /// Decrement currency balance.
             /// </summary>
             /// <param name="request">Request object for DecrementPlayerCurrencyBalance.</param>
             /// <param name="operationConfiguration">Configuration for DecrementPlayerCurrencyBalance.</param>
@@ -34,7 +34,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
             /// <summary>
             /// Async Operation.
-            /// Player Currency Balances.
+            /// Player currency balances.
             /// </summary>
             /// <param name="request">Request object for GetPlayerCurrencies.</param>
             /// <param name="operationConfiguration">Configuration for GetPlayerCurrencies.</param>
@@ -44,7 +44,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
             /// <summary>
             /// Async Operation.
-            /// Increment Currency Balance.
+            /// Increment currency balance.
             /// </summary>
             /// <param name="request">Request object for IncrementPlayerCurrencyBalance.</param>
             /// <param name="operationConfiguration">Configuration for IncrementPlayerCurrencyBalance.</param>
@@ -54,7 +54,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
             /// <summary>
             /// Async Operation.
-            /// Set Currency Balance.
+            /// Set currency balance.
             /// </summary>
             /// <param name="request">Request object for SetPlayerCurrencyBalance.</param>
             /// <param name="operationConfiguration">Configuration for SetPlayerCurrencyBalance.</param>
@@ -83,10 +83,6 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
                 // global configuration to ensure we have the correct
                 // combination of headers and a base path (if it is set).
                 Configuration globalConfiguration = new Configuration("https://economy.services.api.unity.com", 10, 4, null);
-                if (EconomyService.Instance != null)
-                {
-                    globalConfiguration = EconomyService.Instance.Configuration;
-                }
                 return Configuration.MergeConfigurations(_configuration, globalConfiguration);
             }
             set { _configuration = value; }
@@ -112,7 +108,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
         /// <summary>
         /// Async Operation.
-        /// Decrement Currency Balance.
+        /// Decrement currency balance.
         /// </summary>
         /// <param name="request">Request object for DecrementPlayerCurrencyBalance.</param>
         /// <param name="operationConfiguration">Configuration for DecrementPlayerCurrencyBalance.</param>
@@ -139,7 +135,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
         /// <summary>
         /// Async Operation.
-        /// Player Currency Balances.
+        /// Player currency balances.
         /// </summary>
         /// <param name="request">Request object for GetPlayerCurrencies.</param>
         /// <param name="operationConfiguration">Configuration for GetPlayerCurrencies.</param>
@@ -166,7 +162,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
         /// <summary>
         /// Async Operation.
-        /// Increment Currency Balance.
+        /// Increment currency balance.
         /// </summary>
         /// <param name="request">Request object for IncrementPlayerCurrencyBalance.</param>
         /// <param name="operationConfiguration">Configuration for IncrementPlayerCurrencyBalance.</param>
@@ -193,7 +189,7 @@ namespace Unity.Services.Economy.Internal.Apis.Currencies
 
         /// <summary>
         /// Async Operation.
-        /// Set Currency Balance.
+        /// Set currency balance.
         /// </summary>
         /// <param name="request">Request object for SetPlayerCurrencyBalance.</param>
         /// <param name="operationConfiguration">Configuration for SetPlayerCurrencyBalance.</param>

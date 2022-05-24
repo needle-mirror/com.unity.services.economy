@@ -48,7 +48,7 @@ namespace Unity.Services.Economy.Internal.Http
         /// <summary>HttpException Constructor</summary>
         /// <param name="response">The HttpClientResponse that triggered the exception.</param>
         [Preserve]
-        public HttpException(HttpClientResponse response) : base(response.ErrorMessage)
+        public HttpException(HttpClientResponse response) : base($"({response.StatusCode}) {response.ErrorMessage}")
         {
             Response = response;
         }

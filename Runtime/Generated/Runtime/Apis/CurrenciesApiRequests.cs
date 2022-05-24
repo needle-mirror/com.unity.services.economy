@@ -97,6 +97,25 @@ namespace Unity.Services.Economy.Internal.Currencies
         }
 
         /// <summary>
+        /// Helper function to add a provided map of keys and values, representing a model, to the
+        /// provided query params.
+        /// </summary>
+        /// <param name="queryParams">A `List/<string/>` of the query parameters.</param>
+        /// <param name="modelVars">A `Dictionary` representing the vars of the model</param>
+        /// <returns>Returns a `List/<string/>`</returns>
+        [Preserve]
+        public List<string> AddParamsToQueryParams(List<string> queryParams, Dictionary<string, string> modelVars)
+        {
+            foreach(var key in modelVars.Keys)
+            {
+                string escapedValue = UnityWebRequest.EscapeURL(modelVars[key]);
+                queryParams.Add($"{UnityWebRequest.EscapeURL(key)}={escapedValue}");
+            }
+
+            return queryParams;
+        }
+
+        /// <summary>
         /// Helper function to add a provided key and value to the provided
         /// query params and to escape the values correctly if it is a URL.
         /// </summary>
@@ -251,7 +270,7 @@ namespace Unity.Services.Economy.Internal.Currencies
 
     /// <summary>
     /// DecrementPlayerCurrencyBalanceRequest
-    /// Decrement Currency Balance
+    /// Decrement currency balance
     /// </summary>
     [Preserve]
     internal class DecrementPlayerCurrencyBalanceRequest : CurrenciesApiBaseRequest
@@ -268,27 +287,27 @@ namespace Unity.Services.Economy.Internal.Currencies
         [Preserve]
         
         public string CurrencyId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for currencyModifyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest CurrencyModifyBalanceRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// DecrementPlayerCurrencyBalance Request Object.
-        /// Decrement Currency Balance
+        /// Decrement currency balance
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="currencyId">currencyId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyModifyBalanceRequest">CurrencyModifyBalanceRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public DecrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest = default(Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest))
+        public DecrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
@@ -296,19 +315,21 @@ namespace Unity.Services.Economy.Internal.Currencies
             PlayerId = playerId;
             
             CurrencyId = currencyId;
+            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}/decrement";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -331,11 +352,7 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(CurrencyModifyBalanceRequest != null)
-            {
-                return ConstructBody(CurrencyModifyBalanceRequest);
-            }
-            return null;
+            return ConstructBody(CurrencyModifyBalanceRequest);
         }
 
         /// <summary>
@@ -398,7 +415,7 @@ namespace Unity.Services.Economy.Internal.Currencies
     }
     /// <summary>
     /// GetPlayerCurrenciesRequest
-    /// Player Currency Balances
+    /// Player currency balances
     /// </summary>
     [Preserve]
     internal class GetPlayerCurrenciesRequest : CurrenciesApiBaseRequest
@@ -427,13 +444,13 @@ namespace Unity.Services.Economy.Internal.Currencies
 
         /// <summary>
         /// GetPlayerCurrencies Request Object.
-        /// Player Currency Balances
+        /// Player currency balances
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
-        /// <param name="after">The ID after which to retrieve the next page of balances.</param>
-        /// <param name="limit">Number of items to be returned. Defaults to 20.</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="after">The currency ID after which to retrieve the next page of balances.</param>
+        /// <param name="limit">Number of currencies to be returned. Defaults to 20.</param>
         [Preserve]
         public GetPlayerCurrenciesRequest(string projectId, string playerId, string configAssignmentHash = default(string), string after = default(string), int? limit = default(int?))
         {
@@ -442,22 +459,27 @@ namespace Unity.Services.Economy.Internal.Currencies
             
             PlayerId = playerId;
             ConfigAssignmentHash = configAssignmentHash;
-                        After = after;
-                        Limit = limit;
+            
+            After = after;
+            
+            Limit = limit;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
+                        
             if(!string.IsNullOrEmpty(After))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "after", After);
             }
+                        
             var limitStringValue = Limit.ToString();
             queryParams = AddParamsToQueryParams(queryParams, "limit", limitStringValue);
             if (queryParams.Count > 0)
@@ -545,7 +567,7 @@ namespace Unity.Services.Economy.Internal.Currencies
     }
     /// <summary>
     /// IncrementPlayerCurrencyBalanceRequest
-    /// Increment Currency Balance
+    /// Increment currency balance
     /// </summary>
     [Preserve]
     internal class IncrementPlayerCurrencyBalanceRequest : CurrenciesApiBaseRequest
@@ -562,27 +584,27 @@ namespace Unity.Services.Economy.Internal.Currencies
         [Preserve]
         
         public string CurrencyId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for currencyModifyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest CurrencyModifyBalanceRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// IncrementPlayerCurrencyBalance Request Object.
-        /// Increment Currency Balance
+        /// Increment currency balance
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="currencyId">currencyId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyModifyBalanceRequest">CurrencyModifyBalanceRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public IncrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest = default(Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest))
+        public IncrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
@@ -590,19 +612,21 @@ namespace Unity.Services.Economy.Internal.Currencies
             PlayerId = playerId;
             
             CurrencyId = currencyId;
+            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}/increment";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -625,11 +649,7 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(CurrencyModifyBalanceRequest != null)
-            {
-                return ConstructBody(CurrencyModifyBalanceRequest);
-            }
-            return null;
+            return ConstructBody(CurrencyModifyBalanceRequest);
         }
 
         /// <summary>
@@ -692,7 +712,7 @@ namespace Unity.Services.Economy.Internal.Currencies
     }
     /// <summary>
     /// SetPlayerCurrencyBalanceRequest
-    /// Set Currency Balance
+    /// Set currency balance
     /// </summary>
     [Preserve]
     internal class SetPlayerCurrencyBalanceRequest : CurrenciesApiBaseRequest
@@ -709,27 +729,27 @@ namespace Unity.Services.Economy.Internal.Currencies
         [Preserve]
         
         public string CurrencyId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for currencyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest CurrencyBalanceRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// SetPlayerCurrencyBalance Request Object.
-        /// Set Currency Balance
+        /// Set currency balance
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="currencyId">currencyId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
+        /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyBalanceRequest">CurrencyBalanceRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public SetPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest currencyBalanceRequest = default(Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest))
+        public SetPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest currencyBalanceRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
@@ -737,19 +757,21 @@ namespace Unity.Services.Economy.Internal.Currencies
             PlayerId = playerId;
             
             CurrencyId = currencyId;
+            CurrencyBalanceRequest = currencyBalanceRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        CurrencyBalanceRequest = currencyBalanceRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -772,11 +794,7 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(CurrencyBalanceRequest != null)
-            {
-                return ConstructBody(CurrencyBalanceRequest);
-            }
-            return null;
+            return ConstructBody(CurrencyBalanceRequest);
         }
 
         /// <summary>

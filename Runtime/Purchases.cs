@@ -61,8 +61,8 @@ namespace Unity.Services.Economy
             MakeVirtualPurchaseRequest request = new MakeVirtualPurchaseRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                m_EconomyAuthentication.configAssignmentHash,
-                new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds));
+                new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {
@@ -112,8 +112,8 @@ namespace Unity.Services.Economy
             RedeemAppleAppStorePurchaseRequest request = new RedeemAppleAppStorePurchaseRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                m_EconomyAuthentication.configAssignmentHash,
-                new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency));
+                new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {
@@ -167,13 +167,13 @@ namespace Unity.Services.Economy
             RedeemGooglePlayPurchaseRequest request = new RedeemGooglePlayPurchaseRequest(
                 Application.cloudProjectId,
                 m_EconomyAuthentication.GetPlayerId(),
-                m_EconomyAuthentication.configAssignmentHash,
                 new PlayerPurchaseGoogleplaystoreRequest(
                     args.RealMoneyPurchaseId,
                     args.PurchaseData,
                     args.PurchaseDataSignature,
                     args.LocalCost,
-                    args.LocalCurrency));
+                    args.LocalCurrency),
+                m_EconomyAuthentication.configAssignmentHash);
 
             try
             {

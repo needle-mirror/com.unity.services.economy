@@ -18,7 +18,7 @@ namespace Unity.Services.Economy
         public static PlayerInventory PlayerInventory;
 
         [Obsolete("The interface provided by Economy.Purchases has been replaced by EconomyService.Instance.Purchases, and should be accessed from there instead. This API will be removed in an upcoming release.", false)]
-        public static Purchases Purchase;
+        public static Purchases Purchases;
     }
 
     [Obsolete("The interface provided by Economy.Configuration has been replaced by EconomyService.Instance.Configuration, and should be accessed from there instead. This API will be removed in an upcoming release.", false)]

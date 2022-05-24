@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -40,18 +41,48 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter attempted of ErrorResponseConflictCurrencyBalanceData
         /// </summary>
         [Preserve]
         [DataMember(Name = "attempted", IsRequired = true, EmitDefaultValue = true)]
         public CurrencyBalanceRequest Attempted{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter existing of ErrorResponseConflictCurrencyBalanceData
         /// </summary>
         [Preserve]
         [DataMember(Name = "existing", IsRequired = true, EmitDefaultValue = true)]
         public CurrencyBalanceResponse Existing{ get; }
     
+        /// <summary>
+        /// Formats a ErrorResponseConflictCurrencyBalanceData into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Attempted != null)
+            {
+                var attemptedStringValue = Attempted.ToString();
+                serializedModel += "attempted," + attemptedStringValue + ",";
+            }
+            if (Existing != null)
+            {
+                var existingStringValue = Existing.ToString();
+                serializedModel += "existing," + existingStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a ErrorResponseConflictCurrencyBalanceData as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            return dictionary;
+        }
     }
 }
-

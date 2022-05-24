@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -32,7 +33,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         /// <param name="id">ID of the inventory item.</param>
         /// <param name="amount">Number of player inventory items.</param>
-        /// <param name="playersInventoryItemIds">Players inventory item IDs of the players items to be added or removed.</param>
+        /// <param name="playersInventoryItemIds">The &#x60;playersInventoryItemIds&#x60; for the player&#39;s items to be added or removed.</param>
         [Preserve]
         public InventoryExchangeItem(string id, int amount, List<string> playersInventoryItemIds)
         {
@@ -47,19 +48,73 @@ namespace Unity.Services.Economy.Internal.Models
         [Preserve]
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = true)]
         public string Id{ get; }
+        
         /// <summary>
         /// Number of player inventory items.
         /// </summary>
         [Preserve]
         [DataMember(Name = "amount", IsRequired = true, EmitDefaultValue = true)]
         public int Amount{ get; }
+        
         /// <summary>
-        /// Players inventory item IDs of the players items to be added or removed.
+        /// The &#x60;playersInventoryItemIds&#x60; for the player&#39;s items to be added or removed.
         /// </summary>
         [Preserve]
         [DataMember(Name = "playersInventoryItemIds", IsRequired = true, EmitDefaultValue = true)]
         public List<string> PlayersInventoryItemIds{ get; }
     
+        /// <summary>
+        /// Formats a InventoryExchangeItem into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Id != null)
+            {
+                var idStringValue = Id;
+                serializedModel += "id," + idStringValue + ",";
+            }
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                serializedModel += "amount," + amountStringValue + ",";
+            }
+            if (PlayersInventoryItemIds != null)
+            {
+                var playersInventoryItemIdsStringValue = PlayersInventoryItemIds.ToString();
+                serializedModel += "playersInventoryItemIds," + playersInventoryItemIdsStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a InventoryExchangeItem as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Id != null)
+            {
+                var idStringValue = Id.ToString();
+                dictionary.Add("id", idStringValue);
+            }
+            
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                dictionary.Add("amount", amountStringValue);
+            }
+            
+            if (PlayersInventoryItemIds != null)
+            {
+                var playersInventoryItemIdsStringValue = PlayersInventoryItemIds.ToString();
+                dictionary.Add("playersInventoryItemIds", playersInventoryItemIdsStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

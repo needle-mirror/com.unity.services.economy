@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -30,10 +31,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Costs of the purchase.
         /// </summary>
-        /// <param name="currency">Currency that was deducted in the purchase.</param>
         /// <param name="inventory">Inventory that was deducted in the purchase.</param>
+        /// <param name="currency">Currency that was deducted in the purchase.</param>
         [Preserve]
-        public PlayerPurchaseVirtualResponseCosts(List<CurrencyExchangeItem> currency, List<InventoryExchangeItem> inventory)
+        public PlayerPurchaseVirtualResponseCosts(List<InventoryExchangeItem> inventory, List<CurrencyExchangeItem> currency = default)
         {
             Currency = currency;
             Inventory = inventory;
@@ -43,8 +44,9 @@ namespace Unity.Services.Economy.Internal.Models
         /// Currency that was deducted in the purchase.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "currency", IsRequired = true, EmitDefaultValue = true)]
+        [DataMember(Name = "currency", EmitDefaultValue = false)]
         public List<CurrencyExchangeItem> Currency{ get; }
+        
         /// <summary>
         /// Inventory that was deducted in the purchase.
         /// </summary>
@@ -52,6 +54,35 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "inventory", IsRequired = true, EmitDefaultValue = true)]
         public List<InventoryExchangeItem> Inventory{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseVirtualResponseCosts into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Currency != null)
+            {
+                var currencyStringValue = Currency.ToString();
+                serializedModel += "currency," + currencyStringValue + ",";
+            }
+            if (Inventory != null)
+            {
+                var inventoryStringValue = Inventory.ToString();
+                serializedModel += "inventory," + inventoryStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseVirtualResponseCosts as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            return dictionary;
+        }
     }
 }
-

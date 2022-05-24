@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -40,18 +41,48 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter verification of PlayerPurchaseGoogleplaystoreResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "verification", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseGoogleplaystoreResponseVerification Verification{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter rewards of PlayerPurchaseGoogleplaystoreResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "rewards", IsRequired = true, EmitDefaultValue = true)]
         public PlayerPurchaseVirtualResponseRewards Rewards{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseGoogleplaystoreResponse into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Verification != null)
+            {
+                var verificationStringValue = Verification.ToString();
+                serializedModel += "verification," + verificationStringValue + ",";
+            }
+            if (Rewards != null)
+            {
+                var rewardsStringValue = Rewards.ToString();
+                serializedModel += "rewards," + rewardsStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseGoogleplaystoreResponse as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            return dictionary;
+        }
     }
 }
-

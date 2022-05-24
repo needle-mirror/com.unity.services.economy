@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -45,6 +46,7 @@ namespace Unity.Services.Economy.Internal.Models
         [Preserve]
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = true)]
         public string Id{ get; }
+        
         /// <summary>
         /// Amount of currency added or deducted.
         /// </summary>
@@ -52,6 +54,47 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "amount", IsRequired = true, EmitDefaultValue = true)]
         public long Amount{ get; }
     
+        /// <summary>
+        /// Formats a CurrencyExchangeItem into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Id != null)
+            {
+                var idStringValue = Id;
+                serializedModel += "id," + idStringValue + ",";
+            }
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                serializedModel += "amount," + amountStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a CurrencyExchangeItem as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Id != null)
+            {
+                var idStringValue = Id.ToString();
+                dictionary.Add("id", idStringValue);
+            }
+            
+            if (Amount != null)
+            {
+                var amountStringValue = Amount.ToString();
+                dictionary.Add("amount", amountStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

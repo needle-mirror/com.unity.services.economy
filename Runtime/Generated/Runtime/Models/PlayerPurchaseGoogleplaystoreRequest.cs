@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -31,9 +32,9 @@ namespace Unity.Services.Economy.Internal.Models
         /// Creates an instance of PlayerPurchaseGoogleplaystoreRequest.
         /// </summary>
         /// <param name="id">ID of the purchase.</param>
-        /// <param name="purchaseData">A JSON encoded string returned from a successful in app billing purchase.</param>
-        /// <param name="purchaseDataSignature">A signature of the PurchaseData returned from a successful in app billing purchase.</param>
-        /// <param name="localCost">The cost of the purchase as an integer in the minor currency format, e.g. $1.99 USD would be 199</param>
+        /// <param name="purchaseData">A JSON encoded string returned from a successful in-app billing purchase.</param>
+        /// <param name="purchaseDataSignature">A signature of the &#x60;purchaseData&#x60; returned from a successful in-app billing purchase.</param>
+        /// <param name="localCost">The cost of the purchase as an integer in the minor currency format, for example, $1.99 USD would be 199.</param>
         /// <param name="localCurrency">The ISO-4217 currency code with which the player purchased the IAP.</param>
         [Preserve]
         public PlayerPurchaseGoogleplaystoreRequest(string id, string purchaseData, string purchaseDataSignature, int localCost, string localCurrency)
@@ -51,24 +52,28 @@ namespace Unity.Services.Economy.Internal.Models
         [Preserve]
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = true)]
         public string Id{ get; }
+        
         /// <summary>
-        /// A JSON encoded string returned from a successful in app billing purchase.
+        /// A JSON encoded string returned from a successful in-app billing purchase.
         /// </summary>
         [Preserve]
         [DataMember(Name = "purchaseData", IsRequired = true, EmitDefaultValue = true)]
         public string PurchaseData{ get; }
+        
         /// <summary>
-        /// A signature of the PurchaseData returned from a successful in app billing purchase.
+        /// A signature of the &#x60;purchaseData&#x60; returned from a successful in-app billing purchase.
         /// </summary>
         [Preserve]
         [DataMember(Name = "purchaseDataSignature", IsRequired = true, EmitDefaultValue = true)]
         public string PurchaseDataSignature{ get; }
+        
         /// <summary>
-        /// The cost of the purchase as an integer in the minor currency format, e.g. $1.99 USD would be 199
+        /// The cost of the purchase as an integer in the minor currency format, for example, $1.99 USD would be 199.
         /// </summary>
         [Preserve]
         [DataMember(Name = "localCost", IsRequired = true, EmitDefaultValue = true)]
         public int LocalCost{ get; }
+        
         /// <summary>
         /// The ISO-4217 currency code with which the player purchased the IAP.
         /// </summary>
@@ -76,6 +81,80 @@ namespace Unity.Services.Economy.Internal.Models
         [DataMember(Name = "localCurrency", IsRequired = true, EmitDefaultValue = true)]
         public string LocalCurrency{ get; }
     
+        /// <summary>
+        /// Formats a PlayerPurchaseGoogleplaystoreRequest into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Id != null)
+            {
+                var idStringValue = Id;
+                serializedModel += "id," + idStringValue + ",";
+            }
+            if (PurchaseData != null)
+            {
+                var purchaseDataStringValue = PurchaseData;
+                serializedModel += "purchaseData," + purchaseDataStringValue + ",";
+            }
+            if (PurchaseDataSignature != null)
+            {
+                var purchaseDataSignatureStringValue = PurchaseDataSignature;
+                serializedModel += "purchaseDataSignature," + purchaseDataSignatureStringValue + ",";
+            }
+            if (LocalCost != null)
+            {
+                var localCostStringValue = LocalCost.ToString();
+                serializedModel += "localCost," + localCostStringValue + ",";
+            }
+            if (LocalCurrency != null)
+            {
+                var localCurrencyStringValue = LocalCurrency;
+                serializedModel += "localCurrency," + localCurrencyStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a PlayerPurchaseGoogleplaystoreRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Id != null)
+            {
+                var idStringValue = Id.ToString();
+                dictionary.Add("id", idStringValue);
+            }
+            
+            if (PurchaseData != null)
+            {
+                var purchaseDataStringValue = PurchaseData.ToString();
+                dictionary.Add("purchaseData", purchaseDataStringValue);
+            }
+            
+            if (PurchaseDataSignature != null)
+            {
+                var purchaseDataSignatureStringValue = PurchaseDataSignature.ToString();
+                dictionary.Add("purchaseDataSignature", purchaseDataSignatureStringValue);
+            }
+            
+            if (LocalCost != null)
+            {
+                var localCostStringValue = LocalCost.ToString();
+                dictionary.Add("localCost", localCostStringValue);
+            }
+            
+            if (LocalCurrency != null)
+            {
+                var localCurrencyStringValue = LocalCurrency.ToString();
+                dictionary.Add("localCurrency", localCurrencyStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-

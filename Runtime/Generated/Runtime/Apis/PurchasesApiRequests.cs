@@ -97,6 +97,25 @@ namespace Unity.Services.Economy.Internal.Purchases
         }
 
         /// <summary>
+        /// Helper function to add a provided map of keys and values, representing a model, to the
+        /// provided query params.
+        /// </summary>
+        /// <param name="queryParams">A `List/<string/>` of the query parameters.</param>
+        /// <param name="modelVars">A `Dictionary` representing the vars of the model</param>
+        /// <returns>Returns a `List/<string/>`</returns>
+        [Preserve]
+        public List<string> AddParamsToQueryParams(List<string> queryParams, Dictionary<string, string> modelVars)
+        {
+            foreach(var key in modelVars.Keys)
+            {
+                string escapedValue = UnityWebRequest.EscapeURL(modelVars[key]);
+                queryParams.Add($"{UnityWebRequest.EscapeURL(key)}={escapedValue}");
+            }
+
+            return queryParams;
+        }
+
+        /// <summary>
         /// Helper function to add a provided key and value to the provided
         /// query params and to escape the values correctly if it is a URL.
         /// </summary>
@@ -251,7 +270,7 @@ namespace Unity.Services.Economy.Internal.Purchases
 
     /// <summary>
     /// MakeVirtualPurchaseRequest
-    /// Make purchase
+    /// Make virtual purchase
     /// </summary>
     [Preserve]
     internal class MakeVirtualPurchaseRequest : PurchasesApiBaseRequest
@@ -264,44 +283,46 @@ namespace Unity.Services.Economy.Internal.Purchases
         [Preserve]
         
         public string PlayerId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for playerPurchaseVirtualRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest PlayerPurchaseVirtualRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// MakeVirtualPurchase Request Object.
-        /// Make purchase
+        /// Make virtual purchase
         /// </summary>
-        /// <param name="projectId">projectId param</param>
-        /// <param name="playerId">playerId param</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseVirtualRequest">PlayerPurchaseVirtualRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public MakeVirtualPurchaseRequest(string projectId, string playerId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest playerPurchaseVirtualRequest = default(Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest))
+        public MakeVirtualPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest playerPurchaseVirtualRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
             
             PlayerId = playerId;
+            PlayerPurchaseVirtualRequest = playerPurchaseVirtualRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        PlayerPurchaseVirtualRequest = playerPurchaseVirtualRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/virtual";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -324,11 +345,7 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(PlayerPurchaseVirtualRequest != null)
-            {
-                return ConstructBody(PlayerPurchaseVirtualRequest);
-            }
-            return null;
+            return ConstructBody(PlayerPurchaseVirtualRequest);
         }
 
         /// <summary>
@@ -391,7 +408,7 @@ namespace Unity.Services.Economy.Internal.Purchases
     }
     /// <summary>
     /// RedeemAppleAppStorePurchaseRequest
-    /// Redeem Apple App Store Purchase
+    /// Redeem Apple App Store purchase
     /// </summary>
     [Preserve]
     internal class RedeemAppleAppStorePurchaseRequest : PurchasesApiBaseRequest
@@ -404,44 +421,46 @@ namespace Unity.Services.Economy.Internal.Purchases
         [Preserve]
         
         public string PlayerId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for playerPurchaseAppleappstoreRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest PlayerPurchaseAppleappstoreRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// RedeemAppleAppStorePurchase Request Object.
-        /// Redeem Apple App Store Purchase
+        /// Redeem Apple App Store purchase
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseAppleappstoreRequest">PlayerPurchaseAppleappstoreRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public RedeemAppleAppStorePurchaseRequest(string projectId, string playerId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest playerPurchaseAppleappstoreRequest = default(Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest))
+        public RedeemAppleAppStorePurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest playerPurchaseAppleappstoreRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
             
             PlayerId = playerId;
+            PlayerPurchaseAppleappstoreRequest = playerPurchaseAppleappstoreRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        PlayerPurchaseAppleappstoreRequest = playerPurchaseAppleappstoreRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/appleappstore";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -464,11 +483,7 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(PlayerPurchaseAppleappstoreRequest != null)
-            {
-                return ConstructBody(PlayerPurchaseAppleappstoreRequest);
-            }
-            return null;
+            return ConstructBody(PlayerPurchaseAppleappstoreRequest);
         }
 
         /// <summary>
@@ -531,7 +546,7 @@ namespace Unity.Services.Economy.Internal.Purchases
     }
     /// <summary>
     /// RedeemGooglePlayPurchaseRequest
-    /// Redeem Google Play Purchase
+    /// Redeem Google Play purchase
     /// </summary>
     [Preserve]
     internal class RedeemGooglePlayPurchaseRequest : PurchasesApiBaseRequest
@@ -544,44 +559,46 @@ namespace Unity.Services.Economy.Internal.Purchases
         [Preserve]
         
         public string PlayerId { get; }
-        /// <summary>Accessor for configAssignmentHash </summary>
-        [Preserve]
-        public string ConfigAssignmentHash { get; }
-        
         /// <summary>Accessor for playerPurchaseGoogleplaystoreRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest PlayerPurchaseGoogleplaystoreRequest { get; }
+        
+        /// <summary>Accessor for configAssignmentHash </summary>
+        [Preserve]
+        public string ConfigAssignmentHash { get; }
         
         string PathAndQueryParams;
 
         /// <summary>
         /// RedeemGooglePlayPurchase Request Object.
-        /// Redeem Google Play Purchase
+        /// Redeem Google Play purchase
         /// </summary>
-        /// <param name="projectId">ID of the project</param>
-        /// <param name="playerId">ID of the player</param>
-        /// <param name="configAssignmentHash">Hash of the Remote Config assignment</param>
+        /// <param name="projectId">ID of the project.</param>
+        /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseGoogleplaystoreRequest">PlayerPurchaseGoogleplaystoreRequest param</param>
+        /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         [Preserve]
-        public RedeemGooglePlayPurchaseRequest(string projectId, string playerId, string configAssignmentHash = default(string), Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest playerPurchaseGoogleplaystoreRequest = default(Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest))
+        public RedeemGooglePlayPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest playerPurchaseGoogleplaystoreRequest, string configAssignmentHash = default(string))
         {
             
             ProjectId = projectId;
             
             PlayerId = playerId;
+            PlayerPurchaseGoogleplaystoreRequest = playerPurchaseGoogleplaystoreRequest;
+            
             ConfigAssignmentHash = configAssignmentHash;
-                        PlayerPurchaseGoogleplaystoreRequest = playerPurchaseGoogleplaystoreRequest;
             
 
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/googleplaystore";
 
             List<string> queryParams = new List<string>();
 
+            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-            if (queryParams.Count > 0)
+                        if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -604,11 +621,7 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            if(PlayerPurchaseGoogleplaystoreRequest != null)
-            {
-                return ConstructBody(PlayerPurchaseGoogleplaystoreRequest);
-            }
-            return null;
+            return ConstructBody(PlayerPurchaseGoogleplaystoreRequest);
         }
 
         /// <summary>

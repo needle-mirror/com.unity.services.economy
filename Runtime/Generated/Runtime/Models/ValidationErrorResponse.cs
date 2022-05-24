@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Scripting;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -21,14 +22,14 @@ using Unity.Services.Economy.Internal.Http;
 namespace Unity.Services.Economy.Internal.Models
 {
     /// <summary>
-    /// Validation error response when a value provided from the client does not pass validation on server 
+    /// Validation error response when a value provided from the client does not pass validation on server. 
     /// </summary>
     [Preserve]
     [DataContract(Name = "validation-error-response")]
     internal class ValidationErrorResponse
     {
         /// <summary>
-        /// Validation error response when a value provided from the client does not pass validation on server 
+        /// Validation error response when a value provided from the client does not pass validation on server. 
         /// </summary>
         /// <param name="type">type param</param>
         /// <param name="title">title param</param>
@@ -50,48 +51,144 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// 
+        /// Parameter type of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "type", IsRequired = true, EmitDefaultValue = true)]
         public string Type{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter title of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "title", IsRequired = true, EmitDefaultValue = true)]
         public string Title{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter status of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "status", IsRequired = true, EmitDefaultValue = true)]
         public int Status{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter code of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "code", IsRequired = true, EmitDefaultValue = true)]
         public int Code{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter detail of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "detail", IsRequired = true, EmitDefaultValue = true)]
         public string Detail{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter instance of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "instance", EmitDefaultValue = false)]
         public string Instance{ get; }
+        
         /// <summary>
-        /// 
+        /// Parameter errors of ValidationErrorResponse
         /// </summary>
         [Preserve]
         [DataMember(Name = "errors", IsRequired = true, EmitDefaultValue = true)]
         public List<ValidationErrorBody> Errors{ get; }
     
+        /// <summary>
+        /// Formats a ValidationErrorResponse into a string of key-value pairs for use as a path parameter.
+        /// </summary>
+        /// <returns>Returns a string representation of the key-value pairs.</returns>
+        public string SerializeAsPathParam()
+        {
+            var serializedModel = "";
+            if (Type != null)
+            {
+                var typeStringValue = Type;
+                serializedModel += "type," + typeStringValue + ",";
+            }
+            if (Title != null)
+            {
+                var titleStringValue = Title;
+                serializedModel += "title," + titleStringValue + ",";
+            }
+            if (Status != null)
+            {
+                var statusStringValue = Status.ToString();
+                serializedModel += "status," + statusStringValue + ",";
+            }
+            if (Code != null)
+            {
+                var codeStringValue = Code.ToString();
+                serializedModel += "code," + codeStringValue + ",";
+            }
+            if (Detail != null)
+            {
+                var detailStringValue = Detail;
+                serializedModel += "detail," + detailStringValue + ",";
+            }
+            if (Instance != null)
+            {
+                var instanceStringValue = Instance;
+                serializedModel += "instance," + instanceStringValue + ",";
+            }
+            if (Errors != null)
+            {
+                var errorsStringValue = Errors.ToString();
+                serializedModel += "errors," + errorsStringValue;
+            }
+            return serializedModel;
+        }
+
+        /// <summary>
+        /// Returns a ValidationErrorResponse as a dictionary of key-value pairs for use as a query parameter.
+        /// </summary>
+        /// <returns>Returns a dictionary of string key-value pairs.</returns>
+        public Dictionary<string, string> GetAsQueryParam()
+        {
+            var dictionary = new Dictionary<string, string>();
+            
+            if (Type != null)
+            {
+                var typeStringValue = Type.ToString();
+                dictionary.Add("type", typeStringValue);
+            }
+            
+            if (Title != null)
+            {
+                var titleStringValue = Title.ToString();
+                dictionary.Add("title", titleStringValue);
+            }
+            
+            if (Status != null)
+            {
+                var statusStringValue = Status.ToString();
+                dictionary.Add("status", statusStringValue);
+            }
+            
+            if (Code != null)
+            {
+                var codeStringValue = Code.ToString();
+                dictionary.Add("code", codeStringValue);
+            }
+            
+            if (Detail != null)
+            {
+                var detailStringValue = Detail.ToString();
+                dictionary.Add("detail", detailStringValue);
+            }
+            
+            if (Instance != null)
+            {
+                var instanceStringValue = Instance.ToString();
+                dictionary.Add("instance", instanceStringValue);
+            }
+            
+            return dictionary;
+        }
     }
 }
-
