@@ -14,36 +14,17 @@ using Unity.Services.Economy.Model;
 
 namespace Unity.Services.Economy
 {
-    public interface IEconomyPlayerInventoryApiClient
-    {
-        event Action<string> PlayersInventoryItemUpdated;
-        Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null);
-        Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null);
-        Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null);
-        Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId,
-            object instanceData, UpdatePlayersInventoryItemOptions options = null);
-    }
-
     /// <summary>
     /// The PlayerInventory methods provide access to the current player's inventory items, and allow you to update them.
     /// </summary>
-    class PlayerInventoryInternal : IEconomyPlayerInventoryApiClient
+    public interface IEconomyPlayerInventoryApiClient
     {
-        readonly IInventoryApiClient m_InventoryApiClient;
-        readonly IEconomyAuthentication m_EconomyAuthentication;
-
-        internal PlayerInventoryInternal(IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
-        {
-            m_InventoryApiClient = inventoryApiClient;
-            m_EconomyAuthentication = economyAuthentication;
-        }
-
         /// Fires when the SDK updates a player's inventory item (e.g. by editing the custom data). The called function will be passed the player inventory item ID
         /// that was updated. (Note: this is the ID of the individual inventory item owned by the player, not the item configuration).
         ///
         /// Note that this will NOT fire for balance changes from elsewhere not in this instance of the SDK, for example other
         /// server-side updates or updates from other devices.
-        public event Action<string> PlayersInventoryItemUpdated;
+        event Action<string> PlayersInventoryItemUpdated;
 
         /// <summary>
         /// Gets the inventory items in the inventory of the player that is currently signed in.
@@ -56,6 +37,61 @@ namespace Unity.Services.Economy
         /// <returns>A GetInventoryResult object, with properties as specified above.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null);
+
+        /// <summary>
+        /// Adds an inventory item to the player's inventory.
+        ///
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="inventoryItemId">The item ID to add</param>
+        /// <param name="options">(Optional) Use to set the PlayersInventoryItem ID for the created instance and instance data.</param>
+        /// <returns>The created player inventory item.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null);
+
+        /// <summary>
+        /// Deletes an item in the player's inventory.
+        ///
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="playersInventoryItemId">PlayersInventoryItem ID for the created inventory item</param>
+        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null);
+
+        /// <summary>
+        /// Updates the instance data of an item in the player's inventory.
+        ///
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="playersInventoryItemId">PlayersInventoryItem ID for the created inventory item</param>
+        /// <param name="instanceData">Instance data</param>
+        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId,
+            object instanceData, UpdatePlayersInventoryItemOptions options = null);
+    }
+
+    class PlayerInventoryInternal : IEconomyPlayerInventoryApiClient
+    {
+        readonly IInventoryApiClient m_InventoryApiClient;
+        readonly IEconomyAuthentication m_EconomyAuthentication;
+
+        internal PlayerInventoryInternal(IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
+        {
+            m_InventoryApiClient = inventoryApiClient;
+            m_EconomyAuthentication = economyAuthentication;
+        }
+
+        public event Action<string> PlayersInventoryItemUpdated;
+
         public async Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null)
         {
             return await GetNextInventory(null, options);
@@ -100,17 +136,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Adds an inventory item to the player's inventory.
-        ///
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="inventoryItemId">The item ID to add</param>
-        /// <param name="options">(Optional) Use to set the PlayersInventoryItem ID for the created instance and instance data.</param>
-        /// <returns>The created player inventory item.</returns>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -144,16 +169,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Deletes an item in the player's inventory.
-        ///
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="playersInventoryItemId">PlayersInventoryItem ID for the created inventory item</param>
-        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -184,17 +199,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Updates the instance data of an item in the player's inventory.
-        ///
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="playersInventoryItemId">PlayersInventoryItem ID for the created inventory item</param>
-        /// <param name="instanceData">Instance data</param>
-        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, object instanceData, UpdatePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();

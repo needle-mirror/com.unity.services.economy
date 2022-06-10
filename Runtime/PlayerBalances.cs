@@ -14,36 +14,18 @@ using Unity.Services.Economy.Model;
 
 namespace Unity.Services.Economy
 {
-    public interface IEconomyPlayerBalancesApiClient
-    {
-        event Action<string> BalanceUpdated;
-        Task<GetBalancesResult> GetBalancesAsync(GetBalancesOptions options = null);
-        Task<PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options = null);
-        Task<PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options = null);
-        Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null);
-    }
-
     /// <summary>
     /// The PlayerBalances methods provide access to the current player's balances, and allow you to update them.
     /// </summary>
-    internal class PlayerBalancesInternal : IEconomyPlayerBalancesApiClient
+    public interface IEconomyPlayerBalancesApiClient
     {
-        readonly ICurrenciesApiClient m_CurrenciesApiClient;
-        readonly IEconomyAuthentication m_EconomyAuthentication;
-
-        internal PlayerBalancesInternal(ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
-        {
-            m_CurrenciesApiClient = currenciesApiClient;
-            m_EconomyAuthentication = economyAuthWrapper;
-        }
-
         /// <summary>
         /// Fires when the SDK updates a player's balance. The called action will be passed the currency ID that was updated.
         ///
         /// Note that this will NOT fire for balance changes from elsewhere not in this instance of the SDK, for example other
         /// server-side updates or updates from other devices.
         /// </summary>
-        public event Action<string> BalanceUpdated;
+        event Action<string> BalanceUpdated;
 
         /// <summary>
         /// Gets the current balances for the currently signed in player.
@@ -56,6 +38,71 @@ namespace Unity.Services.Economy
         /// <returns>A GetBalancesResult object, with properties as specified above.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<GetBalancesResult> GetBalancesAsync(GetBalancesOptions options = null);
+
+        /// <summary>
+        /// Increments the balance of the specified currency for the currently logged in user.
+        ///
+        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optomistic concurrency.
+        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="currencyId">The currency ID to update</param>
+        /// <param name="amount">The amount to increment by</param>
+        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
+        /// <returns>The updated player balance for the relevant currency.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options = null);
+
+        /// <summary>
+        /// Decrements the balance of the specified currency for the currently logged in user.
+        ///
+        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
+        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="currencyId">The currency ID to update</param>
+        /// <param name="amount">The amount to decrement by</param>
+        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
+        /// <returns>The updated player balance for the relevant currency.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options = null);
+
+        /// <summary>
+        /// Sets the balance of the specified currency for the currently logged in user.
+        /// Will throw an exception if the currency doesn't exist, or if the set amount will take the balance above/below the maximum/minimum allowed for that currency.
+        ///
+        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
+        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="currencyId">The currency ID to update</param>
+        /// <param name="balance">The amount to set the balance to</param>
+        /// <param name="options">(Optional) Used to set a write lock for optimistic concurrency</param>
+        /// <returns>The updated player balance for the relevant currency.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null);
+    }
+
+    internal class PlayerBalancesInternal : IEconomyPlayerBalancesApiClient
+    {
+        readonly ICurrenciesApiClient m_CurrenciesApiClient;
+        readonly IEconomyAuthentication m_EconomyAuthentication;
+
+        internal PlayerBalancesInternal(ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
+        {
+            m_CurrenciesApiClient = currenciesApiClient;
+            m_EconomyAuthentication = economyAuthWrapper;
+        }
+
+        public event Action<string> BalanceUpdated;
+
         public async Task<GetBalancesResult> GetBalancesAsync(GetBalancesOptions options = null)
         {
             if (options == null)
@@ -93,20 +140,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Increments the balance of the specified currency for the currently logged in user.
-        ///
-        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optomistic concurrency.
-        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="currencyId">The currency ID to update</param>
-        /// <param name="amount">The amount to increment by</param>
-        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
-        /// <returns>The updated player balance for the relevant currency.</returns>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> IncrementBalanceAsync(string currencyId, int amount, IncrementBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -141,20 +174,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Decrements the balance of the specified currency for the currently logged in user.
-        ///
-        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
-        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="currencyId">The currency ID to update</param>
-        /// <param name="amount">The amount to decrement by</param>
-        /// <param name="options">(Optional) Use to set a write lock for optimistic concurrency</param>
-        /// <returns>The updated player balance for the relevant currency.</returns>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> DecrementBalanceAsync(string currencyId, int amount, DecrementBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -189,21 +208,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Sets the balance of the specified currency for the currently logged in user.
-        /// Will throw an exception if the currency doesn't exist, or if the set amount will take the balance above/below the maximum/minimum allowed for that currency.
-        ///
-        /// This method optionally takes a writeLock string. If provided, then an exception will be thrown unless the writeLock matches the writeLock received by a previous read, in order to provide optimistic concurrency.
-        /// If not provided, the transaction will proceed regardless of any existing writeLock in the data.
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="currencyId">The currency ID to update</param>
-        /// <param name="balance">The amount to set the balance to</param>
-        /// <param name="options">(Optional) Used to set a write lock for optimistic concurrency</param>
-        /// <returns>The updated player balance for the relevant currency.</returns>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<PlayerBalance> SetBalanceAsync(string currencyId, long balance, SetBalanceOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();

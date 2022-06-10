@@ -13,16 +13,55 @@ using InventoryExchangeItem = Unity.Services.Economy.Model.InventoryExchangeItem
 
 namespace Unity.Services.Economy
 {
-    public interface IEconomyPurchasesApiClientApi
-    {
-        Task<MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, MakeVirtualPurchaseOptions options = null);
-        Task<RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args);
-        Task<RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args);
-    }
-
     /// <summary>
     /// The Purchases methods allow you to make virtual and real world purchases.
     /// </summary>
+    public interface IEconomyPurchasesApiClientApi
+    {
+        /// <summary>
+        /// Makes the specified virtual purchase using the items in the players inventory.
+        ///
+        /// Takes a virtualPurchaseId. This is the ID of the purchase to make.
+        /// Takes an optional list of instanceIds. These are the `PlayersInventoryItems` IDs of the items in the players inventory that should be used towards the cost(s) of the purchase. If these are not supplied, the items
+        /// used towards the cost(s) will be chosen automatically.
+        ///
+        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
+        /// </summary>
+        /// <param name="virtualPurchaseId">Purchase ID of the purchase to be made</param>
+        /// <param name="options">(Optional) Use to set a list of instance IDs to use towards the cost(s) of the purchase</param>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        Task<MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, MakeVirtualPurchaseOptions options = null);
+
+        /// <summary>
+        /// Redeems the specified Apple App Store purchase.
+        ///
+        /// Throws a EconomyException with a reason code and explanation
+        /// </summary>
+        /// <param name="args">The Apple App Store purchase details for the request</param>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        /// <exception cref="EconomyAppleAppStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
+        /// invalid receipt, purchase already redeemed, product ID mismatch, product ID not defined, currency max would be exceeded.</exception>
+        Task<RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args);
+
+        /// <summary>
+        /// Redeems the specified Google Play Store Store purchase.
+        ///
+        /// Throws a EconomyException with a reason code and explanation
+        /// </summary>
+        /// <param name="args">The Google Play Store purchase details for the request.</param>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
+        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        /// <exception cref="EconomyGooglePlayStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
+        /// invalid purchase data, invalid purchase data signature, purchase already redeemed, product ID mismatch,
+        /// product ID not defined, currency max would be exceeded.</exception>
+        Task<RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args);
+    }
+
     class PurchasesInternal : IEconomyPurchasesApiClientApi
     {
         readonly IPurchasesApiClient m_PurchasesApiClient;
@@ -40,20 +79,6 @@ namespace Unity.Services.Economy
             s_PlayerInventoryInternal = playerInventoryInternal;
         }
 
-        /// <summary>
-        /// Makes the specified virtual purchase using the items in the players inventory.
-        ///
-        /// Takes a virtualPurchaseId. This is the ID of the purchase to make.
-        /// Takes an optional list of instanceIds. These are the `PlayersInventoryItems` IDs of the items in the players inventory that should be used towards the cost(s) of the purchase. If these are not supplied, the items
-        /// used towards the cost(s) will be chosen automatically.
-        ///
-        /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
-        /// </summary>
-        /// <param name="virtualPurchaseId">Purchase ID of the purchase to be made</param>
-        /// <param name="options">(Optional) Use to set a list of instance IDs to use towards the cost(s) of the purchase</param>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         public async Task<MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, MakeVirtualPurchaseOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -89,17 +114,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Redeems the specified Apple App Store purchase.
-        ///
-        /// Throws a EconomyException with a reason code and explanation
-        /// </summary>
-        /// <param name="args">The Apple App Store purchase details for the request</param>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
-        /// <exception cref="EconomyAppleAppStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
-        /// invalid receipt, purchase already redeemed, product ID mismatch, product ID not defined, currency max would be exceeded.</exception>
         public async Task<RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args)
         {
             if (args == null)
@@ -143,18 +157,6 @@ namespace Unity.Services.Economy
             }
         }
 
-        /// <summary>
-        /// Redeems the specified Google Play Store Store purchase.
-        ///
-        /// Throws a EconomyException with a reason code and explanation
-        /// </summary>
-        /// <param name="args">The Google Play Store purchase details for the request.</param>
-        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
-        /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
-        /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
-        /// <exception cref="EconomyGooglePlayStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
-        /// invalid purchase data, invalid purchase data signature, purchase already redeemed, product ID mismatch,
-        /// product ID not defined, currency max would be exceeded.</exception>
         public async Task<RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args)
         {
             if (args == null)
