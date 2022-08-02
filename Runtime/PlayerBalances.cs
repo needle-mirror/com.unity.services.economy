@@ -9,6 +9,7 @@ using Unity.Services.Economy.Internal.Currencies;
 using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Model;
+using Unity.Services.Core.Configuration.Internal;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 
@@ -92,11 +93,13 @@ namespace Unity.Services.Economy
 
     internal class PlayerBalancesInternal : IEconomyPlayerBalancesApiClient
     {
+        readonly ICloudProjectId m_CloudProjectId;
         readonly ICurrenciesApiClient m_CurrenciesApiClient;
         readonly IEconomyAuthentication m_EconomyAuthentication;
 
-        internal PlayerBalancesInternal(ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
+        internal PlayerBalancesInternal(ICloudProjectId cloudProjectId, ICurrenciesApiClient currenciesApiClient, IEconomyAuthentication economyAuthWrapper)
         {
+            m_CloudProjectId = cloudProjectId;
             m_CurrenciesApiClient = currenciesApiClient;
             m_EconomyAuthentication = economyAuthWrapper;
         }
@@ -115,7 +118,7 @@ namespace Unity.Services.Economy
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
 
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 limit: options.ItemsPerFetch,
                 configAssignmentHash: m_EconomyAuthentication.configAssignmentHash
@@ -145,7 +148,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             IncrementPlayerCurrencyBalanceRequest request = new IncrementPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
                 new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
@@ -179,7 +182,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             DecrementPlayerCurrencyBalanceRequest request = new DecrementPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
                 new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
@@ -213,7 +216,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             SetPlayerCurrencyBalanceRequest request = new SetPlayerCurrencyBalanceRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
                 new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock),
@@ -254,7 +257,7 @@ namespace Unity.Services.Economy
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(itemsPerFetch);
 
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 m_EconomyAuthentication.configAssignmentHash,
                 afterCurrencyId,

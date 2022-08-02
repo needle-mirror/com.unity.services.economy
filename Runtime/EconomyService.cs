@@ -4,6 +4,8 @@ using Unity.Services.Economy.Internal.Apis.Inventory;
 using Unity.Services.Economy.Internal.Apis.Purchases;
 using Unity.Services.Authentication.Internal;
 using Unity.Services.Core;
+using Unity.Services.Economy.Internal.Apis.Configuration;
+using Unity.Services.Core.Configuration.Internal;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 
@@ -69,13 +71,14 @@ namespace Unity.Services.Economy
             }
         }
 
-        internal static void InitializeEconomy(IAccessToken accessToken, IPlayerId playerId, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient)
+        internal static void InitializeEconomy(ICloudProjectId cloudProjectId, IAccessToken accessToken, IPlayerId playerId, IConfigurationApiClient configurationApiClient, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient)
         {
             IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken);
-            ConfigurationInternal configurationInternal = new ConfigurationInternal(economyAuth);
-            PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(currenciesApiClient, economyAuth);
-            PlayerInventoryInternal playerInventoryInternal = new PlayerInventoryInternal(inventoryApiClient, economyAuth);
-            PurchasesInternal purchasesInternal = new PurchasesInternal(purchasesApiClient, economyAuth, playerBalancesInternal, playerInventoryInternal);
+
+            ConfigurationInternal configurationInternal = new ConfigurationInternal(configurationApiClient, economyAuth);
+            PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(cloudProjectId, currenciesApiClient, economyAuth);
+            PlayerInventoryInternal playerInventoryInternal = new PlayerInventoryInternal(cloudProjectId, inventoryApiClient, economyAuth);
+            PurchasesInternal purchasesInternal = new PurchasesInternal(cloudProjectId, purchasesApiClient, economyAuth, playerBalancesInternal, playerInventoryInternal);
 
             instance = new EconomyInstance(configurationInternal, playerBalancesInternal, playerInventoryInternal, purchasesInternal);
 

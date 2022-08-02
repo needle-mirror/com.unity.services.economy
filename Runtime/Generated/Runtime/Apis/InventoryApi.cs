@@ -30,7 +30,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
             /// <param name="operationConfiguration">Configuration for AddInventoryItem.</param>
             /// <returns>Task for a Response object containing status code, headers, and InventoryResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<InventoryResponse>> AddInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.AddInventoryItemRequest request, Configuration operationConfiguration = null);
+            Task<Response<InventoryResponse>> AddInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.AddInventoryItemRequest request, Internal.Configuration operationConfiguration = null);
 
             /// <summary>
             /// Async Operation.
@@ -40,7 +40,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
             /// <param name="operationConfiguration">Configuration for DeleteInventoryItem.</param>
             /// <returns>Task for a Response object containing status code, headers.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response> DeleteInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.DeleteInventoryItemRequest request, Configuration operationConfiguration = null);
+            Task<Response> DeleteInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.DeleteInventoryItemRequest request, Internal.Configuration operationConfiguration = null);
 
             /// <summary>
             /// Async Operation.
@@ -50,7 +50,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
             /// <param name="operationConfiguration">Configuration for GetPlayerInventory.</param>
             /// <returns>Task for a Response object containing status code, headers, and PlayerInventoryResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<PlayerInventoryResponse>> GetPlayerInventoryAsync(Unity.Services.Economy.Internal.Inventory.GetPlayerInventoryRequest request, Configuration operationConfiguration = null);
+            Task<Response<PlayerInventoryResponse>> GetPlayerInventoryAsync(Unity.Services.Economy.Internal.Inventory.GetPlayerInventoryRequest request, Internal.Configuration operationConfiguration = null);
 
             /// <summary>
             /// Async Operation.
@@ -60,7 +60,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
             /// <param name="operationConfiguration">Configuration for UpdateInventoryItem.</param>
             /// <returns>Task for a Response object containing status code, headers, and InventoryResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<InventoryResponse>> UpdateInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.UpdateInventoryItemRequest request, Configuration operationConfiguration = null);
+            Task<Response<InventoryResponse>> UpdateInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.UpdateInventoryItemRequest request, Internal.Configuration operationConfiguration = null);
 
     }
 
@@ -69,21 +69,21 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
     {
         private IAccessToken _accessToken;
         private const int _baseTimeout = 10;
-        private Configuration _configuration;
+        private Internal.Configuration _configuration;
         /// <summary>
         /// Accessor for the client configuration object. This returns a merge
         /// between the current configuration and the global configuration to
         /// ensure the correct combination of headers and a base path (if it is
         /// set) are returned.
         /// </summary>
-        public Configuration Configuration
+        public Internal.Configuration Configuration
         {
             get {
                 // We return a merge between the current configuration and the
                 // global configuration to ensure we have the correct
                 // combination of headers and a base path (if it is set).
-                Configuration globalConfiguration = new Configuration("https://economy.services.api.unity.com", 10, 4, null);
-                return Configuration.MergeConfigurations(_configuration, globalConfiguration);
+                Internal.Configuration globalConfiguration = new Internal.Configuration("https://economy.services.api.unity.com", 10, 4, null);
+                return Internal.Configuration.MergeConfigurations(_configuration, globalConfiguration);
             }
             set { _configuration = value; }
         }
@@ -96,7 +96,7 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
         /// <param name="configuration"> InventoryApiClient Configuration object.</param>
         public InventoryApiClient(IHttpClient httpClient,
             IAccessToken accessToken,
-            Configuration configuration = null) : base(httpClient)
+            Internal.Configuration configuration = null) : base(httpClient)
         {
             // We don't need to worry about the configuration being null at
             // this stage, we will check this in the accessor.
@@ -115,12 +115,12 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
         /// <returns>Task for a Response object containing status code, headers, and InventoryResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<InventoryResponse>> AddInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.AddInventoryItemRequest request,
-            Configuration operationConfiguration = null)
+            Internal.Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(InventoryResponse)   },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"409", typeof(ErrorResponseConflictInventory)   },{"422", typeof(BasicErrorResponse)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("POST",
                 request.ConstructUrl(finalConfiguration.BasePath),
@@ -142,12 +142,12 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
         /// <returns>Task for a Response object containing status code, headers.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response> DeleteInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.DeleteInventoryItemRequest request,
-            Configuration operationConfiguration = null)
+            Internal.Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200",  null },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"409", typeof(ErrorResponseConflictInventoryDelete)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("DELETE",
                 request.ConstructUrl(finalConfiguration.BasePath),
@@ -169,12 +169,12 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
         /// <returns>Task for a Response object containing status code, headers, and PlayerInventoryResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<PlayerInventoryResponse>> GetPlayerInventoryAsync(Unity.Services.Economy.Internal.Inventory.GetPlayerInventoryRequest request,
-            Configuration operationConfiguration = null)
+            Internal.Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(PlayerInventoryResponse)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("GET",
                 request.ConstructUrl(finalConfiguration.BasePath),
@@ -196,12 +196,12 @@ namespace Unity.Services.Economy.Internal.Apis.Inventory
         /// <returns>Task for a Response object containing status code, headers, and InventoryResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<InventoryResponse>> UpdateInventoryItemAsync(Unity.Services.Economy.Internal.Inventory.UpdateInventoryItemRequest request,
-            Configuration operationConfiguration = null)
+            Internal.Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(InventoryResponse)   },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"409", typeof(ErrorResponseConflictInventoryUpdate)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("PUT",
                 request.ConstructUrl(finalConfiguration.BasePath),

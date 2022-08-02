@@ -9,6 +9,7 @@ using Unity.Services.Authentication.Internal;
 using Unity.Services.Core.Configuration.Internal;
 using Unity.Services.Core.Device.Internal;
 using Unity.Services.Core.Internal;
+using Unity.Services.Economy.Internal.Apis.Configuration;
 using UnityEngine;
 
 namespace Unity.Services.Economy
@@ -20,6 +21,7 @@ namespace Unity.Services.Economy
         {
             CoreRegistry.Instance.RegisterPackage(new EconomyPackageInitializer())
                 .DependsOn<IAccessToken>()
+                .DependsOn<ICloudProjectId>()
                 .DependsOn<IPlayerId>()
                 .DependsOn<IInstallationId>()
                 .DependsOn<IProjectConfiguration>();
@@ -27,17 +29,19 @@ namespace Unity.Services.Economy
 
         public Task Initialize(CoreRegistry registry)
         {
+            var cloudProjectId = registry.GetServiceComponent<ICloudProjectId>();
             var httpClient = new HttpClient();
 
             var configuration = new Unity.Services.Economy.Internal.Configuration(null, null, null, GetServiceHeaders(registry));
 
             IAccessToken accessToken = registry.GetServiceComponent<IAccessToken>();
 
+            IConfigurationApiClient configurationApiClient = new ConfigurationApiClient(httpClient, accessToken, configuration);
             ICurrenciesApiClient currenciesApiClient = new CurrenciesApiClient(httpClient, accessToken, configuration);
             IInventoryApiClient inventoryApiClient = new InventoryApiClient(httpClient, accessToken, configuration);
             IPurchasesApiClient purchasesApiClient = new PurchasesApiClient(httpClient, accessToken, configuration);
 
-            EconomyService.InitializeEconomy(accessToken, registry.GetServiceComponent<IPlayerId>(), currenciesApiClient, inventoryApiClient, purchasesApiClient);
+            EconomyService.InitializeEconomy(cloudProjectId, accessToken, registry.GetServiceComponent<IPlayerId>(), configurationApiClient, currenciesApiClient, inventoryApiClient, purchasesApiClient);
 
             return Task.CompletedTask;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Unity.Services.Core.Configuration.Internal;
 using Unity.Services.Economy.Internal;
 using Unity.Services.Economy.Internal.Apis.Purchases;
 using Unity.Services.Economy.Internal.Http;
@@ -64,15 +65,18 @@ namespace Unity.Services.Economy
 
     class PurchasesInternal : IEconomyPurchasesApiClientApi
     {
+        readonly ICloudProjectId m_CloudProjectId;
         readonly IPurchasesApiClient m_PurchasesApiClient;
         readonly IEconomyAuthentication m_EconomyAuthentication;
 
         static PlayerBalancesInternal s_PlayerBalancesInternal;
         static PlayerInventoryInternal s_PlayerInventoryInternal;
 
-        internal PurchasesInternal(IPurchasesApiClient purchasesApiClient, IEconomyAuthentication economyAuthentication,
-                                   PlayerBalancesInternal playerBalancesInternal, PlayerInventoryInternal playerInventoryInternal)
+        internal PurchasesInternal(ICloudProjectId cloudProjectId, IPurchasesApiClient purchasesApiClient,
+                                   IEconomyAuthentication economyAuthentication, PlayerBalancesInternal playerBalancesInternal,
+                                   PlayerInventoryInternal playerInventoryInternal)
         {
+            m_CloudProjectId = cloudProjectId;
             m_PurchasesApiClient = purchasesApiClient;
             m_EconomyAuthentication = economyAuthentication;
             s_PlayerBalancesInternal = playerBalancesInternal;
@@ -84,7 +88,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             MakeVirtualPurchaseRequest request = new MakeVirtualPurchaseRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds),
                 m_EconomyAuthentication.configAssignmentHash);
@@ -124,7 +128,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             RedeemAppleAppStorePurchaseRequest request = new RedeemAppleAppStorePurchaseRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency),
                 m_EconomyAuthentication.configAssignmentHash);
@@ -167,7 +171,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             RedeemGooglePlayPurchaseRequest request = new RedeemGooglePlayPurchaseRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new PlayerPurchaseGoogleplaystoreRequest(
                     args.RealMoneyPurchaseId,

@@ -4,7 +4,9 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [2.0.4] - 2022-06-10
+## [3.0.0] - 2022-08-02
+* Removed remote-config-runtime dependency
+* CustomDataDeserializable has been added to configuration items and is of type `IDeserializable`
 * Added missing XmlDoc to public IEconomyConfigurationApiClient interface
 * Added missing XmlDoc to public IEconomyPlayerBalancesApiClient interface
 * Added missing XmlDoc to public IEconomyPlayerInventoryApiClient interface

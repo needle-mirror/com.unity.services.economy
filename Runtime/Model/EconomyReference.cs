@@ -14,14 +14,9 @@ namespace Unity.Services.Economy.Model
 
         [Preserve]
         [JsonConstructor]
-        public EconomyReference([JsonProperty("$ref_economy")] string reference)
+        public EconomyReference(ConfigurationItemDefinition configItem)
         {
-            // We need to access the internal property "remoteConfig" - so we cast to a Configuration object to access
-            // internal properties
-            ConfigurationInternal configurationInternal = (ConfigurationInternal)EconomyService.Instance.Configuration;
-
-            string referenceWithoutLeadingHash = reference.Substring(1);
-            m_ReferencedItem = configurationInternal.remoteConfig.GetEconomyItemWithKeyWithoutRefresh(referenceWithoutLeadingHash);
+            m_ReferencedItem = configItem;
         }
 
         /// <summary>

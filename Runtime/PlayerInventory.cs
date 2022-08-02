@@ -9,6 +9,7 @@ using Unity.Services.Economy.Internal.Http;
 using Unity.Services.Economy.Internal.Inventory;
 using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Model;
+using Unity.Services.Core.Configuration.Internal;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
 
@@ -83,9 +84,11 @@ namespace Unity.Services.Economy
     {
         readonly IInventoryApiClient m_InventoryApiClient;
         readonly IEconomyAuthentication m_EconomyAuthentication;
+        readonly ICloudProjectId m_CloudProjectId;
 
-        internal PlayerInventoryInternal(IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
+        internal PlayerInventoryInternal(ICloudProjectId cloudProjectId, IInventoryApiClient inventoryApiClient, IEconomyAuthentication economyAuthentication)
         {
+            m_CloudProjectId = cloudProjectId;
             m_InventoryApiClient = inventoryApiClient;
             m_EconomyAuthentication = economyAuthentication;
         }
@@ -109,7 +112,7 @@ namespace Unity.Services.Economy
             EconomyAPIErrorHandler.HandleItemsPerFetchExceptions(options.ItemsPerFetch);
 
             GetPlayerInventoryRequest request = new GetPlayerInventoryRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 m_EconomyAuthentication.configAssignmentHash,
                 afterPlayersInventoryItemId,
@@ -141,7 +144,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             AddInventoryItemRequest request = new AddInventoryItemRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData),
                 m_EconomyAuthentication.configAssignmentHash);
@@ -174,7 +177,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             DeleteInventoryItemRequest request = new DeleteInventoryItemRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
                 new InventoryDeleteRequest(options?.WriteLock),
@@ -204,7 +207,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             UpdateInventoryItemRequest request = new UpdateInventoryItemRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
                 new InventoryRequestUpdate(instanceData, options?.WriteLock),

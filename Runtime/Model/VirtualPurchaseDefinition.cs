@@ -64,7 +64,7 @@ namespace Unity.Services.Economy.Model
             foreach (var cost in Costs)
             {
                 var costItem = cost.Item.GetReferencedConfigurationItem();
-                if (costItem.Type == EconomyRemoteConfig.currencyTypeString)
+                if (costItem.Type == "CURRENCY")
                 {
                     CurrencyDefinition currency = (CurrencyDefinition)costItem;
                     var balance = await currency.GetPlayerBalanceAsync();

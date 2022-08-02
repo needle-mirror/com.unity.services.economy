@@ -336,12 +336,19 @@ namespace Unity.Services.Economy.Model
     [UnityEngine.Scripting.Preserve] public class ConfigurationItemDefinition
     {
         [Newtonsoft.Json.JsonProperty(@"created")] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Created;
-        [Newtonsoft.Json.JsonProperty(@"customData")] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.Dictionary<string, object> CustomData;
+        [Newtonsoft.Json.JsonProperty(@"customData")] [System.Obsolete(@"The interface provided by CustomData has been replaced by CustomDataDeserializable, and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.Dictionary<string, object> CustomData;
+        public Unity.Services.Economy.Internal.Http.IDeserializable CustomDataDeserializable;
         [Newtonsoft.Json.JsonProperty(@"id")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Id;
         [Newtonsoft.Json.JsonProperty(@"modified")] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
         [Newtonsoft.Json.JsonProperty(@"name")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Name;
         [Newtonsoft.Json.JsonProperty(@"type")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string Type;
         public ConfigurationItemDefinition() {}
+    }
+
+    public class ConfigurationResource
+    {
+        public System.Type Type { get; }
+        public object Value { get; }
     }
 
     [UnityEngine.Scripting.Preserve] public class Costs
@@ -374,7 +381,7 @@ namespace Unity.Services.Economy.Model
 
     [UnityEngine.Scripting.Preserve] public class EconomyReference
     {
-        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public EconomyReference([Newtonsoft.Json.JsonProperty(@"$ref_economy")] string reference) {}
+        [Newtonsoft.Json.JsonConstructor] [UnityEngine.Scripting.Preserve] public EconomyReference(Unity.Services.Economy.Model.ConfigurationItemDefinition configItem) {}
         [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.ConfigurationItemDefinition GetReferencedConfigurationItem();
     }
 

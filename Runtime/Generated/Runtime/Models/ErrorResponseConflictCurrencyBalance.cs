@@ -33,8 +33,8 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         /// <param name="type">type param</param>
         /// <param name="title">title param</param>
-        /// <param name="status">e.g. 409</param>
-        /// <param name="code">e.g. 10204</param>
+        /// <param name="status">For example 409</param>
+        /// <param name="code">For example 10204</param>
         /// <param name="detail">detail param</param>
         /// <param name="data">data param</param>
         /// <param name="instance">instance param</param>
@@ -65,14 +65,14 @@ namespace Unity.Services.Economy.Internal.Models
         public string Title{ get; }
         
         /// <summary>
-        /// e.g. 409
+        /// For example 409
         /// </summary>
         [Preserve]
         [DataMember(Name = "status", IsRequired = true, EmitDefaultValue = true)]
         public int Status{ get; }
         
         /// <summary>
-        /// e.g. 10204
+        /// For example 10204
         /// </summary>
         [Preserve]
         [DataMember(Name = "code", IsRequired = true, EmitDefaultValue = true)]
