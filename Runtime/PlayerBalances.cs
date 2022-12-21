@@ -120,8 +120,10 @@ namespace Unity.Services.Economy
             GetPlayerCurrenciesRequest request = new GetPlayerCurrenciesRequest(
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
-                limit: options.ItemsPerFetch,
-                configAssignmentHash: m_EconomyAuthentication.configAssignmentHash
+                configAssignmentHash: m_EconomyAuthentication.configAssignmentHash,
+                unityInstallationId: m_EconomyAuthentication.GetUnityInstallationId(),
+                analyticsUserId: m_EconomyAuthentication.GetAnalyticsUserId(),
+                limit: options.ItemsPerFetch
             );
 
             try
@@ -151,8 +153,10 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
-                m_EconomyAuthentication.configAssignmentHash
+                new CurrencyModifyBalanceRequest(amount, currencyId, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId()
             );
 
             try
@@ -185,8 +189,10 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                new CurrencyModifyBalanceRequest(currencyId, amount, options?.WriteLock),
-                m_EconomyAuthentication.configAssignmentHash
+                new CurrencyModifyBalanceRequest(amount, currencyId, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId()
             );
 
             try
@@ -219,8 +225,10 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 currencyId,
-                new CurrencyBalanceRequest(currencyId, balance, options?.WriteLock),
-                m_EconomyAuthentication.configAssignmentHash);
+                new CurrencyBalanceRequest(balance, currencyId, options?.WriteLock),
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {
@@ -260,6 +268,8 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId(),
                 afterCurrencyId,
                 itemsPerFetch);
 

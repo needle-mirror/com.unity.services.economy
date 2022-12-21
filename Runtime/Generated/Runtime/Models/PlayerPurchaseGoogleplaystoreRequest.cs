@@ -85,33 +85,26 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerPurchaseGoogleplaystoreRequest into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Id != null)
             {
-                var idStringValue = Id;
-                serializedModel += "id," + idStringValue + ",";
+                serializedModel += "id," + Id + ",";
             }
             if (PurchaseData != null)
             {
-                var purchaseDataStringValue = PurchaseData;
-                serializedModel += "purchaseData," + purchaseDataStringValue + ",";
+                serializedModel += "purchaseData," + PurchaseData + ",";
             }
             if (PurchaseDataSignature != null)
             {
-                var purchaseDataSignatureStringValue = PurchaseDataSignature;
-                serializedModel += "purchaseDataSignature," + purchaseDataSignatureStringValue + ",";
+                serializedModel += "purchaseDataSignature," + PurchaseDataSignature + ",";
             }
-            if (LocalCost != null)
-            {
-                var localCostStringValue = LocalCost.ToString();
-                serializedModel += "localCost," + localCostStringValue + ",";
-            }
+            serializedModel += "localCost," + LocalCost.ToString() + ",";
             if (LocalCurrency != null)
             {
-                var localCurrencyStringValue = LocalCurrency;
-                serializedModel += "localCurrency," + localCurrencyStringValue;
+                serializedModel += "localCurrency," + LocalCurrency;
             }
             return serializedModel;
         }
@@ -120,10 +113,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerPurchaseGoogleplaystoreRequest as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (Id != null)
             {
                 var idStringValue = Id.ToString();
@@ -142,11 +135,8 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("purchaseDataSignature", purchaseDataSignatureStringValue);
             }
             
-            if (LocalCost != null)
-            {
-                var localCostStringValue = LocalCost.ToString();
-                dictionary.Add("localCost", localCostStringValue);
-            }
+            var localCostStringValue = LocalCost.ToString();
+            dictionary.Add("localCost", localCostStringValue);
             
             if (LocalCurrency != null)
             {

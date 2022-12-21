@@ -4,6 +4,15 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2022-12-21
+* Fixed a bug that was throwing an exception when fetching virtual purchases with custom data.
+
+## [3.1.0] - 2022-12-08
+* Introduction of the new sync configuration workflow. Old methods have been deprecated. See docs for more info on new workflow.
+* Fixed a bug that prevented the Store Identifiers field from being populated on fetch real money purchases requests
+* Removed a redundant log message when fetching a non-existent currency from your configuration
+* Fixed a bug which meant writeLocks weren't being set correctly
+
 ## [3.0.0] - 2022-08-02
 * Removed remote-config-runtime dependency
 * CustomDataDeserializable has been added to configuration items and is of type `IDeserializable`

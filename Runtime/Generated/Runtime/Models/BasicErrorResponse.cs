@@ -47,10 +47,7 @@ namespace Unity.Services.Economy.Internal.Models
             Code = code;
             Detail = detail;
             Instance = instance;
-            if (Details != null) {
-                Details = Details.Select(o => new JsonObject(o)).ToList();
-            }
-            
+            Details = (List<IDeserializable>) JsonObject.GetNewJsonObjectResponse(details);
         }
 
         /// <summary>
@@ -98,51 +95,39 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Machine readable service specific errors.
         /// </summary>
-        [Preserve][JsonConverter(typeof(JsonObjectCollectionConverter))]
+        [Preserve]
         [DataMember(Name = "details", EmitDefaultValue = false)]
-        public List<JsonObject> Details{ get; }
+        public List<IDeserializable> Details{ get; }
     
         /// <summary>
         /// Formats a BasicErrorResponse into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Type != null)
             {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
+                serializedModel += "type," + Type + ",";
             }
             if (Title != null)
             {
-                var titleStringValue = Title;
-                serializedModel += "title," + titleStringValue + ",";
+                serializedModel += "title," + Title + ",";
             }
-            if (Status != null)
-            {
-                var statusStringValue = Status.ToString();
-                serializedModel += "status," + statusStringValue + ",";
-            }
-            if (Code != null)
-            {
-                var codeStringValue = Code.ToString();
-                serializedModel += "code," + codeStringValue + ",";
-            }
+            serializedModel += "status," + Status.ToString() + ",";
+            serializedModel += "code," + Code.ToString() + ",";
             if (Detail != null)
             {
-                var detailStringValue = Detail;
-                serializedModel += "detail," + detailStringValue + ",";
+                serializedModel += "detail," + Detail + ",";
             }
             if (Instance != null)
             {
-                var instanceStringValue = Instance;
-                serializedModel += "instance," + instanceStringValue + ",";
+                serializedModel += "instance," + Instance + ",";
             }
             if (Details != null)
             {
-                var detailsStringValue = Details.ToString();
-                serializedModel += "details," + detailsStringValue;
+                serializedModel += "details," + Details.ToString();
             }
             return serializedModel;
         }
@@ -151,10 +136,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a BasicErrorResponse as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (Type != null)
             {
                 var typeStringValue = Type.ToString();
@@ -167,17 +152,11 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("title", titleStringValue);
             }
             
-            if (Status != null)
-            {
-                var statusStringValue = Status.ToString();
-                dictionary.Add("status", statusStringValue);
-            }
+            var statusStringValue = Status.ToString();
+            dictionary.Add("status", statusStringValue);
             
-            if (Code != null)
-            {
-                var codeStringValue = Code.ToString();
-                dictionary.Add("code", codeStringValue);
-            }
+            var codeStringValue = Code.ToString();
+            dictionary.Add("code", codeStringValue);
             
             if (Detail != null)
             {

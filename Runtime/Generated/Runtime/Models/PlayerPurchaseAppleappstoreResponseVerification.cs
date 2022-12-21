@@ -104,18 +104,14 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerPurchaseAppleappstoreResponseVerification into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
-            if (Status != null)
-            {
-                var statusStringValue = Status;
-                serializedModel += "status," + statusStringValue + ",";
-            }
+
+            serializedModel += "status," + Status + ",";
             if (Store != null)
             {
-                var storeStringValue = Store.ToString();
-                serializedModel += "store," + storeStringValue;
+                serializedModel += "store," + Store.ToString();
             }
             return serializedModel;
         }
@@ -124,15 +120,12 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerPurchaseAppleappstoreResponseVerification as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
-            if (Status != null)
-            {
-                var statusStringValue = Status.ToString();
-                dictionary.Add("status", statusStringValue);
-            }
+
+            var statusStringValue = Status.ToString();
+            dictionary.Add("status", statusStringValue);
             
             return dictionary;
         }

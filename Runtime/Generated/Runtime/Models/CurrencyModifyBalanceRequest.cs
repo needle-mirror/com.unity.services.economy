@@ -31,11 +31,11 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of CurrencyModifyBalanceRequest.
         /// </summary>
-        /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="amount">The value by which to increment or decrement. Zero is allowed but results in no change to the currency balance.</param>
+        /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="writeLock">The write lock for the currency balance.</param>
         [Preserve]
-        public CurrencyModifyBalanceRequest(string currencyId, long amount, string writeLock = default)
+        public CurrencyModifyBalanceRequest(long amount, string currencyId = default, string writeLock = default)
         {
             CurrencyId = currencyId;
             Amount = amount;
@@ -46,7 +46,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// Resource ID of the currency.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "currencyId", IsRequired = true, EmitDefaultValue = true)]
+        [DataMember(Name = "currencyId", EmitDefaultValue = false)]
         public string CurrencyId{ get; }
         
         /// <summary>
@@ -67,23 +67,18 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a CurrencyModifyBalanceRequest into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (CurrencyId != null)
             {
-                var currencyIdStringValue = CurrencyId;
-                serializedModel += "currencyId," + currencyIdStringValue + ",";
+                serializedModel += "currencyId," + CurrencyId + ",";
             }
-            if (Amount != null)
-            {
-                var amountStringValue = Amount.ToString();
-                serializedModel += "amount," + amountStringValue + ",";
-            }
+            serializedModel += "amount," + Amount.ToString() + ",";
             if (WriteLock != null)
             {
-                var writeLockStringValue = WriteLock;
-                serializedModel += "writeLock," + writeLockStringValue;
+                serializedModel += "writeLock," + WriteLock;
             }
             return serializedModel;
         }
@@ -92,21 +87,18 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a CurrencyModifyBalanceRequest as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (CurrencyId != null)
             {
                 var currencyIdStringValue = CurrencyId.ToString();
                 dictionary.Add("currencyId", currencyIdStringValue);
             }
             
-            if (Amount != null)
-            {
-                var amountStringValue = Amount.ToString();
-                dictionary.Add("amount", amountStringValue);
-            }
+            var amountStringValue = Amount.ToString();
+            dictionary.Add("amount", amountStringValue);
             
             if (WriteLock != null)
             {

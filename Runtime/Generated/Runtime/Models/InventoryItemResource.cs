@@ -45,7 +45,7 @@ namespace Unity.Services.Economy.Internal.Models
             Type = type;
             Created = created;
             Modified = modified;
-            CustomData = new JsonObject(customData);
+            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
         }
 
         /// <summary>
@@ -54,14 +54,14 @@ namespace Unity.Services.Economy.Internal.Models
         [Preserve]
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = true)]
         public string Id{ get; }
-
+        
         /// <summary>
         /// Name of the resource.
         /// </summary>
         [Preserve]
         [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = true)]
         public string Name{ get; }
-
+        
         /// <summary>
         /// Type of the resource, for example &#x60;CURRENCY&#x60;, &#x60;INVENTORY_ITEM&#x60;, &#x60;VIRTUAL_PURCHASE&#x60;, &#x60;MONEY_PURCHASE&#x60;.
         /// </summary>
@@ -69,28 +69,28 @@ namespace Unity.Services.Economy.Internal.Models
         [JsonConverter(typeof(StringEnumConverter))]
         [DataMember(Name = "type", IsRequired = true, EmitDefaultValue = true)]
         public TypeOptions Type{ get; }
-
+        
         /// <summary>
         /// Parameter created of InventoryItemResource
         /// </summary>
         [Preserve]
         [DataMember(Name = "created", IsRequired = true, EmitDefaultValue = true)]
         public ModifiedMetadata Created{ get; }
-
+        
         /// <summary>
         /// Parameter modified of InventoryItemResource
         /// </summary>
         [Preserve]
         [DataMember(Name = "modified", IsRequired = true, EmitDefaultValue = true)]
         public ModifiedMetadata Modified{ get; }
-
+        
         /// <summary>
         /// Parameter customData of InventoryItemResource
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
-        [DataMember(Name = "customData", EmitDefaultValue = true)]
-        public JsonObject CustomData{ get; }
-
+        [DataMember(Name = "customData", EmitDefaultValue = false)]
+        public IDeserializable CustomData{ get; }
+    
         /// <summary>
         /// Type of the resource, for example &#x60;CURRENCY&#x60;, &#x60;INVENTORY_ITEM&#x60;, &#x60;VIRTUAL_PURCHASE&#x60;, &#x60;MONEY_PURCHASE&#x60;.
         /// </summary>
@@ -110,38 +110,30 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a InventoryItemResource into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Id != null)
             {
-                var idStringValue = Id;
-                serializedModel += "id," + idStringValue + ",";
+                serializedModel += "id," + Id + ",";
             }
             if (Name != null)
             {
-                var nameStringValue = Name;
-                serializedModel += "name," + nameStringValue + ",";
+                serializedModel += "name," + Name + ",";
             }
-            if (Type != null)
-            {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
-            }
+            serializedModel += "type," + Type + ",";
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue + ",";
+                serializedModel += "modified," + Modified.ToString() + ",";
             }
             if (CustomData != null)
             {
-                var customDataStringValue = CustomData.ToString();
-                serializedModel += "customData," + customDataStringValue;
+                serializedModel += "customData," + CustomData.ToString();
             }
             return serializedModel;
         }
@@ -150,7 +142,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a InventoryItemResource as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
 
@@ -159,19 +151,16 @@ namespace Unity.Services.Economy.Internal.Models
                 var idStringValue = Id.ToString();
                 dictionary.Add("id", idStringValue);
             }
-
+            
             if (Name != null)
             {
                 var nameStringValue = Name.ToString();
                 dictionary.Add("name", nameStringValue);
             }
-
-            if (Type != null)
-            {
-                var typeStringValue = Type.ToString();
-                dictionary.Add("type", typeStringValue);
-            }
-
+            
+            var typeStringValue = Type.ToString();
+            dictionary.Add("type", typeStringValue);
+            
             return dictionary;
         }
     }

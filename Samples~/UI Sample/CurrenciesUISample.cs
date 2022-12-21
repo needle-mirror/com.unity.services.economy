@@ -45,7 +45,13 @@ public class CurrenciesUISample : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async void FetchCurrencies()
+    public async void SyncConfigurationAsync()
+    {
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+        Debug.Log("Configuration sync finished");
+    }
+
+    public void FetchCurrencies()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -53,7 +59,7 @@ public class CurrenciesUISample : MonoBehaviour
         }
 
         string allCurrencies = "";
-        List<CurrencyDefinition> currencies = await EconomyService.Instance.Configuration.GetCurrenciesAsync();
+        List<CurrencyDefinition> currencies = EconomyService.Instance.Configuration.GetCurrencies();
         ClearOutputTextBoxes();
 
         if (currencies.Count == 0)
@@ -70,7 +76,7 @@ public class CurrenciesUISample : MonoBehaviour
         }
     }
 
-    public async void FetchCurrency()
+    public void FetchCurrency()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -83,7 +89,7 @@ public class CurrenciesUISample : MonoBehaviour
             return;
         }
 
-        CurrencyDefinition currency = await EconomyService.Instance.Configuration.GetCurrencyAsync(m_GetCurrencyIdInput.text);
+        CurrencyDefinition currency = EconomyService.Instance.Configuration.GetCurrency(m_GetCurrencyIdInput.text);
         ClearOutputTextBoxes();
 
         if (currency == null)
@@ -122,7 +128,7 @@ public class CurrenciesUISample : MonoBehaviour
         {
             foreach (var balance in result.Balances)
             {
-                CurrencyDefinition currency = await EconomyService.Instance.Configuration.GetCurrencyAsync(balance.CurrencyId);
+                CurrencyDefinition currency = EconomyService.Instance.Configuration.GetCurrency(balance.CurrencyId);
                 if (currency != null)
                 {
                     var maxBalance = currency.Max > 0 ? currency.Max.ToString() : "Unlimited";
@@ -171,7 +177,7 @@ public class CurrenciesUISample : MonoBehaviour
 
         foreach (var balance in nextResult.Balances)
         {
-            CurrencyDefinition currency = await EconomyService.Instance.Configuration.GetCurrencyAsync(balance.CurrencyId);
+            CurrencyDefinition currency = EconomyService.Instance.Configuration.GetCurrency(balance.CurrencyId);
             if (currency != null)
             {
                 var maxBalance = currency.Max > 0 ? currency.Max.ToString() : "Unlimited";

@@ -40,7 +40,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <param name="rewards">The rewards credited to the player when making the purchase. A reward is composed of the ID of a currency or inventory item, the amount of that currency or item, and the default instance data (for inventory items).</param>
         /// <param name="customData">customData param</param>
         [Preserve]
-        public VirtualPurchaseResource(string id, string name, TypeOptions type, ModifiedMetadata created, ModifiedMetadata modified, List<Cost> costs = default, List<Reward> rewards = default, string customData = default)
+        public VirtualPurchaseResource(string id, string name, TypeOptions type, ModifiedMetadata created, ModifiedMetadata modified, List<Cost> costs = default, List<Reward> rewards = default, object customData = default)
         {
             Id = id;
             Name = name;
@@ -49,7 +49,7 @@ namespace Unity.Services.Economy.Internal.Models
             Modified = modified;
             Costs = costs;
             Rewards = rewards;
-            CustomData = customData;
+            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
         }
 
         /// <summary>
@@ -92,22 +92,22 @@ namespace Unity.Services.Economy.Internal.Models
         /// The costs deducted from the player when making the purchase. A cost is an ID of a currency or inventory item, plus an amount.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "costs", EmitDefaultValue = true)]
+        [DataMember(Name = "costs", EmitDefaultValue = false)]
         public List<Cost> Costs{ get; }
 
         /// <summary>
         /// The rewards credited to the player when making the purchase. A reward is composed of the ID of a currency or inventory item, the amount of that currency or item, and the default instance data (for inventory items).
         /// </summary>
         [Preserve]
-        [DataMember(Name = "rewards", EmitDefaultValue = true)]
+        [DataMember(Name = "rewards", EmitDefaultValue = false)]
         public List<Reward> Rewards{ get; }
 
         /// <summary>
         /// Parameter customData of VirtualPurchaseResource
         /// </summary>
-        [Preserve]
-        [DataMember(Name = "customData", EmitDefaultValue = true)]
-        public string CustomData{ get; }
+        [Preserve][JsonConverter(typeof(JsonObjectConverter))]
+        [DataMember(Name = "customData", IsRequired = true, EmitDefaultValue = true)]
+        public IDeserializable CustomData{ get; }
 
         /// <summary>
         /// Type of the item, for example &#x60;CURRENCY&#x60;, &#x60;INVENTORY_ITEM&#x60;, &#x60;VIRTUAL_PURCHASE&#x60;, &#x60;MONEY_PURCHASE&#x60;.
@@ -128,48 +128,38 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a VirtualPurchaseResource into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Id != null)
             {
-                var idStringValue = Id;
-                serializedModel += "id," + idStringValue + ",";
+                serializedModel += "id," + Id + ",";
             }
             if (Name != null)
             {
-                var nameStringValue = Name;
-                serializedModel += "name," + nameStringValue + ",";
+                serializedModel += "name," + Name + ",";
             }
-            if (Type != null)
-            {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
-            }
+            serializedModel += "type," + Type + ",";
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue + ",";
+                serializedModel += "modified," + Modified.ToString() + ",";
             }
             if (Costs != null)
             {
-                var costsStringValue = Costs.ToString();
-                serializedModel += "costs," + costsStringValue + ",";
+                serializedModel += "costs," + Costs.ToString() + ",";
             }
             if (Rewards != null)
             {
-                var rewardsStringValue = Rewards.ToString();
-                serializedModel += "rewards," + rewardsStringValue + ",";
+                serializedModel += "rewards," + Rewards.ToString() + ",";
             }
             if (CustomData != null)
             {
-                var customDataStringValue = CustomData;
-                serializedModel += "customData," + customDataStringValue;
+                serializedModel += "customData," + CustomData.ToString();
             }
             return serializedModel;
         }
@@ -178,7 +168,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a VirtualPurchaseResource as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
 
@@ -194,11 +184,8 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("name", nameStringValue);
             }
 
-            if (Type != null)
-            {
-                var typeStringValue = Type.ToString();
-                dictionary.Add("type", typeStringValue);
-            }
+            var typeStringValue = Type.ToString();
+            dictionary.Add("type", typeStringValue);
 
             if (CustomData != null)
             {

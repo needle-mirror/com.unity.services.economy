@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
 using Unity.Services.Economy.Internal.Apis.Currencies;
+using Unity.Services.Economy.Internal.Apis.InternalConfiguration;
 using Unity.Services.Economy.Internal.Apis.Inventory;
 using Unity.Services.Economy.Internal.Apis.Purchases;
 using Unity.Services.Authentication.Internal;
 using Unity.Services.Core;
-using Unity.Services.Economy.Internal.Apis.Configuration;
 using Unity.Services.Core.Configuration.Internal;
 
 [assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
@@ -71,9 +71,9 @@ namespace Unity.Services.Economy
             }
         }
 
-        internal static void InitializeEconomy(ICloudProjectId cloudProjectId, IAccessToken accessToken, IPlayerId playerId, IConfigurationApiClient configurationApiClient, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient)
+        internal static void InitializeEconomy(ICloudProjectId cloudProjectId, IAccessToken accessToken, IPlayerId playerId, IInternalConfigurationApiClient configurationApiClient, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient, string unityProjectId, string analyticsUserId)
         {
-            IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken);
+            IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken, unityProjectId, analyticsUserId);
 
             ConfigurationInternal configurationInternal = new ConfigurationInternal(configurationApiClient, economyAuth);
             PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(cloudProjectId, currenciesApiClient, economyAuth);

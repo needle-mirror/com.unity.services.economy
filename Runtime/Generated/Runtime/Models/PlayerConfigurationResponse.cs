@@ -58,18 +58,17 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerConfigurationResponse into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Metadata != null)
             {
-                var metadataStringValue = Metadata.ToString();
-                serializedModel += "metadata," + metadataStringValue + ",";
+                serializedModel += "metadata," + Metadata.ToString() + ",";
             }
             if (Results != null)
             {
-                var resultsStringValue = Results.ToString();
-                serializedModel += "results," + resultsStringValue;
+                serializedModel += "results," + Results.ToString();
             }
             return serializedModel;
         }
@@ -78,10 +77,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerConfigurationResponse as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             return dictionary;
         }
     }

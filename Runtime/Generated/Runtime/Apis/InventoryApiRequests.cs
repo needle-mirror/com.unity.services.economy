@@ -32,7 +32,7 @@ namespace Unity.Services.Economy.Internal.Inventory
 
         public static string SerializeToString<T>(T obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings{ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore});
         }
     }
 
@@ -277,20 +277,22 @@ namespace Unity.Services.Economy.Internal.Inventory
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for addInventoryRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.AddInventoryRequest AddInventoryRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -301,28 +303,28 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <param name="playerId">ID of the player.</param>
         /// <param name="addInventoryRequest">AddInventoryRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public AddInventoryItemRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.AddInventoryRequest addInventoryRequest, string configAssignmentHash = default(string))
+        public AddInventoryItemRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.AddInventoryRequest addInventoryRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            AddInventoryRequest = addInventoryRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            AddInventoryRequest = addInventoryRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -392,6 +394,14 @@ namespace Unity.Services.Economy.Internal.Inventory
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -415,24 +425,28 @@ namespace Unity.Services.Economy.Internal.Inventory
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for playersInventoryItemId </summary>
         [Preserve]
-        
         public string PlayersInventoryItemId { get; }
         /// <summary>Accessor for inventoryDeleteRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.InventoryDeleteRequest InventoryDeleteRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
+        /// <summary>Accessor for writeLock </summary>
+        [Preserve]
+        public string WriteLock { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -444,30 +458,36 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <param name="playersInventoryItemId">The `playersInventoryItemId` of the item to be updated.</param>
         /// <param name="inventoryDeleteRequest">InventoryDeleteRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
+        /// <param name="writeLock">The writelock for a database entry.</param>
         [Preserve]
-        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest, string configAssignmentHash = default(string))
+        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string), string writeLock = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            
-            PlayersInventoryItemId = playersInventoryItemId;
-            InventoryDeleteRequest = inventoryDeleteRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            PlayersInventoryItemId = playersInventoryItemId;
+
+            InventoryDeleteRequest = inventoryDeleteRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
+            WriteLock = writeLock;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory/{playersInventoryItemId}";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if(!string.IsNullOrEmpty(WriteLock))
+            {
+                queryParams = AddParamsToQueryParams(queryParams, "writeLock", WriteLock);
+            }
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -536,6 +556,14 @@ namespace Unity.Services.Economy.Internal.Inventory
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -559,32 +587,31 @@ namespace Unity.Services.Economy.Internal.Inventory
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         /// <summary>Accessor for after </summary>
         [Preserve]
         public string After { get; }
-        
         /// <summary>Accessor for limit </summary>
         [Preserve]
         public int? Limit { get; }
-        
         /// <summary>Accessor for playersInventoryItemIds </summary>
         [Preserve]
         public List<string> PlayersInventoryItemIds { get; }
-        
         /// <summary>Accessor for inventoryItemIds </summary>
         [Preserve]
         public List<string> InventoryItemIds { get; }
-        
         string PathAndQueryParams;
 
         /// <summary>
@@ -594,52 +621,45 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <param name="projectId">ID of the project.</param>
         /// <param name="playerId">ID of the player.</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         /// <param name="after">The `playersInventoryItemId` after which to retrieve the next page of balances.</param>
         /// <param name="limit">Number of items to be returned. Defaults to 20.</param>
         /// <param name="playersInventoryItemIds">List of `playersInventoryItemIds` in array notation, for example, `playersInventoryItemIds[]=ID1&playersInventoryItemIds[]=ID2`.</param>
         /// <param name="inventoryItemIds">List of inventory item IDs in array notation, for example, `inventoryItemIds[]=ID1&inventoryItemIds[]=ID2`.</param>
         [Preserve]
-        public GetPlayerInventoryRequest(string projectId, string playerId, string configAssignmentHash = default(string), string after = default(string), int? limit = default(int?), List<string> playersInventoryItemIds = default(List<string>), List<string> inventoryItemIds = default(List<string>))
+        public GetPlayerInventoryRequest(string projectId, string playerId, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string), string after = default(string), int? limit = default(int?), List<string> playersInventoryItemIds = default(List<string>), List<string> inventoryItemIds = default(List<string>))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            ConfigAssignmentHash = configAssignmentHash;
-            
-            After = after;
-            
-            Limit = limit;
-            
-            PlayersInventoryItemIds = playersInventoryItemIds;
-            
-            InventoryItemIds = inventoryItemIds;
-            
 
+            PlayerId = playerId;
+
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
+            After = after;
+            Limit = limit;
+            PlayersInventoryItemIds = playersInventoryItemIds;
+            InventoryItemIds = inventoryItemIds;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        
             if(!string.IsNullOrEmpty(After))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "after", After);
             }
-                        
             var limitStringValue = Limit.ToString();
             queryParams = AddParamsToQueryParams(queryParams, "limit", limitStringValue);
-            
             if(PlayersInventoryItemIds != null)
             {
                 var playersInventoryItemIdsStringValues = PlayersInventoryItemIds.Select(v => v.ToString()).ToList();
                 queryParams = AddParamsToQueryParams(queryParams, "playersInventoryItemIds", playersInventoryItemIdsStringValues, "form", true);
             }
-            
             if(InventoryItemIds != null)
             {
                 var inventoryItemIdsStringValues = InventoryItemIds.Select(v => v.ToString()).ToList();
@@ -714,6 +734,14 @@ namespace Unity.Services.Economy.Internal.Inventory
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -737,24 +765,25 @@ namespace Unity.Services.Economy.Internal.Inventory
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for playersInventoryItemId </summary>
         [Preserve]
-        
         public string PlayersInventoryItemId { get; }
         /// <summary>Accessor for inventoryRequestUpdate </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.InventoryRequestUpdate InventoryRequestUpdate { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -766,30 +795,30 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <param name="playersInventoryItemId">The `playersInventoryItemId` of the item to be updated.</param>
         /// <param name="inventoryRequestUpdate">InventoryRequestUpdate param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public UpdateInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryRequestUpdate inventoryRequestUpdate, string configAssignmentHash = default(string))
+        public UpdateInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryRequestUpdate inventoryRequestUpdate, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            
-            PlayersInventoryItemId = playersInventoryItemId;
-            InventoryRequestUpdate = inventoryRequestUpdate;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            PlayersInventoryItemId = playersInventoryItemId;
+
+            InventoryRequestUpdate = inventoryRequestUpdate;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory/{playersInventoryItemId}";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -859,6 +888,14 @@ namespace Unity.Services.Economy.Internal.Inventory
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.

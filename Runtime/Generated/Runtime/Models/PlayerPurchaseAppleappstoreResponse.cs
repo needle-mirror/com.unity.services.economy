@@ -58,18 +58,17 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerPurchaseAppleappstoreResponse into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Verification != null)
             {
-                var verificationStringValue = Verification.ToString();
-                serializedModel += "verification," + verificationStringValue + ",";
+                serializedModel += "verification," + Verification.ToString() + ",";
             }
             if (Rewards != null)
             {
-                var rewardsStringValue = Rewards.ToString();
-                serializedModel += "rewards," + rewardsStringValue;
+                serializedModel += "rewards," + Rewards.ToString();
             }
             return serializedModel;
         }
@@ -78,10 +77,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerPurchaseAppleappstoreResponse as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             return dictionary;
         }
     }

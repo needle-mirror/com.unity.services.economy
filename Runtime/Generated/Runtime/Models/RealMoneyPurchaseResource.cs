@@ -47,7 +47,7 @@ namespace Unity.Services.Economy.Internal.Models
             Type = type;
             StoreIdentifiers = storeIdentifiers;
             Rewards = rewards;
-            CustomData = new JsonObject(customData);
+            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
             Created = created;
             Modified = modified;
         }
@@ -93,7 +93,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
         [DataMember(Name = "customData", IsRequired = true, EmitDefaultValue = true)]
-        public JsonObject CustomData{ get; }
+        public IDeserializable CustomData{ get; }
         
         /// <summary>
         /// Parameter created of RealMoneyPurchaseResource
@@ -128,48 +128,38 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a RealMoneyPurchaseResource into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Id != null)
             {
-                var idStringValue = Id;
-                serializedModel += "id," + idStringValue + ",";
+                serializedModel += "id," + Id + ",";
             }
             if (Name != null)
             {
-                var nameStringValue = Name;
-                serializedModel += "name," + nameStringValue + ",";
+                serializedModel += "name," + Name + ",";
             }
-            if (Type != null)
-            {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
-            }
+            serializedModel += "type," + Type + ",";
             if (StoreIdentifiers != null)
             {
-                var storeIdentifiersStringValue = StoreIdentifiers.ToString();
-                serializedModel += "storeIdentifiers," + storeIdentifiersStringValue + ",";
+                serializedModel += "storeIdentifiers," + StoreIdentifiers.ToString() + ",";
             }
             if (Rewards != null)
             {
-                var rewardsStringValue = Rewards.ToString();
-                serializedModel += "rewards," + rewardsStringValue + ",";
+                serializedModel += "rewards," + Rewards.ToString() + ",";
             }
             if (CustomData != null)
             {
-                var customDataStringValue = CustomData.ToString();
-                serializedModel += "customData," + customDataStringValue + ",";
+                serializedModel += "customData," + CustomData.ToString() + ",";
             }
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue;
+                serializedModel += "modified," + Modified.ToString();
             }
             return serializedModel;
         }
@@ -178,10 +168,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a RealMoneyPurchaseResource as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (Id != null)
             {
                 var idStringValue = Id.ToString();
@@ -194,11 +184,8 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("name", nameStringValue);
             }
             
-            if (Type != null)
-            {
-                var typeStringValue = Type.ToString();
-                dictionary.Add("type", typeStringValue);
-            }
+            var typeStringValue = Type.ToString();
+            dictionary.Add("type", typeStringValue);
             
             return dictionary;
         }

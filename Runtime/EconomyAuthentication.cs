@@ -6,6 +6,8 @@ namespace Unity.Services.Economy
     {
         string GetPlayerId();
         string GetAccessToken();
+        string GetUnityInstallationId();
+        string GetAnalyticsUserId();
         void CheckSignedIn();
         string configAssignmentHash { get; set; }
     }
@@ -14,13 +16,17 @@ namespace Unity.Services.Economy
     {
         IPlayerId m_PlayerIdComponent;
         IAccessToken m_AccessTokenComponent;
+        string m_unityInstallationId;
+        string m_analyticsUserId;
 
         public string configAssignmentHash { get; set; }
 
-        public EconomyAuthentication(IPlayerId playerIdComponent, IAccessToken accessTokenComponent)
+        public EconomyAuthentication(IPlayerId playerIdComponent, IAccessToken accessTokenComponent, string unityInstallationId, string analyticsUserId)
         {
             m_AccessTokenComponent = accessTokenComponent;
             m_PlayerIdComponent = playerIdComponent;
+            m_unityInstallationId = unityInstallationId;
+            m_analyticsUserId = analyticsUserId;
         }
 
         public string GetPlayerId()
@@ -31,6 +37,16 @@ namespace Unity.Services.Economy
         public string GetAccessToken()
         {
             return m_AccessTokenComponent.AccessToken;
+        }
+
+        public string GetUnityInstallationId()
+        {
+            return m_unityInstallationId;
+        }
+
+        public string GetAnalyticsUserId()
+        {
+            return m_analyticsUserId;
         }
 
         public void CheckSignedIn()

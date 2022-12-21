@@ -49,7 +49,7 @@ namespace Unity.Services.Economy.Internal.Models
             Modified = modified;
             Initial = initial;
             Max = max;
-            CustomData = new JsonObject(customData);
+            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
         }
 
         /// <summary>
@@ -106,8 +106,8 @@ namespace Unity.Services.Economy.Internal.Models
         /// Parameter customData of CurrencyResource
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
-        [DataMember(Name = "customData", EmitDefaultValue = true)]
-        public JsonObject CustomData{ get; }
+        [DataMember(Name = "customData", EmitDefaultValue = false)]
+        public IDeserializable CustomData{ get; }
 
         /// <summary>
         /// Type of the resource, for example &#x60;CURRENCY&#x60;, &#x60;INVENTORY_ITEM&#x60;, &#x60;VIRTUAL_PURCHASE&#x60;, &#x60;MONEY_PURCHASE&#x60;.
@@ -128,48 +128,32 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a CurrencyResource into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Id != null)
             {
-                var idStringValue = Id;
-                serializedModel += "id," + idStringValue + ",";
+                serializedModel += "id," + Id + ",";
             }
             if (Name != null)
             {
-                var nameStringValue = Name;
-                serializedModel += "name," + nameStringValue + ",";
+                serializedModel += "name," + Name + ",";
             }
-            if (Type != null)
-            {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
-            }
+            serializedModel += "type," + Type + ",";
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue + ",";
+                serializedModel += "modified," + Modified.ToString() + ",";
             }
-            if (Initial != null)
-            {
-                var initialStringValue = Initial.ToString();
-                serializedModel += "initial," + initialStringValue + ",";
-            }
-            if (Max != null)
-            {
-                var maxStringValue = Max.ToString();
-                serializedModel += "max," + maxStringValue + ",";
-            }
+            serializedModel += "initial," + Initial.ToString() + ",";
+            serializedModel += "max," + Max.ToString() + ",";
             if (CustomData != null)
             {
-                var customDataStringValue = CustomData.ToString();
-                serializedModel += "customData," + customDataStringValue;
+                serializedModel += "customData," + CustomData.ToString();
             }
             return serializedModel;
         }
@@ -178,7 +162,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a CurrencyResource as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
 
@@ -194,23 +178,14 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("name", nameStringValue);
             }
 
-            if (Type != null)
-            {
-                var typeStringValue = Type.ToString();
-                dictionary.Add("type", typeStringValue);
-            }
+            var typeStringValue = Type.ToString();
+            dictionary.Add("type", typeStringValue);
 
-            if (Initial != null)
-            {
-                var initialStringValue = Initial.ToString();
-                dictionary.Add("initial", initialStringValue);
-            }
+            var initialStringValue = Initial.ToString();
+            dictionary.Add("initial", initialStringValue);
 
-            if (Max != null)
-            {
-                var maxStringValue = Max.ToString();
-                dictionary.Add("max", maxStringValue);
-            }
+            var maxStringValue = Max.ToString();
+            dictionary.Add("max", maxStringValue);
 
             return dictionary;
         }

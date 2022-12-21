@@ -30,7 +30,13 @@ public class VirtualPurchasesUISample : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async void FetchPurchases()
+    public async void SyncConfigurationAsync()
+    {
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+        Debug.Log("Configuration sync finished");
+    }
+
+    public void FetchPurchases()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -39,7 +45,7 @@ public class VirtualPurchasesUISample : MonoBehaviour
 
 
         string outputString = "";
-        foreach (var item in await EconomyService.Instance.Configuration.GetVirtualPurchasesAsync())
+        foreach (var item in EconomyService.Instance.Configuration.GetVirtualPurchases())
         {
             outputString += $"{FormatPurchase(item)}\n";
         }
@@ -47,7 +53,7 @@ public class VirtualPurchasesUISample : MonoBehaviour
         m_GetConfigsText.text = outputString;
     }
 
-    public async void FetchPurchase()
+    public void FetchPurchase()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -60,7 +66,7 @@ public class VirtualPurchasesUISample : MonoBehaviour
             return;
         }
 
-        VirtualPurchaseDefinition purchase = await EconomyService.Instance.Configuration.GetVirtualPurchaseAsync(m_GetPurchaseInput.text);
+        VirtualPurchaseDefinition purchase = EconomyService.Instance.Configuration.GetVirtualPurchase(m_GetPurchaseInput.text);
         if (purchase != null)
         {
             m_MakePurchaseText.text = "";

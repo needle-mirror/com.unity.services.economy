@@ -60,7 +60,7 @@ namespace Unity.Services.Economy.Internal.Http
                         return new JsonObject(jsonObject);
                     }
                     // If an exception is thrown, this may be an array. Try parsing as array
-                    catch (JsonReaderException ex)
+                    catch (JsonReaderException)
                     {
                         var jsonArray = JArray.Load(reader);
                         return new JsonObject(jsonArray);
@@ -91,7 +91,21 @@ namespace Unity.Services.Economy.Internal.Http
         /// <summary>Convert a JsonObject to JToken.</summary>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            List<JsonObject> jobjCollection = (List<JsonObject>) value;
+            var jobjCollection = value;
+            var type = value.GetType();
+
+            if (type == typeof(Dictionary<string, IDeserializable>))
+            {
+                jobjCollection = (Dictionary<string, IDeserializable>) value;
+            }
+            else if (type == typeof(List<IDeserializable>))
+            {
+                jobjCollection = (List<IDeserializable>) value;
+            }
+            else if (type == typeof(List<List<IDeserializable>>))
+            {
+                jobjCollection = (List<List<IDeserializable>>) value;
+            }
 
             if (jobjCollection == null)
             {

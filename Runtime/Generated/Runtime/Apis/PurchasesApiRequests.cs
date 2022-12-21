@@ -32,7 +32,7 @@ namespace Unity.Services.Economy.Internal.Purchases
 
         public static string SerializeToString<T>(T obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings{ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore});
         }
     }
 
@@ -277,20 +277,22 @@ namespace Unity.Services.Economy.Internal.Purchases
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for playerPurchaseVirtualRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest PlayerPurchaseVirtualRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -301,28 +303,28 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseVirtualRequest">PlayerPurchaseVirtualRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public MakeVirtualPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest playerPurchaseVirtualRequest, string configAssignmentHash = default(string))
+        public MakeVirtualPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseVirtualRequest playerPurchaseVirtualRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            PlayerPurchaseVirtualRequest = playerPurchaseVirtualRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            PlayerPurchaseVirtualRequest = playerPurchaseVirtualRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/virtual";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -392,6 +394,14 @@ namespace Unity.Services.Economy.Internal.Purchases
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -415,20 +425,22 @@ namespace Unity.Services.Economy.Internal.Purchases
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for playerPurchaseAppleappstoreRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest PlayerPurchaseAppleappstoreRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -439,28 +451,28 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseAppleappstoreRequest">PlayerPurchaseAppleappstoreRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public RedeemAppleAppStorePurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest playerPurchaseAppleappstoreRequest, string configAssignmentHash = default(string))
+        public RedeemAppleAppStorePurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseAppleappstoreRequest playerPurchaseAppleappstoreRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            PlayerPurchaseAppleappstoreRequest = playerPurchaseAppleappstoreRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            PlayerPurchaseAppleappstoreRequest = playerPurchaseAppleappstoreRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/appleappstore";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -530,6 +542,14 @@ namespace Unity.Services.Economy.Internal.Purchases
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -553,20 +573,22 @@ namespace Unity.Services.Economy.Internal.Purchases
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for playerPurchaseGoogleplaystoreRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest PlayerPurchaseGoogleplaystoreRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -577,28 +599,28 @@ namespace Unity.Services.Economy.Internal.Purchases
         /// <param name="playerId">ID of the player.</param>
         /// <param name="playerPurchaseGoogleplaystoreRequest">PlayerPurchaseGoogleplaystoreRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public RedeemGooglePlayPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest playerPurchaseGoogleplaystoreRequest, string configAssignmentHash = default(string))
+        public RedeemGooglePlayPurchaseRequest(string projectId, string playerId, Unity.Services.Economy.Internal.Models.PlayerPurchaseGoogleplaystoreRequest playerPurchaseGoogleplaystoreRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            PlayerPurchaseGoogleplaystoreRequest = playerPurchaseGoogleplaystoreRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            PlayerPurchaseGoogleplaystoreRequest = playerPurchaseGoogleplaystoreRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/purchases/googleplaystore";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -668,6 +690,14 @@ namespace Unity.Services.Economy.Internal.Purchases
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Economy.Internal.Http;
@@ -53,6 +54,17 @@ namespace Unity.Services.Economy.Model
         /// </summary>
         /// <returns>The InventoryItemDefinition associated with this player's inventory item</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        public InventoryItemDefinition GetItemDefinition()
+        {
+            return EconomyService.Instance.Configuration.GetInventoryItem(InventoryItemId);
+        }
+
+        /// <summary>
+        /// Gets the configuration definition associated with this player's inventory item.
+        /// </summary>
+        /// <returns>The InventoryItemDefinition associated with this player's inventory item</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("This has been replaced with GetItemDefinition which is not asynchronous and should be accessed from there instead. This API will be removed in an upcoming release.", false)]
         public async Task<InventoryItemDefinition> GetItemDefinitionAsync()
         {
             return await EconomyService.Instance.Configuration.GetInventoryItemAsync(InventoryItemId);

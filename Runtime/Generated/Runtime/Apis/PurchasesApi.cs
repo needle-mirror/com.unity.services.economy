@@ -30,7 +30,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
             /// <param name="operationConfiguration">Configuration for MakeVirtualPurchase.</param>
             /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseVirtualResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<PlayerPurchaseVirtualResponse>> MakeVirtualPurchaseAsync(Unity.Services.Economy.Internal.Purchases.MakeVirtualPurchaseRequest request, Internal.Configuration operationConfiguration = null);
+            Task<Response<PlayerPurchaseVirtualResponse>> MakeVirtualPurchaseAsync(Unity.Services.Economy.Internal.Purchases.MakeVirtualPurchaseRequest request, Configuration operationConfiguration = null);
 
             /// <summary>
             /// Async Operation.
@@ -40,7 +40,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
             /// <param name="operationConfiguration">Configuration for RedeemAppleAppStorePurchase.</param>
             /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseAppleappstoreResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<PlayerPurchaseAppleappstoreResponse>> RedeemAppleAppStorePurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemAppleAppStorePurchaseRequest request, Internal.Configuration operationConfiguration = null);
+            Task<Response<PlayerPurchaseAppleappstoreResponse>> RedeemAppleAppStorePurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemAppleAppStorePurchaseRequest request, Configuration operationConfiguration = null);
 
             /// <summary>
             /// Async Operation.
@@ -50,7 +50,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
             /// <param name="operationConfiguration">Configuration for RedeemGooglePlayPurchase.</param>
             /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseGoogleplaystoreResponse object.</returns>
             /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
-            Task<Response<PlayerPurchaseGoogleplaystoreResponse>> RedeemGooglePlayPurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemGooglePlayPurchaseRequest request, Internal.Configuration operationConfiguration = null);
+            Task<Response<PlayerPurchaseGoogleplaystoreResponse>> RedeemGooglePlayPurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemGooglePlayPurchaseRequest request, Configuration operationConfiguration = null);
 
     }
 
@@ -59,21 +59,21 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
     {
         private IAccessToken _accessToken;
         private const int _baseTimeout = 10;
-        private Internal.Configuration _configuration;
+        private Configuration _configuration;
         /// <summary>
         /// Accessor for the client configuration object. This returns a merge
         /// between the current configuration and the global configuration to
         /// ensure the correct combination of headers and a base path (if it is
         /// set) are returned.
         /// </summary>
-        public Internal.Configuration Configuration
+        public Configuration Configuration
         {
             get {
                 // We return a merge between the current configuration and the
                 // global configuration to ensure we have the correct
                 // combination of headers and a base path (if it is set).
-                Internal.Configuration globalConfiguration = new Internal.Configuration("https://economy.services.api.unity.com", 10, 4, null);
-                return Internal.Configuration.MergeConfigurations(_configuration, globalConfiguration);
+                Configuration globalConfiguration = new Configuration("https://economy.services.api.unity.com", 10, 4, null);
+                return Configuration.MergeConfigurations(_configuration, globalConfiguration);
             }
             set { _configuration = value; }
         }
@@ -86,7 +86,7 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
         /// <param name="configuration"> PurchasesApiClient Configuration object.</param>
         public PurchasesApiClient(IHttpClient httpClient,
             IAccessToken accessToken,
-            Internal.Configuration configuration = null) : base(httpClient)
+            Configuration configuration = null) : base(httpClient)
         {
             // We don't need to worry about the configuration being null at
             // this stage, we will check this in the accessor.
@@ -105,12 +105,12 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
         /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseVirtualResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<PlayerPurchaseVirtualResponse>> MakeVirtualPurchaseAsync(Unity.Services.Economy.Internal.Purchases.MakeVirtualPurchaseRequest request,
-            Internal.Configuration operationConfiguration = null)
+            Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(PlayerPurchaseVirtualResponse)   },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"422", typeof(BasicErrorResponse)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("POST",
                 request.ConstructUrl(finalConfiguration.BasePath),
@@ -132,12 +132,12 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
         /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseAppleappstoreResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<PlayerPurchaseAppleappstoreResponse>> RedeemAppleAppStorePurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemAppleAppStorePurchaseRequest request,
-            Internal.Configuration operationConfiguration = null)
+            Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(PlayerPurchaseAppleappstoreResponse)   },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"422", typeof(RedeemAppleAppStorePurchase422OneOf)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("POST",
                 request.ConstructUrl(finalConfiguration.BasePath),
@@ -159,12 +159,12 @@ namespace Unity.Services.Economy.Internal.Apis.Purchases
         /// <returns>Task for a Response object containing status code, headers, and PlayerPurchaseGoogleplaystoreResponse object.</returns>
         /// <exception cref="Unity.Services.Economy.Internal.Http.HttpException">An exception containing the HttpClientResponse with headers, response code, and string of error.</exception>
         public async Task<Response<PlayerPurchaseGoogleplaystoreResponse>> RedeemGooglePlayPurchaseAsync(Unity.Services.Economy.Internal.Purchases.RedeemGooglePlayPurchaseRequest request,
-            Internal.Configuration operationConfiguration = null)
+            Configuration operationConfiguration = null)
         {
             var statusCodeToTypeMap = new Dictionary<string, System.Type>() { {"200", typeof(PlayerPurchaseGoogleplaystoreResponse)   },{"400", typeof(MakeVirtualPurchase400OneOf)   },{"403", typeof(BasicErrorResponse)   },{"404", typeof(BasicErrorResponse)   },{"422", typeof(RedeemGooglePlayPurchase422OneOf)   },{"429", typeof(BasicErrorResponse)   },{"503", typeof(BasicErrorResponse)   } };
 
             // Merge the operation/request level configuration with the client level configuration.
-            var finalConfiguration = Internal.Configuration.MergeConfigurations(operationConfiguration, Configuration);
+            var finalConfiguration = Configuration.MergeConfigurations(operationConfiguration, Configuration);
 
             var response = await HttpClient.MakeRequestAsync("POST",
                 request.ConstructUrl(finalConfiguration.BasePath),

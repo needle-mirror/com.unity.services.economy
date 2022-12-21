@@ -91,7 +91,9 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new PlayerPurchaseVirtualRequest(virtualPurchaseId, options?.PlayersInventoryItemIds),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {
@@ -131,7 +133,9 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new PlayerPurchaseAppleappstoreRequest(args.RealMoneyPurchaseId, args.Receipt, args.LocalCost, args.LocalCurrency),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {
@@ -179,7 +183,9 @@ namespace Unity.Services.Economy
                     args.PurchaseDataSignature,
                     args.LocalCost,
                     args.LocalCurrency),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {

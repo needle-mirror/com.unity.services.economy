@@ -57,6 +57,7 @@ namespace Unity.Services.Economy
     {
         public const Unity.Services.Economy.EconomyExceptionReason BadGateway = 502;
         public const Unity.Services.Economy.EconomyExceptionReason ConfigAssignmentHashInvalid = 3;
+        public const Unity.Services.Economy.EconomyExceptionReason ConfigNotSynced = 4;
         public const Unity.Services.Economy.EconomyExceptionReason Conflict = 409;
         public const Unity.Services.Economy.EconomyExceptionReason EntityNotFound = 404;
         public const Unity.Services.Economy.EconomyExceptionReason Forbidden = 403;
@@ -126,14 +127,23 @@ namespace Unity.Services.Economy
     public interface IEconomyConfigurationApiClient
     {
         public abstract string GetConfigAssignmentHash();
-        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyDefinition>> GetCurrenciesAsync();
-        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyAsync(string id);
-        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetInventoryItemAsync(string id);
-        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryItemDefinition>> GetInventoryItemsAsync();
-        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
-        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
-        public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
-        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
+        public abstract System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencies();
+        [System.Obsolete(@"GetCurrenciesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetCurrencies method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.CurrencyDefinition>> GetCurrenciesAsync();
+        public abstract Unity.Services.Economy.Model.CurrencyDefinition GetCurrency(string id);
+        [System.Obsolete(@"GetCurrencyAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetCurrency method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyAsync(string id);
+        public abstract Unity.Services.Economy.Model.InventoryItemDefinition GetInventoryItem(string id);
+        [System.Obsolete(@"GetInventoryItemAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetInventoryItem method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetInventoryItemAsync(string id);
+        public abstract System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryItemDefinition> GetInventoryItems();
+        [System.Obsolete(@"GetInventoryItemsAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetInventoryItems method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.InventoryItemDefinition>> GetInventoryItemsAsync();
+        public abstract Unity.Services.Economy.Model.RealMoneyPurchaseDefinition GetRealMoneyPurchase(string id);
+        [System.Obsolete(@"GetRealMoneyPurchaseAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetRealMoneyPurchase method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
+        public abstract System.Collections.Generic.List<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition> GetRealMoneyPurchases();
+        [System.Obsolete(@"GetRealMoneyPurchasesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetRealMoneyPurchases method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
+        public abstract Unity.Services.Economy.Model.VirtualPurchaseDefinition GetVirtualPurchase(string id);
+        [System.Obsolete(@"GetVirtualPurchaseAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetVirtualPurchase method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<Unity.Services.Economy.Model.VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
+        public abstract System.Collections.Generic.List<Unity.Services.Economy.Model.VirtualPurchaseDefinition> GetVirtualPurchases();
+        [System.Obsolete(@"GetVirtualPurchasesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetVirtualPurchases method. This API will be removed in an upcoming release.", false)] public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
+        public abstract System.Threading.Tasks.Task<System.Collections.Generic.List<Unity.Services.Economy.Model.ConfigurationItemDefinition>> SyncConfigurationAsync();
     }
 
     public interface IEconomyPlayerBalancesApiClient
@@ -459,7 +469,8 @@ namespace Unity.Services.Economy.Model
         [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyDate Modified;
         [UnityEngine.Scripting.Preserve] public string WriteLock;
         [UnityEngine.Scripting.Preserve] public PlayerBalance(string currencyId = default(string), long balance = 0, string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayerBalance.<GetCurrencyDefinitionAsync>d__6))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyDefinitionAsync();
+        public Unity.Services.Economy.Model.CurrencyDefinition GetCurrencyDefinition();
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"This has been replaced with GetCurrencyDefinition which is not asynchronous and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayerBalance.<GetCurrencyDefinitionAsync>d__7))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.CurrencyDefinition> GetCurrencyDefinitionAsync();
     }
 
     [UnityEngine.Scripting.Preserve] public class PlayersInventoryItem
@@ -471,7 +482,8 @@ namespace Unity.Services.Economy.Model
         [UnityEngine.Scripting.Preserve] public string PlayersInventoryItemId;
         [UnityEngine.Scripting.Preserve] public string WriteLock;
         [UnityEngine.Scripting.Preserve] public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), Unity.Services.Economy.Internal.Http.IDeserializable instanceData = default(Unity.Services.Economy.Internal.Http.IDeserializable), string writeLock = default(string), Unity.Services.Economy.Model.EconomyDate created = default(Unity.Services.Economy.Model.EconomyDate), Unity.Services.Economy.Model.EconomyDate modified = default(Unity.Services.Economy.Model.EconomyDate)) {}
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayersInventoryItem.<GetItemDefinitionAsync>d__7))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetItemDefinitionAsync();
+        public Unity.Services.Economy.Model.InventoryItemDefinition GetItemDefinition();
+        [System.Diagnostics.DebuggerStepThrough] [System.Obsolete(@"This has been replaced with GetItemDefinition which is not asynchronous and should be accessed from there instead. This API will be removed in an upcoming release.", false)] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.PlayersInventoryItem.<GetItemDefinitionAsync>d__8))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.InventoryItemDefinition> GetItemDefinitionAsync();
     }
 
     [UnityEngine.Scripting.Preserve] public class PurchaseItemQuantity
@@ -511,8 +523,8 @@ namespace Unity.Services.Economy.Model
 
     [UnityEngine.Scripting.Preserve] public class StoreIdentifiers
     {
-        [Newtonsoft.Json.JsonProperty(@"appleAppStore")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string AppleAppStore;
-        [Newtonsoft.Json.JsonProperty(@"googlePlayStore")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public string GooglePlayStore;
+        [Newtonsoft.Json.JsonProperty(@"appleAppStore")] [UnityEngine.Scripting.Preserve] public string AppleAppStore;
+        [Newtonsoft.Json.JsonProperty(@"googlePlayStore")] [UnityEngine.Scripting.Preserve] public string GooglePlayStore;
         public StoreIdentifiers() {}
     }
 

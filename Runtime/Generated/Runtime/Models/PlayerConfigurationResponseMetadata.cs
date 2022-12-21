@@ -49,13 +49,13 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerConfigurationResponseMetadata into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (ConfigAssignmentHash != null)
             {
-                var configAssignmentHashStringValue = ConfigAssignmentHash;
-                serializedModel += "configAssignmentHash," + configAssignmentHashStringValue;
+                serializedModel += "configAssignmentHash," + ConfigAssignmentHash;
             }
             return serializedModel;
         }
@@ -64,10 +64,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerConfigurationResponseMetadata as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (ConfigAssignmentHash != null)
             {
                 var configAssignmentHashStringValue = ConfigAssignmentHash.ToString();

@@ -18,9 +18,12 @@ namespace EconomySample
             await UnityServices.InitializeAsync();
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
+            // Cache the Economy configuration
+            await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+
             // NOTE: You need to set up your Economy configuration with the items used in here before running this sample,
             // or alternatively alter the sample to to work with your current configuration.
-            await ListAllCurrencyIds();
+            ListAllCurrencyIds();
 
             await UpdatePlayersBalance("GOLD", 10);
 
@@ -39,11 +42,11 @@ namespace EconomySample
             await WriteLockExample();
         }
 
-        private async Task ListAllCurrencyIds()
+        private void ListAllCurrencyIds()
         {
             try
             {
-                List<CurrencyDefinition> currencies = await EconomyService.Instance.Configuration.GetCurrenciesAsync();
+                List<CurrencyDefinition> currencies = EconomyService.Instance.Configuration.GetCurrencies();
 
                 List<string> currenciesIds = new List<string>();
                 foreach (var currency in currencies)

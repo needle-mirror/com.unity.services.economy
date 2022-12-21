@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using UnityEngine.Scripting;
 
@@ -13,13 +14,13 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// Apple App Store identifier
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("appleAppStore")] 
+        [Preserve][JsonProperty("appleAppStore")]
         public string AppleAppStore;
-        
+
         /// <summary>
         /// Google Play Store identifier
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("googlePlayStore")] 
+        [Preserve][JsonProperty("googlePlayStore")]
         public string GooglePlayStore;
     }
 
@@ -32,13 +33,13 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// The store identifiers for this purchase.
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("storeIdentifiers")] 
+        [Preserve][JsonRequired][JsonProperty("storeIdentifiers")]
         public StoreIdentifiers StoreIdentifiers;
-        
+
         /// <summary>
         /// The rewards associated with this purchase
         /// </summary>
-        [Preserve] [JsonRequired] [JsonProperty("rewards")]
+        [Preserve][JsonRequired][JsonProperty("rewards")]
         public List<PurchaseItemQuantity> Rewards;
     }
 }

@@ -21,7 +21,7 @@ using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Internal.Scheduler;
 using Unity.Services.Authentication.Internal;
 
-namespace Unity.Services.Economy.Internal.Apis.Configuration
+namespace Unity.Services.Economy.Internal.InternalConfiguration
 {
     internal static class JsonSerialization
     {
@@ -32,15 +32,15 @@ namespace Unity.Services.Economy.Internal.Apis.Configuration
 
         public static string SerializeToString<T>(T obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings{ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore});
         }
     }
 
     /// <summary>
-    /// ConfigurationApiBaseRequest class
+    /// InternalConfigurationApiBaseRequest class
     /// </summary>
     [Preserve]
-    internal class ConfigurationApiBaseRequest
+    internal class InternalConfigurationApiBaseRequest
     {
         /// <summary>
         /// Helper function to add a provided key and value to the provided
@@ -273,20 +273,23 @@ namespace Unity.Services.Economy.Internal.Apis.Configuration
     /// Get player&#39;s configuration
     /// </summary>
     [Preserve]
-    internal class GetPlayerConfigurationRequest : ConfigurationApiBaseRequest
+    internal class GetPlayerConfigurationRequest : InternalConfigurationApiBaseRequest
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-
         public string PlayerId { get; }
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -296,26 +299,27 @@ namespace Unity.Services.Economy.Internal.Apis.Configuration
         /// <param name="projectId">ID of the project.</param>
         /// <param name="playerId">ID of the player.</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public GetPlayerConfigurationRequest(string projectId, string playerId, string configAssignmentHash = default(string))
+        public GetPlayerConfigurationRequest(string projectId, string playerId, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-
             ProjectId = projectId;
 
             PlayerId = playerId;
+
             ConfigAssignmentHash = configAssignmentHash;
-
-
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/config/resources";
 
             List<string> queryParams = new List<string>();
-
 
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -348,7 +352,7 @@ namespace Unity.Services.Economy.Internal.Apis.Configuration
         /// <param name="operationConfiguration">The operation configuration to use.</param>
         /// <returns>A dictionary representing the request headers.</returns>
         public Dictionary<string, string> ConstructHeaders(IAccessToken accessToken,
-            Internal.Configuration operationConfiguration = null)
+            Configuration operationConfiguration = null)
         {
             var headers = new Dictionary<string, string>();
             if(!string.IsNullOrEmpty(accessToken.AccessToken))
@@ -384,6 +388,14 @@ namespace Unity.Services.Economy.Internal.Apis.Configuration
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.

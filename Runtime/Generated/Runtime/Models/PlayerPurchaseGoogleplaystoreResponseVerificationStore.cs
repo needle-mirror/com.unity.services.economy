@@ -49,13 +49,13 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a PlayerPurchaseGoogleplaystoreResponseVerificationStore into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Receipt != null)
             {
-                var receiptStringValue = Receipt;
-                serializedModel += "receipt," + receiptStringValue;
+                serializedModel += "receipt," + Receipt;
             }
             return serializedModel;
         }
@@ -64,10 +64,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a PlayerPurchaseGoogleplaystoreResponseVerificationStore as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (Receipt != null)
             {
                 var receiptStringValue = Receipt.ToString();

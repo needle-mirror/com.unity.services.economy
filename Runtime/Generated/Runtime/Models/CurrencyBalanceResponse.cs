@@ -85,33 +85,26 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a CurrencyBalanceResponse into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (CurrencyId != null)
             {
-                var currencyIdStringValue = CurrencyId;
-                serializedModel += "currencyId," + currencyIdStringValue + ",";
+                serializedModel += "currencyId," + CurrencyId + ",";
             }
-            if (Balance != null)
-            {
-                var balanceStringValue = Balance.ToString();
-                serializedModel += "balance," + balanceStringValue + ",";
-            }
+            serializedModel += "balance," + Balance.ToString() + ",";
             if (WriteLock != null)
             {
-                var writeLockStringValue = WriteLock;
-                serializedModel += "writeLock," + writeLockStringValue + ",";
+                serializedModel += "writeLock," + WriteLock + ",";
             }
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue;
+                serializedModel += "modified," + Modified.ToString();
             }
             return serializedModel;
         }
@@ -120,21 +113,18 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a CurrencyBalanceResponse as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (CurrencyId != null)
             {
                 var currencyIdStringValue = CurrencyId.ToString();
                 dictionary.Add("currencyId", currencyIdStringValue);
             }
             
-            if (Balance != null)
-            {
-                var balanceStringValue = Balance.ToString();
-                dictionary.Add("balance", balanceStringValue);
-            }
+            var balanceStringValue = Balance.ToString();
+            dictionary.Add("balance", balanceStringValue);
             
             if (WriteLock != null)
             {

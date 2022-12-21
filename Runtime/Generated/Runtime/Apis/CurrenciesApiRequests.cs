@@ -32,7 +32,7 @@ namespace Unity.Services.Economy.Internal.Currencies
 
         public static string SerializeToString<T>(T obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, new JsonSerializerSettings{ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore});
         }
     }
 
@@ -277,24 +277,25 @@ namespace Unity.Services.Economy.Internal.Currencies
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for currencyId </summary>
         [Preserve]
-        
         public string CurrencyId { get; }
         /// <summary>Accessor for currencyModifyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest CurrencyModifyBalanceRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -306,30 +307,30 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyModifyBalanceRequest">CurrencyModifyBalanceRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public DecrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string))
+        public DecrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            
-            CurrencyId = currencyId;
-            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            CurrencyId = currencyId;
+
+            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}/decrement";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -399,6 +400,14 @@ namespace Unity.Services.Economy.Internal.Currencies
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -422,24 +431,25 @@ namespace Unity.Services.Economy.Internal.Currencies
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         /// <summary>Accessor for after </summary>
         [Preserve]
         public string After { get; }
-        
         /// <summary>Accessor for limit </summary>
         [Preserve]
         public int? Limit { get; }
-        
         string PathAndQueryParams;
 
         /// <summary>
@@ -449,37 +459,34 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <param name="projectId">ID of the project.</param>
         /// <param name="playerId">ID of the player.</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         /// <param name="after">The currency ID after which to retrieve the next page of balances.</param>
         /// <param name="limit">Number of currencies to be returned. Defaults to 20.</param>
         [Preserve]
-        public GetPlayerCurrenciesRequest(string projectId, string playerId, string configAssignmentHash = default(string), string after = default(string), int? limit = default(int?))
+        public GetPlayerCurrenciesRequest(string projectId, string playerId, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string), string after = default(string), int? limit = default(int?))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            ConfigAssignmentHash = configAssignmentHash;
-            
-            After = after;
-            
-            Limit = limit;
-            
 
+            PlayerId = playerId;
+
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
+            After = after;
+            Limit = limit;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        
             if(!string.IsNullOrEmpty(After))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "after", After);
             }
-                        
             var limitStringValue = Limit.ToString();
             queryParams = AddParamsToQueryParams(queryParams, "limit", limitStringValue);
             if (queryParams.Count > 0)
@@ -551,6 +558,14 @@ namespace Unity.Services.Economy.Internal.Currencies
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -574,24 +589,25 @@ namespace Unity.Services.Economy.Internal.Currencies
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for currencyId </summary>
         [Preserve]
-        
         public string CurrencyId { get; }
         /// <summary>Accessor for currencyModifyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest CurrencyModifyBalanceRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -603,30 +619,30 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyModifyBalanceRequest">CurrencyModifyBalanceRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public IncrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string))
+        public IncrementPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyModifyBalanceRequest currencyModifyBalanceRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            
-            CurrencyId = currencyId;
-            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            CurrencyId = currencyId;
+
+            CurrencyModifyBalanceRequest = currencyModifyBalanceRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}/increment";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -696,6 +712,14 @@ namespace Unity.Services.Economy.Internal.Currencies
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.
@@ -719,24 +743,25 @@ namespace Unity.Services.Economy.Internal.Currencies
     {
         /// <summary>Accessor for projectId </summary>
         [Preserve]
-        
         public string ProjectId { get; }
         /// <summary>Accessor for playerId </summary>
         [Preserve]
-        
         public string PlayerId { get; }
         /// <summary>Accessor for currencyId </summary>
         [Preserve]
-        
         public string CurrencyId { get; }
         /// <summary>Accessor for currencyBalanceRequest </summary>
         [Preserve]
         public Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest CurrencyBalanceRequest { get; }
-        
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
-        
+        /// <summary>Accessor for unityInstallationId </summary>
+        [Preserve]
+        public string UnityInstallationId { get; }
+        /// <summary>Accessor for analyticsUserId </summary>
+        [Preserve]
+        public string AnalyticsUserId { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -748,30 +773,30 @@ namespace Unity.Services.Economy.Internal.Currencies
         /// <param name="currencyId">Resource ID of the currency.</param>
         /// <param name="currencyBalanceRequest">CurrencyBalanceRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
+        /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
+        /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         [Preserve]
-        public SetPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest currencyBalanceRequest, string configAssignmentHash = default(string))
+        public SetPlayerCurrencyBalanceRequest(string projectId, string playerId, string currencyId, Unity.Services.Economy.Internal.Models.CurrencyBalanceRequest currencyBalanceRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string))
         {
-            
             ProjectId = projectId;
-            
-            PlayerId = playerId;
-            
-            CurrencyId = currencyId;
-            CurrencyBalanceRequest = currencyBalanceRequest;
-            
-            ConfigAssignmentHash = configAssignmentHash;
-            
 
+            PlayerId = playerId;
+
+            CurrencyId = currencyId;
+
+            CurrencyBalanceRequest = currencyBalanceRequest;
+            ConfigAssignmentHash = configAssignmentHash;
+            UnityInstallationId = unityInstallationId;
+            AnalyticsUserId = analyticsUserId;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/currencies/{currencyId}";
 
             List<string> queryParams = new List<string>();
 
-            
             if(!string.IsNullOrEmpty(ConfigAssignmentHash))
             {
                 queryParams = AddParamsToQueryParams(queryParams, "configAssignmentHash", ConfigAssignmentHash);
             }
-                        if (queryParams.Count > 0)
+            if (queryParams.Count > 0)
             {
                 PathAndQueryParams = $"{PathAndQueryParams}?{string.Join("&", queryParams)}";
             }
@@ -841,6 +866,14 @@ namespace Unity.Services.Economy.Internal.Currencies
                 headers.Add("Content-Type", "application/json");
             }
 
+            if(!string.IsNullOrEmpty(UnityInstallationId))
+            {
+                headers.Add("Unity-installation-id", UnityInstallationId);
+            }
+            if(!string.IsNullOrEmpty(AnalyticsUserId))
+            {
+                headers.Add("Analytics-user-id", AnalyticsUserId);
+            }
 
             // We also check if there are headers that are defined as part of
             // the request configuration.

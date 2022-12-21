@@ -42,7 +42,7 @@ namespace Unity.Services.Economy.Internal.Models
         {
             PlayersInventoryItemId = playersInventoryItemId;
             InventoryItemId = inventoryItemId;
-            InstanceData = new JsonObject(instanceData);
+            InstanceData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(instanceData);
             WriteLock = writeLock;
             Created = created;
             Modified = modified;
@@ -67,7 +67,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
         [DataMember(Name = "instanceData", EmitDefaultValue = false)]
-        public JsonObject InstanceData{ get; }
+        public IDeserializable InstanceData{ get; }
         
         /// <summary>
         /// The write lock for the inventory item instance.
@@ -94,38 +94,33 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a InventoryResponse into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (PlayersInventoryItemId != null)
             {
-                var playersInventoryItemIdStringValue = PlayersInventoryItemId;
-                serializedModel += "playersInventoryItemId," + playersInventoryItemIdStringValue + ",";
+                serializedModel += "playersInventoryItemId," + PlayersInventoryItemId + ",";
             }
             if (InventoryItemId != null)
             {
-                var inventoryItemIdStringValue = InventoryItemId;
-                serializedModel += "inventoryItemId," + inventoryItemIdStringValue + ",";
+                serializedModel += "inventoryItemId," + InventoryItemId + ",";
             }
             if (InstanceData != null)
             {
-                var instanceDataStringValue = InstanceData.ToString();
-                serializedModel += "instanceData," + instanceDataStringValue + ",";
+                serializedModel += "instanceData," + InstanceData.ToString() + ",";
             }
             if (WriteLock != null)
             {
-                var writeLockStringValue = WriteLock;
-                serializedModel += "writeLock," + writeLockStringValue + ",";
+                serializedModel += "writeLock," + WriteLock + ",";
             }
             if (Created != null)
             {
-                var createdStringValue = Created.ToString();
-                serializedModel += "created," + createdStringValue + ",";
+                serializedModel += "created," + Created.ToString() + ",";
             }
             if (Modified != null)
             {
-                var modifiedStringValue = Modified.ToString();
-                serializedModel += "modified," + modifiedStringValue;
+                serializedModel += "modified," + Modified.ToString();
             }
             return serializedModel;
         }
@@ -134,10 +129,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a InventoryResponse as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (PlayersInventoryItemId != null)
             {
                 var playersInventoryItemIdStringValue = PlayersInventoryItemId.ToString();

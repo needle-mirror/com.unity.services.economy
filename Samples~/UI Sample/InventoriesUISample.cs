@@ -50,7 +50,13 @@ public class InventoriesUISample : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    public async void FetchInventoryItems()
+    public async void SyncConfigurationAsync()
+    {
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+        Debug.Log("Configuration sync finished");
+    }
+
+    public void FetchInventoryItems()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -58,7 +64,7 @@ public class InventoriesUISample : MonoBehaviour
         }
 
         string outputString = "";
-        List<InventoryItemDefinition> items = await EconomyService.Instance.Configuration.GetInventoryItemsAsync();
+        List<InventoryItemDefinition> items = EconomyService.Instance.Configuration.GetInventoryItems();
         ClearOutputTextBoxes();
         if (items.Count == 0)
         {
@@ -74,7 +80,7 @@ public class InventoriesUISample : MonoBehaviour
         }
     }
 
-    public async void FetchInventoryItem()
+    public void FetchInventoryItem()
     {
         if (!IsAuthenticationSignedIn())
         {
@@ -87,7 +93,7 @@ public class InventoriesUISample : MonoBehaviour
             return;
         }
 
-        InventoryItemDefinition inventoryItem = await EconomyService.Instance.Configuration.GetInventoryItemAsync(m_GetConfigItemIdInput.text);
+        InventoryItemDefinition inventoryItem = EconomyService.Instance.Configuration.GetInventoryItem(m_GetConfigItemIdInput.text);
         ClearOutputTextBoxes();
         if (inventoryItem == null)
         {

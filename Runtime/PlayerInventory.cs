@@ -115,6 +115,8 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId(),
                 afterPlayersInventoryItemId,
                 options.ItemsPerFetch,
                 options.PlayersInventoryItemIds,
@@ -147,7 +149,9 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 new AddInventoryRequest(inventoryItemId, options?.PlayersInventoryItemId, options?.InstanceData),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {
@@ -181,7 +185,10 @@ namespace Unity.Services.Economy
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
                 new InventoryDeleteRequest(options?.WriteLock),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId(),
+                options?.WriteLock);
 
             try
             {
@@ -211,7 +218,9 @@ namespace Unity.Services.Economy
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
                 new InventoryRequestUpdate(instanceData, options?.WriteLock),
-                m_EconomyAuthentication.configAssignmentHash);
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId());
 
             try
             {

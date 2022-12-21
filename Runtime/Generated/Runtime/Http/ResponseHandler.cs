@@ -45,7 +45,8 @@ namespace Unity.Services.Economy.Internal.Http
         {
             var settings = new JsonSerializerSettings
             {
-                MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore
+                MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore,
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             };
 
             try
@@ -70,7 +71,8 @@ namespace Unity.Services.Economy.Internal.Http
         {
             var settings = new JsonSerializerSettings
             {
-                MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore
+                MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore,
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             };
 
             try

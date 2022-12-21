@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine.Scripting;
 
@@ -44,7 +45,17 @@ namespace Unity.Services.Economy.Model
         /// Gets the currency definition for this balance.
         /// </summary>
         /// <returns>The CurrencyDefinition that this balance refers to.</returns>
+        public CurrencyDefinition GetCurrencyDefinition()
+        {
+            return EconomyService.Instance.Configuration.GetCurrency(CurrencyId);
+        }
+
+        /// <summary>
+        /// Gets the currency definition for this balance.
+        /// </summary>
+        /// <returns>The CurrencyDefinition that this balance refers to.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("This has been replaced with GetCurrencyDefinition which is not asynchronous and should be accessed from there instead. This API will be removed in an upcoming release.", false)]
         public async Task<CurrencyDefinition> GetCurrencyDefinitionAsync()
         {
             return await EconomyService.Instance.Configuration.GetCurrencyAsync(CurrencyId);

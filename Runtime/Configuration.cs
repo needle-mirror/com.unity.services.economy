@@ -5,8 +5,9 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Unity.Services.Economy.Internal;
-using Unity.Services.Economy.Internal.Apis.Configuration;
+using Unity.Services.Economy.Internal.Apis.InternalConfiguration;
 using Unity.Services.Economy.Internal.Http;
+using Unity.Services.Economy.Internal.InternalConfiguration;
 using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Model;
 using UnityEngine;
@@ -21,10 +22,84 @@ namespace Unity.Services.Economy
     public interface IEconomyConfigurationApiClient
     {
         /// <summary>
+        /// Gets the currently published Economy configuration and caches it.
+        /// </summary>
+        /// <returns>A list of ConfigurationItemDefinition</returns>
+        /// <exception cref="EconomyException"></exception>
+        Task<List<ConfigurationItemDefinition>> SyncConfigurationAsync();
+
+        /// <summary>
+        /// Gets the currencies from the cached configuration.
+        /// </summary>
+        /// <returns>A list of CurrencyDefinition</returns>
+        /// <exception cref="EconomyException"></exception>
+        List<CurrencyDefinition> GetCurrencies();
+
+        /// <summary>
+        /// Gets the inventory items from the cached configuration.
+        /// </summary>
+        /// <returns>A list of InventoryItemDefinition</returns>
+        /// <exception cref="EconomyException"></exception>
+        List<InventoryItemDefinition> GetInventoryItems();
+
+        /// <summary>
+        /// Gets the virtual purchases from the cached configuration.
+        /// </summary>
+        /// <returns>A list of VirtualPurchaseDefinition</returns>
+        /// <exception cref="EconomyException"></exception>
+        List<VirtualPurchaseDefinition> GetVirtualPurchases();
+
+        /// <summary>
+        /// Gets the real money purchases from the cached configuration.
+        /// </summary>
+        /// <returns>A list of RealMoneyPurchaseDefinition</returns>
+        /// <exception cref="EconomyException"></exception>
+        List<RealMoneyPurchaseDefinition> GetRealMoneyPurchases();
+
+        /// <summary>
+        /// Gets a specific currency from the cached config.
+        /// </summary>
+        /// <param name="id">The ID of the currency to fetch.</param>
+        /// <returns>A CurrencyDefinition or null if the currency doesn't exist.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        CurrencyDefinition GetCurrency(string id);
+
+        /// <summary>
+        /// Gets a specific inventory item from the cached config.
+        /// </summary>
+        /// <param name="id">The ID of the inventory item to fetch.</param>
+        /// <returns>A InventoryItemDefinition or null if the currency doesn't exist.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        InventoryItemDefinition GetInventoryItem(string id);
+
+        /// <summary>
+        /// Gets a specific virtual purchase from the cached config.
+        /// </summary>
+        /// <param name="id">The ID of the virtual purchase to fetch.</param>
+        /// <returns>A VirtualPurchaseDefinition or null if the currency doesn't exist.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        VirtualPurchaseDefinition GetVirtualPurchase(string id);
+
+        /// <summary>
+        /// Gets a specific real money purchase from the cached config.
+        /// </summary>
+        /// <param name="id">The ID of the real money purchase to fetch.</param>
+        /// <returns>A RealMoneyPurchaseDefinition or null if the currency doesn't exist.</returns>
+        /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        RealMoneyPurchaseDefinition GetRealMoneyPurchase(string id);
+
+        /// <summary>
+        /// Returns the cached config assignment hash.
+        /// </summary>
+        /// <returns>A config assignment hash or null if Economy doesn't have one</returns>
+        string GetConfigAssignmentHash();
+
+        /// <summary>
         /// Gets the Currencies that have been configured and published in the Unity Dashboard.
         /// </summary>
         /// <returns>A list of CurrencyDefinition</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetCurrenciesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetCurrencies method. This API will be removed in an upcoming release.", false)]
         Task<List<CurrencyDefinition>> GetCurrenciesAsync();
 
         /// <summary>
@@ -33,6 +108,7 @@ namespace Unity.Services.Economy
         /// <param name="id">The configuration ID of the currency to fetch.</param>
         /// <returns>A CurrencyDefinition for the specified currency, or null if the currency doesn't exist.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetCurrencyAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetCurrency method. This API will be removed in an upcoming release.", false)]
         Task<CurrencyDefinition> GetCurrencyAsync(string id);
 
         /// <summary>
@@ -40,6 +116,7 @@ namespace Unity.Services.Economy
         /// </summary>
         /// <returns>A list of InventoryItemDefinition</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetInventoryItemsAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetInventoryItems method. This API will be removed in an upcoming release.", false)]
         Task<List<InventoryItemDefinition>> GetInventoryItemsAsync();
 
         /// <summary>
@@ -48,6 +125,7 @@ namespace Unity.Services.Economy
         /// <param name="id">The configuration ID of the item to fetch.</param>
         /// <returns>A InventoryItemDefinition for the specified currency, or null if the currency doesn't exist.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetInventoryItemAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetInventoryItem method. This API will be removed in an upcoming release.", false)]
         Task<InventoryItemDefinition> GetInventoryItemAsync(string id);
 
         /// <summary>
@@ -57,6 +135,7 @@ namespace Unity.Services.Economy
         /// </summary>
         /// <returns>A list of VirtualPurchaseDefinition</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetVirtualPurchasesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetVirtualPurchases method. This API will be removed in an upcoming release.", false)]
         Task<List<VirtualPurchaseDefinition>> GetVirtualPurchasesAsync();
 
         /// <summary>
@@ -67,6 +146,7 @@ namespace Unity.Services.Economy
         /// <param name="id">The ID of the purchase to retrieve</param>
         /// <returns>A VirtualPurchaseDefinition for the specified purchase if it exists, or null otherwise.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetVirtualPurchaseAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetVirtualPurchase method. This API will be removed in an upcoming release.", false)]
         Task<VirtualPurchaseDefinition> GetVirtualPurchaseAsync(string id);
 
         /// <summary>
@@ -74,6 +154,7 @@ namespace Unity.Services.Economy
         /// </summary>
         /// <returns>A list of RealMoneyPurchaseDefinition</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetRealMoneyPurchasesAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetRealMoneyPurchases method. This API will be removed in an upcoming release.", false)]
         Task<List<RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync();
 
         /// <summary>
@@ -82,17 +163,18 @@ namespace Unity.Services.Economy
         /// <param name="id">The ID of the purchase to retrieve</param>
         /// <returns>A RealMoneyPurchaseDefinition for the specified purchase if it exists, or null otherwise.</returns>
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
+        [Obsolete("GetRealMoneyPurchaseAsync has been replaced by first caching your configuration using SyncConfigurationAsync and then using the GetRealMoneyPurchase method. This API will be removed in an upcoming release.", false)]
         Task<RealMoneyPurchaseDefinition> GetRealMoneyPurchaseAsync(string id);
-
-        /// <summary>
-        /// Returns the most up to date config assignment hash that Economy has.
-        /// </summary>
-        /// <returns>A config assignment hash or null if Economy doesn't have one</returns>
-        string GetConfigAssignmentHash();
     }
 
     class ConfigurationInternal : IEconomyConfigurationApiClient
     {
+        private List<ConfigurationItemDefinition> m_CachedConfig;
+        private bool m_HasSynced;
+
+        private readonly IInternalConfigurationApiClient m_InternalConfigurationApiClient;
+        private readonly IEconomyAuthentication m_EconomyAuthentication;
+
         // Names matching the Type property on a PlayerConfigurationResponseResultsOneOf
         private const string k_CurrencyTypeString = "CurrencyResource";
         private const string k_InventoryItemTypeString = "InventoryItemResource";
@@ -105,19 +187,157 @@ namespace Unity.Services.Economy
         internal const string virtualPurchaseSdkModelTypeString = "VIRTUAL_PURCHASE";
         internal const string realMoneyPurchaseSdkModelTypeString = "MONEY_PURCHASE";
 
-        internal enum PurchaseItemType
+        private enum PurchaseItemType
         {
             Costs,
             Rewards
         }
 
-        readonly IConfigurationApiClient m_ConfigurationApiClient;
-        readonly IEconomyAuthentication m_EconomyAuthentication;
-
-        internal ConfigurationInternal(IConfigurationApiClient configurationApiClient, IEconomyAuthentication economyAuthWrapper)
+        internal ConfigurationInternal(IInternalConfigurationApiClient configurationApiClient, IEconomyAuthentication economyAuthWrapper)
         {
-            m_ConfigurationApiClient = configurationApiClient;
+            m_InternalConfigurationApiClient = configurationApiClient;
             m_EconomyAuthentication = economyAuthWrapper;
+        }
+
+        public async Task<List<ConfigurationItemDefinition>> SyncConfigurationAsync()
+        {
+            m_EconomyAuthentication.CheckSignedIn();
+
+            GetPlayerConfigurationRequest request = new GetPlayerConfigurationRequest(
+                Application.cloudProjectId,
+                m_EconomyAuthentication.GetPlayerId(),
+                null
+            );
+
+            try
+            {
+                Response<PlayerConfigurationResponse> response = await m_InternalConfigurationApiClient.GetPlayerConfigurationAsync(request);
+
+                List<ConfigurationItemDefinition> convertedResources = ConvertResources(response.Result.Results);
+                ConfigurationMetadata convertedMetadata = new ConfigurationMetadata(response.Result.Metadata.ConfigAssignmentHash);
+
+                // Update the config assignment hash stored in the SDK every time we fetch a config
+                m_EconomyAuthentication.configAssignmentHash = convertedMetadata.ConfigAssignmentHash;
+                GetConfigurationResult result = new GetConfigurationResult(convertedResources, convertedMetadata);
+                m_CachedConfig = result.Results;
+                m_HasSynced = true;
+
+                return result.Results;
+            }
+            catch (HttpException<BasicErrorResponse> e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+            catch (HttpException e)
+            {
+                throw EconomyAPIErrorHandler.HandleException(e);
+            }
+        }
+
+        public List<CurrencyDefinition> GetCurrencies()
+        {
+            CheckHasSynced();
+
+            List<CurrencyDefinition> currencies = new List<CurrencyDefinition>();
+            foreach (var configItem in m_CachedConfig)
+            {
+                if (configItem.Type == currencySdkModelTypeString)
+                {
+                    currencies.Add((CurrencyDefinition)configItem);
+                }
+            }
+
+            return currencies;
+        }
+
+        public List<InventoryItemDefinition> GetInventoryItems()
+        {
+            CheckHasSynced();
+
+            List<InventoryItemDefinition> inventoryItems = new List<InventoryItemDefinition>();
+            foreach (var configItem in m_CachedConfig)
+            {
+                if (configItem.Type == inventoryItemSdkModelTypeString)
+                {
+                    inventoryItems.Add((InventoryItemDefinition)configItem);
+                }
+            }
+
+            return inventoryItems;
+        }
+
+        public List<VirtualPurchaseDefinition> GetVirtualPurchases()
+        {
+            CheckHasSynced();
+
+            List<VirtualPurchaseDefinition> virtualPurchases = new List<VirtualPurchaseDefinition>();
+            foreach (var configItem in m_CachedConfig)
+            {
+                if (configItem.Type == virtualPurchaseSdkModelTypeString)
+                {
+                    virtualPurchases.Add((VirtualPurchaseDefinition)configItem);
+                }
+            }
+
+            return virtualPurchases;
+        }
+
+        public List<RealMoneyPurchaseDefinition> GetRealMoneyPurchases()
+        {
+            CheckHasSynced();
+
+            List<RealMoneyPurchaseDefinition> realMoneyPurchases = new List<RealMoneyPurchaseDefinition>();
+            foreach (var configItem in m_CachedConfig)
+            {
+                if (configItem.Type == realMoneyPurchaseSdkModelTypeString)
+                {
+                    realMoneyPurchases.Add((RealMoneyPurchaseDefinition)configItem);
+                }
+            }
+
+            return realMoneyPurchases;
+        }
+
+        public CurrencyDefinition GetCurrency(string id)
+        {
+            return GetConfigurationItemFromCache<CurrencyDefinition>(id);
+        }
+
+        public InventoryItemDefinition GetInventoryItem(string id)
+        {
+            return GetConfigurationItemFromCache<InventoryItemDefinition>(id);
+        }
+
+        public VirtualPurchaseDefinition GetVirtualPurchase(string id)
+        {
+            return GetConfigurationItemFromCache<VirtualPurchaseDefinition>(id);
+        }
+
+        public RealMoneyPurchaseDefinition GetRealMoneyPurchase(string id)
+        {
+            return GetConfigurationItemFromCache<RealMoneyPurchaseDefinition>(id);
+        }
+
+        private T GetConfigurationItemFromCache<T>(string id)
+        {
+            CheckHasSynced();
+
+            foreach (var configItem in m_CachedConfig)
+            {
+                if (configItem.Id == id)
+                {
+                    return (T)Convert.ChangeType(configItem, typeof(T));
+                }
+            }
+
+            return default;
+        }
+
+        private void CheckHasSynced()
+        {
+            if (m_HasSynced) return;
+
+            throw new EconomyException(EconomyExceptionReason.ConfigNotSynced, 4, "You have not synced your configuration yet. Call SyncConfigurationAsync() at least once before calling the other configuration methods.");
         }
 
         /// <summary>
@@ -125,6 +345,8 @@ namespace Unity.Services.Economy
         /// </summary>
         /// <returns>A GetConfigurationResult</returns>
         /// <exception cref="EconomyException"></exception>
+        [Obsolete("GetConfigurationAsync should not be used anymore, instead you should use the SyncConfigurations workflow. " +
+            "This method is still needed for other deprecated methods. This API will be removed in an upcoming release.", false)]
         private async Task<GetConfigurationResult> GetConfigurationAsync()
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -137,7 +359,7 @@ namespace Unity.Services.Economy
 
             try
             {
-                Response<PlayerConfigurationResponse> response = await m_ConfigurationApiClient.GetPlayerConfigurationAsync(request);
+                Response<PlayerConfigurationResponse> response = await m_InternalConfigurationApiClient.GetPlayerConfigurationAsync(request);
 
                 List<ConfigurationItemDefinition> convertedResources = ConvertResources(response.Result.Results);
                 ConfigurationMetadata convertedMetadata = new ConfigurationMetadata(response.Result.Metadata.ConfigAssignmentHash);
@@ -253,7 +475,6 @@ namespace Unity.Services.Economy
                 }
             }
 
-            Debug.Log("The provided economy item key doesn't exist in the fetched configuration.");
             return default;
         }
 
@@ -342,13 +563,14 @@ namespace Unity.Services.Economy
         /// <param name="rawConfig">The entire raw config response received from the service.
         /// This is required to set up the Rewards of the purchase.</param>
         /// <returns></returns>
-        private RealMoneyPurchaseDefinition ConvertRealMoneyPurchaseRawResponse(string purchaseRawResponse, List<PlayerConfigurationResponseResultsOneOf> rawConfig)
+        internal RealMoneyPurchaseDefinition ConvertRealMoneyPurchaseRawResponse(string purchaseRawResponse, List<PlayerConfigurationResponseResultsOneOf> rawConfig)
         {
             RealMoneyPurchaseDefinition realMoneyPurchaseDefinition = new RealMoneyPurchaseDefinition();
             realMoneyPurchaseDefinition.Rewards = new List<PurchaseItemQuantity>();
 
             JObject jObject = JObject.Parse(purchaseRawResponse);
             SetBasicConfigItemProperties(realMoneyPurchaseDefinition, jObject);
+            realMoneyPurchaseDefinition.StoreIdentifiers = jObject["storeIdentifiers"]?.ToObject<StoreIdentifiers>();
             realMoneyPurchaseDefinition.Rewards = GetPurchaseItemQuantityList(jObject, PurchaseItemType.Rewards, rawConfig);
 
             return realMoneyPurchaseDefinition;

@@ -103,43 +103,31 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a ErrorResponseConflictInventoryDelete into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (Type != null)
             {
-                var typeStringValue = Type;
-                serializedModel += "type," + typeStringValue + ",";
+                serializedModel += "type," + Type + ",";
             }
             if (Title != null)
             {
-                var titleStringValue = Title;
-                serializedModel += "title," + titleStringValue + ",";
+                serializedModel += "title," + Title + ",";
             }
-            if (Status != null)
-            {
-                var statusStringValue = Status.ToString();
-                serializedModel += "status," + statusStringValue + ",";
-            }
-            if (Code != null)
-            {
-                var codeStringValue = Code.ToString();
-                serializedModel += "code," + codeStringValue + ",";
-            }
+            serializedModel += "status," + Status.ToString() + ",";
+            serializedModel += "code," + Code.ToString() + ",";
             if (Detail != null)
             {
-                var detailStringValue = Detail;
-                serializedModel += "detail," + detailStringValue + ",";
+                serializedModel += "detail," + Detail + ",";
             }
             if (Instance != null)
             {
-                var instanceStringValue = Instance;
-                serializedModel += "instance," + instanceStringValue + ",";
+                serializedModel += "instance," + Instance + ",";
             }
             if (Data != null)
             {
-                var dataStringValue = Data.ToString();
-                serializedModel += "data," + dataStringValue;
+                serializedModel += "data," + Data.ToString();
             }
             return serializedModel;
         }
@@ -148,10 +136,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a ErrorResponseConflictInventoryDelete as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (Type != null)
             {
                 var typeStringValue = Type.ToString();
@@ -164,17 +152,11 @@ namespace Unity.Services.Economy.Internal.Models
                 dictionary.Add("title", titleStringValue);
             }
             
-            if (Status != null)
-            {
-                var statusStringValue = Status.ToString();
-                dictionary.Add("status", statusStringValue);
-            }
+            var statusStringValue = Status.ToString();
+            dictionary.Add("status", statusStringValue);
             
-            if (Code != null)
-            {
-                var codeStringValue = Code.ToString();
-                dictionary.Add("code", codeStringValue);
-            }
+            var codeStringValue = Code.ToString();
+            dictionary.Add("code", codeStringValue);
             
             if (Detail != null)
             {

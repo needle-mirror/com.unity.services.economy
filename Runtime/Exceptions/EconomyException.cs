@@ -15,6 +15,7 @@ namespace Unity.Services.Economy
         Unknown = 0,
         NetworkError = 1,
         ConfigAssignmentHashInvalid = 3,
+        ConfigNotSynced = 4,
 
         InvalidArgument = 400,
         Unauthorized = 401,

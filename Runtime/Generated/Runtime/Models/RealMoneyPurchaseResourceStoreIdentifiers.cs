@@ -58,18 +58,17 @@ namespace Unity.Services.Economy.Internal.Models
         /// Formats a RealMoneyPurchaseResourceStoreIdentifiers into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
-        public string SerializeAsPathParam()
+        internal string SerializeAsPathParam()
         {
             var serializedModel = "";
+
             if (AppleAppStore != null)
             {
-                var appleAppStoreStringValue = AppleAppStore;
-                serializedModel += "appleAppStore," + appleAppStoreStringValue + ",";
+                serializedModel += "appleAppStore," + AppleAppStore + ",";
             }
             if (GooglePlayStore != null)
             {
-                var googlePlayStoreStringValue = GooglePlayStore;
-                serializedModel += "googlePlayStore," + googlePlayStoreStringValue;
+                serializedModel += "googlePlayStore," + GooglePlayStore;
             }
             return serializedModel;
         }
@@ -78,10 +77,10 @@ namespace Unity.Services.Economy.Internal.Models
         /// Returns a RealMoneyPurchaseResourceStoreIdentifiers as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
-        public Dictionary<string, string> GetAsQueryParam()
+        internal Dictionary<string, string> GetAsQueryParam()
         {
             var dictionary = new Dictionary<string, string>();
-            
+
             if (AppleAppStore != null)
             {
                 var appleAppStoreStringValue = AppleAppStore.ToString();
