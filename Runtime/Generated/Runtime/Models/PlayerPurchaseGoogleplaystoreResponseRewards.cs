@@ -22,59 +22,59 @@ using Unity.Services.Economy.Internal.Http;
 namespace Unity.Services.Economy.Internal.Models
 {
     /// <summary>
-    /// ErrorResponseConflictInventoryDeleteData model
+    /// Rewards of the purchase.
     /// </summary>
     [Preserve]
-    [DataContract(Name = "error_response_conflict_inventory_delete_data")]
-    internal class ErrorResponseConflictInventoryDeleteData
+    [DataContract(Name = "player_purchase_googleplaystore_response_rewards")]
+    internal class PlayerPurchaseGoogleplaystoreResponseRewards
     {
         /// <summary>
-        /// Creates an instance of ErrorResponseConflictInventoryDeleteData.
+        /// Rewards of the purchase.
         /// </summary>
-        /// <param name="attempted">attempted param</param>
-        /// <param name="existing">existing param</param>
+        /// <param name="currency">Currency that was credited in the purchase.</param>
+        /// <param name="inventory">Inventory that was credited in the purchase.</param>
         [Preserve]
-        public ErrorResponseConflictInventoryDeleteData(ErrorResponseConflictInventoryDeleteDataAttempted attempted, InventoryResponse existing)
+        public PlayerPurchaseGoogleplaystoreResponseRewards(List<CurrencyExchangeItem> currency, List<InventoryExchangeItem> inventory)
         {
-            Attempted = attempted;
-            Existing = existing;
+            Currency = currency;
+            Inventory = inventory;
         }
 
         /// <summary>
-        /// Parameter attempted of ErrorResponseConflictInventoryDeleteData
+        /// Currency that was credited in the purchase.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "attempted", IsRequired = true, EmitDefaultValue = true)]
-        public ErrorResponseConflictInventoryDeleteDataAttempted Attempted{ get; }
+        [DataMember(Name = "currency", IsRequired = true, EmitDefaultValue = true)]
+        public List<CurrencyExchangeItem> Currency{ get; }
         
         /// <summary>
-        /// Parameter existing of ErrorResponseConflictInventoryDeleteData
+        /// Inventory that was credited in the purchase.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "existing", IsRequired = true, EmitDefaultValue = true)]
-        public InventoryResponse Existing{ get; }
+        [DataMember(Name = "inventory", IsRequired = true, EmitDefaultValue = true)]
+        public List<InventoryExchangeItem> Inventory{ get; }
     
         /// <summary>
-        /// Formats a ErrorResponseConflictInventoryDeleteData into a string of key-value pairs for use as a path parameter.
+        /// Formats a PlayerPurchaseGoogleplaystoreResponseRewards into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
         internal string SerializeAsPathParam()
         {
             var serializedModel = "";
 
-            if (Attempted != null)
+            if (Currency != null)
             {
-                serializedModel += "attempted," + Attempted.ToString() + ",";
+                serializedModel += "currency," + Currency.ToString() + ",";
             }
-            if (Existing != null)
+            if (Inventory != null)
             {
-                serializedModel += "existing," + Existing.ToString();
+                serializedModel += "inventory," + Inventory.ToString();
             }
             return serializedModel;
         }
 
         /// <summary>
-        /// Returns a ErrorResponseConflictInventoryDeleteData as a dictionary of key-value pairs for use as a query parameter.
+        /// Returns a PlayerPurchaseGoogleplaystoreResponseRewards as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
         internal Dictionary<string, string> GetAsQueryParam()

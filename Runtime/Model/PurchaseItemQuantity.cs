@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Unity.Services.Economy.Internal.Models;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
@@ -9,10 +10,35 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class PurchaseItemQuantity
     {
-        [Preserve][JsonRequired][JsonProperty("itemId")]
+        [Preserve]
+        public PurchaseItemQuantity()
+        {
+        }
+
+        [Preserve]
+        internal PurchaseItemQuantity(Reward reward)
+        {
+            Amount = reward.Amount;
+            ResourceId = reward.ResourceId;
+        }
+
+        [Preserve]
+        internal PurchaseItemQuantity(Cost cost)
+        {
+            Amount = cost.Amount;
+            ResourceId = cost.ResourceId;
+        }
+
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("amount")]
+        public int Amount;
+
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("itemId")]
         public EconomyReference Item;
 
-        [Preserve][JsonRequired][JsonProperty("amount")]
-        public int Amount;
+        internal string ResourceId;
     }
 }

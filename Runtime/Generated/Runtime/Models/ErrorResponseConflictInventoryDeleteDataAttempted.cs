@@ -22,31 +22,31 @@ using Unity.Services.Economy.Internal.Http;
 namespace Unity.Services.Economy.Internal.Models
 {
     /// <summary>
-    /// The request body has been deprecated in favor of using query parameters due to inconsistent HTTP client support for sending request bodies for DELETE requests. Please use the corresponding query parameters instead, which will take precedence over any request body properties if both are present.
+    /// ErrorResponseConflictInventoryDeleteDataAttempted model
     /// </summary>
     [Preserve]
-    [DataContract(Name = "inventory-delete-request")]
-    internal class InventoryDeleteRequest
+    [DataContract(Name = "error_response_conflict_inventory_delete_data_attempted")]
+    internal class ErrorResponseConflictInventoryDeleteDataAttempted
     {
         /// <summary>
-        /// The request body has been deprecated in favor of using query parameters due to inconsistent HTTP client support for sending request bodies for DELETE requests. Please use the corresponding query parameters instead, which will take precedence over any request body properties if both are present.
+        /// Creates an instance of ErrorResponseConflictInventoryDeleteDataAttempted.
         /// </summary>
-        /// <param name="writeLock">The write lock for the inventory item instance. This property has been deprecated. Please use the writeLock query parameter instead.</param>
+        /// <param name="writeLock">The write lock for the inventory item instance.</param>
         [Preserve]
-        public InventoryDeleteRequest(string writeLock = default)
+        public ErrorResponseConflictInventoryDeleteDataAttempted(string writeLock = default)
         {
             WriteLock = writeLock;
         }
 
         /// <summary>
-        /// The write lock for the inventory item instance. This property has been deprecated. Please use the &#x60;writeLock&#x60; query parameter instead.
+        /// The write lock for the inventory item instance.
         /// </summary>
         [Preserve]
         [DataMember(Name = "writeLock", EmitDefaultValue = false)]
         public string WriteLock{ get; }
-
+    
         /// <summary>
-        /// Formats a InventoryDeleteRequest into a string of key-value pairs for use as a path parameter.
+        /// Formats a ErrorResponseConflictInventoryDeleteDataAttempted into a string of key-value pairs for use as a path parameter.
         /// </summary>
         /// <returns>Returns a string representation of the key-value pairs.</returns>
         internal string SerializeAsPathParam()
@@ -61,7 +61,7 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Returns a InventoryDeleteRequest as a dictionary of key-value pairs for use as a query parameter.
+        /// Returns a ErrorResponseConflictInventoryDeleteDataAttempted as a dictionary of key-value pairs for use as a query parameter.
         /// </summary>
         /// <returns>Returns a dictionary of string key-value pairs.</returns>
         internal Dictionary<string, string> GetAsQueryParam()
@@ -73,7 +73,7 @@ namespace Unity.Services.Economy.Internal.Models
                 var writeLockStringValue = WriteLock.ToString();
                 dictionary.Add("writeLock", writeLockStringValue);
             }
-
+            
             return dictionary;
         }
     }

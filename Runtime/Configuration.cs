@@ -1,9 +1,10 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.IO;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using Unity.Services.Core.Configuration.Internal;
 using Unity.Services.Economy.Internal;
 using Unity.Services.Economy.Internal.Apis.InternalConfiguration;
 using Unity.Services.Economy.Internal.Http;
@@ -172,6 +173,7 @@ namespace Unity.Services.Economy
         private List<ConfigurationItemDefinition> m_CachedConfig;
         private bool m_HasSynced;
 
+        private readonly ICloudProjectId m_CloudProjectId;
         private readonly IInternalConfigurationApiClient m_InternalConfigurationApiClient;
         private readonly IEconomyAuthentication m_EconomyAuthentication;
 
@@ -182,10 +184,10 @@ namespace Unity.Services.Economy
         private const string k_RealMoneyPurchaseTypeString = "RealMoneyPurchaseResource";
 
         // Names matching the Type property on a ConfigurationItemDefinition
-        internal const string currencySdkModelTypeString = "CURRENCY";
-        internal const string inventoryItemSdkModelTypeString = "INVENTORY_ITEM";
-        internal const string virtualPurchaseSdkModelTypeString = "VIRTUAL_PURCHASE";
-        internal const string realMoneyPurchaseSdkModelTypeString = "MONEY_PURCHASE";
+        internal const string CurrencyType = "CURRENCY";
+        internal const string InventoryItemType = "INVENTORY_ITEM";
+        internal const string VirtualPurchaseType = "VIRTUAL_PURCHASE";
+        internal const string RealMoneyPurchaseType = "MONEY_PURCHASE";
 
         private enum PurchaseItemType
         {
@@ -193,8 +195,9 @@ namespace Unity.Services.Economy
             Rewards
         }
 
-        internal ConfigurationInternal(IInternalConfigurationApiClient configurationApiClient, IEconomyAuthentication economyAuthWrapper)
+        internal ConfigurationInternal(ICloudProjectId cloudProjectId, IInternalConfigurationApiClient configurationApiClient, IEconomyAuthentication economyAuthWrapper)
         {
+            m_CloudProjectId = cloudProjectId;
             m_InternalConfigurationApiClient = configurationApiClient;
             m_EconomyAuthentication = economyAuthWrapper;
         }
@@ -204,7 +207,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             GetPlayerConfigurationRequest request = new GetPlayerConfigurationRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 null
             );
@@ -214,6 +217,7 @@ namespace Unity.Services.Economy
                 Response<PlayerConfigurationResponse> response = await m_InternalConfigurationApiClient.GetPlayerConfigurationAsync(request);
 
                 List<ConfigurationItemDefinition> convertedResources = ConvertResources(response.Result.Results);
+
                 ConfigurationMetadata convertedMetadata = new ConfigurationMetadata(response.Result.Metadata.ConfigAssignmentHash);
 
                 // Update the config assignment hash stored in the SDK every time we fetch a config
@@ -241,7 +245,7 @@ namespace Unity.Services.Economy
             List<CurrencyDefinition> currencies = new List<CurrencyDefinition>();
             foreach (var configItem in m_CachedConfig)
             {
-                if (configItem.Type == currencySdkModelTypeString)
+                if (configItem.Type == CurrencyType)
                 {
                     currencies.Add((CurrencyDefinition)configItem);
                 }
@@ -257,7 +261,7 @@ namespace Unity.Services.Economy
             List<InventoryItemDefinition> inventoryItems = new List<InventoryItemDefinition>();
             foreach (var configItem in m_CachedConfig)
             {
-                if (configItem.Type == inventoryItemSdkModelTypeString)
+                if (configItem.Type == InventoryItemType)
                 {
                     inventoryItems.Add((InventoryItemDefinition)configItem);
                 }
@@ -273,7 +277,7 @@ namespace Unity.Services.Economy
             List<VirtualPurchaseDefinition> virtualPurchases = new List<VirtualPurchaseDefinition>();
             foreach (var configItem in m_CachedConfig)
             {
-                if (configItem.Type == virtualPurchaseSdkModelTypeString)
+                if (configItem.Type == VirtualPurchaseType)
                 {
                     virtualPurchases.Add((VirtualPurchaseDefinition)configItem);
                 }
@@ -289,7 +293,7 @@ namespace Unity.Services.Economy
             List<RealMoneyPurchaseDefinition> realMoneyPurchases = new List<RealMoneyPurchaseDefinition>();
             foreach (var configItem in m_CachedConfig)
             {
-                if (configItem.Type == realMoneyPurchaseSdkModelTypeString)
+                if (configItem.Type == RealMoneyPurchaseType)
                 {
                     realMoneyPurchases.Add((RealMoneyPurchaseDefinition)configItem);
                 }
@@ -352,7 +356,7 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication.CheckSignedIn();
 
             GetPlayerConfigurationRequest request = new GetPlayerConfigurationRequest(
-                Application.cloudProjectId,
+                m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 m_EconomyAuthentication.configAssignmentHash
             );
@@ -386,7 +390,7 @@ namespace Unity.Services.Economy
             List<CurrencyDefinition> currencies = new List<CurrencyDefinition>();
             foreach (var configItem in config.Results)
             {
-                if (configItem.Type == currencySdkModelTypeString)
+                if (configItem.Type == CurrencyType)
                 {
                     currencies.Add((CurrencyDefinition)configItem);
                 }
@@ -402,7 +406,7 @@ namespace Unity.Services.Economy
             List<InventoryItemDefinition> inventoryItems = new List<InventoryItemDefinition>();
             foreach (var configItem in config.Results)
             {
-                if (configItem.Type == inventoryItemSdkModelTypeString)
+                if (configItem.Type == InventoryItemType)
                 {
                     inventoryItems.Add((InventoryItemDefinition)configItem);
                 }
@@ -418,7 +422,7 @@ namespace Unity.Services.Economy
             List<VirtualPurchaseDefinition> virtualPurchases = new List<VirtualPurchaseDefinition>();
             foreach (var configItem in config.Results)
             {
-                if (configItem.Type == virtualPurchaseSdkModelTypeString)
+                if (configItem.Type == VirtualPurchaseType)
                 {
                     virtualPurchases.Add((VirtualPurchaseDefinition)configItem);
                 }
@@ -434,7 +438,7 @@ namespace Unity.Services.Economy
             List<RealMoneyPurchaseDefinition> realMoneyPurchases = new List<RealMoneyPurchaseDefinition>();
             foreach (var configItem in config.Results)
             {
-                if (configItem.Type == realMoneyPurchaseSdkModelTypeString)
+                if (configItem.Type == RealMoneyPurchaseType)
                 {
                     realMoneyPurchases.Add((RealMoneyPurchaseDefinition)configItem);
                 }
@@ -495,102 +499,44 @@ namespace Unity.Services.Economy
 
             foreach (var resource in results)
             {
-                string serializedResourceValue = JsonConvert.SerializeObject(resource.Value);
                 switch (resource.Type.Name)
                 {
                     case k_CurrencyTypeString:
-                        CurrencyDefinition convertedCurrency = JsonConvert.DeserializeObject<CurrencyDefinition>(serializedResourceValue);
-                        SetCustomDataDeserializable(convertedCurrency);
-                        convertedResources.Add(convertedCurrency);
+                        {
+                            var baseResource = (CurrencyResource)resource.Value;
+                            var convertedResource = new CurrencyDefinition(baseResource);
+                            convertedResources.Add(convertedResource);
+                        }
                         break;
                     case k_InventoryItemTypeString:
-                        InventoryItemDefinition convertedInventoryItem = JsonConvert.DeserializeObject<InventoryItemDefinition>(serializedResourceValue);
-                        SetCustomDataDeserializable(convertedInventoryItem);
-                        convertedResources.Add(convertedInventoryItem);
+                        {
+                            var baseResource = (InventoryItemResource)resource.Value;
+                            var convertedResource = new InventoryItemDefinition(baseResource);
+                            convertedResources.Add(convertedResource);
+                        }
                         break;
                     case k_VirtualPurchaseTypeString:
-                        VirtualPurchaseDefinition convertedVirtualPurchase = ConvertVirtualPurchaseRawResponse(serializedResourceValue, results);
-                        SetCustomDataDeserializable(convertedVirtualPurchase);
-                        convertedResources.Add(convertedVirtualPurchase);
+                        {
+                            var baseResource = (VirtualPurchaseResource)resource.Value;
+                            var convertedResource = new VirtualPurchaseDefinition(baseResource);
+                            convertedResources.Add(convertedResource);
+                        }
                         break;
                     case k_RealMoneyPurchaseTypeString:
-                        RealMoneyPurchaseDefinition convertedRealMoneyPurchase = ConvertRealMoneyPurchaseRawResponse(serializedResourceValue, results);
-                        SetCustomDataDeserializable(convertedRealMoneyPurchase);
-                        convertedResources.Add(convertedRealMoneyPurchase);
+                        {
+                            var baseResource = (RealMoneyPurchaseResource)resource.Value;
+                            var convertedResource = new RealMoneyPurchaseDefinition(baseResource);
+                            convertedResources.Add(convertedResource);
+                        }
                         break;
                 }
             }
 
+            ProcessReferences(convertedResources);
+
             return convertedResources;
         }
 
-        /// <summary>
-        /// Sets the CustomDataDeserializable property on a config item.
-        /// </summary>
-        /// <param name="configItem">A ConfigurationItemDefinition</param>
-        /// <returns>A ConfigurationItemDefinition</returns>
-        private static void SetCustomDataDeserializable(ConfigurationItemDefinition configItem)
-        {
-            if (configItem == null) return;
-            configItem.CustomDataDeserializable = new JsonObject(configItem.CustomData);
-        }
-
-        /// <summary>
-        /// Converts a single virtual purchase received from the service and converts it into the equivalent SDK model.
-        /// </summary>
-        /// <param name="purchaseRawResponse">The serialized response from the service for a single virtual purchase</param>
-        /// <param name="rawConfig">The entire raw config response received from the service.
-        /// This is required to set up the Costs and Rewards of the purchase.</param>
-        /// <returns>A VirtualPurchaseDefinition</returns>
-        private VirtualPurchaseDefinition ConvertVirtualPurchaseRawResponse(string purchaseRawResponse, List<PlayerConfigurationResponseResultsOneOf> rawConfig)
-        {
-            VirtualPurchaseDefinition virtualPurchaseDefinition = new VirtualPurchaseDefinition();
-            virtualPurchaseDefinition.Costs = new List<PurchaseItemQuantity>();
-            virtualPurchaseDefinition.Rewards = new List<PurchaseItemQuantity>();
-
-            JObject jObject = JObject.Parse(purchaseRawResponse);
-            SetBasicConfigItemProperties(virtualPurchaseDefinition, jObject);
-            virtualPurchaseDefinition.Costs = GetPurchaseItemQuantityList(jObject, PurchaseItemType.Costs, rawConfig);
-            virtualPurchaseDefinition.Rewards = GetPurchaseItemQuantityList(jObject, PurchaseItemType.Rewards, rawConfig);
-
-            return virtualPurchaseDefinition;
-        }
-
-        /// <summary>
-        /// Converts a single real money purchase received from the service and converts it into the equivalent SDK model.
-        /// </summary>
-        /// <param name="purchaseRawResponse">The serialized response from the service for a single real money purchase</param>
-        /// <param name="rawConfig">The entire raw config response received from the service.
-        /// This is required to set up the Rewards of the purchase.</param>
-        /// <returns></returns>
-        internal RealMoneyPurchaseDefinition ConvertRealMoneyPurchaseRawResponse(string purchaseRawResponse, List<PlayerConfigurationResponseResultsOneOf> rawConfig)
-        {
-            RealMoneyPurchaseDefinition realMoneyPurchaseDefinition = new RealMoneyPurchaseDefinition();
-            realMoneyPurchaseDefinition.Rewards = new List<PurchaseItemQuantity>();
-
-            JObject jObject = JObject.Parse(purchaseRawResponse);
-            SetBasicConfigItemProperties(realMoneyPurchaseDefinition, jObject);
-            realMoneyPurchaseDefinition.StoreIdentifiers = jObject["storeIdentifiers"]?.ToObject<StoreIdentifiers>();
-            realMoneyPurchaseDefinition.Rewards = GetPurchaseItemQuantityList(jObject, PurchaseItemType.Rewards, rawConfig);
-
-            return realMoneyPurchaseDefinition;
-        }
-
-        /// <summary>
-        /// Takes the a config item received from the service in JSON format and sets the base properties for a ConfigurationItemDefinition.
-        /// </summary>
-        /// <param name="itemDefinition">The ConfigurationItemDefinition to set</param>
-        /// <param name="itemJson">The config item JSON received from the service</param>
-        private static void SetBasicConfigItemProperties(ConfigurationItemDefinition itemDefinition, JObject itemJson)
-        {
-            itemDefinition.Id = itemJson["id"]?.Value<string>();
-            itemDefinition.Name = itemJson["name"]?.Value<string>();
-            itemDefinition.Type = itemJson["type"]?.Value<string>();
-            itemDefinition.Created = itemJson["created"]?.ToObject<EconomyDate>();
-            itemDefinition.Modified = itemJson["modified"]?.ToObject<EconomyDate>();
-            itemDefinition.CustomData = itemJson["customData"]?.ToObject<Dictionary<string, object>>();
-            itemDefinition.CustomDataDeserializable = new JsonObject(itemDefinition.CustomData);
-        }
 
         /// <summary>
         /// Takes the virtual/real money purchase received from the service in JSON format and returns its Costs/Rewards which is a list
@@ -602,75 +548,42 @@ namespace Unity.Services.Economy
         /// This is required to set up the Costs/Rewards of the purchase.</param>
         /// <returns></returns>
         /// <exception cref="EconomyException"></exception>
-        private List<PurchaseItemQuantity> GetPurchaseItemQuantityList(JObject purchaseJson, PurchaseItemType purchaseItemType,
-            List<PlayerConfigurationResponseResultsOneOf> rawConfig)
+        private void ProcessReferences(List<ConfigurationItemDefinition> definitions)
         {
-            List<PurchaseItemQuantity> purchaseItemQuantities = new List<PurchaseItemQuantity>();
-            foreach (var purchaseItem in purchaseJson[purchaseItemType.ToString().ToLower()].Children())
+            foreach (var definition in definitions)
             {
-                string purchaseItemId = purchaseItem["resourceId"]?.ToString();
-                int purchaseItemAmount = purchaseItem["amount"] !.ToObject<int>();
-                PurchaseItemQuantity purchaseItemQuantity = GetPurchaseItemQuantity(purchaseItemId, purchaseItemAmount, rawConfig);
-                if (purchaseItemQuantity == null)
+                switch (definition.Type)
                 {
-                    throw new EconomyException(EconomyExceptionReason.UnprocessableTransaction, 422, "Failed to find the relevant PurchaseItemQuantity in the Economy configuration.");
+                    case VirtualPurchaseType:
+                        var virtualPurchaseDefinition = (VirtualPurchaseDefinition)definition;
+                        ProcessReferences(definitions, virtualPurchaseDefinition.Rewards);
+                        ProcessReferences(definitions, virtualPurchaseDefinition.Costs);
+                        break;
+                    case RealMoneyPurchaseType:
+                        var realMoneyPurchaseDefinition = (RealMoneyPurchaseDefinition)definition;
+                        ProcessReferences(definitions, realMoneyPurchaseDefinition.Rewards);
+                        break;
                 }
-                purchaseItemQuantities.Add(purchaseItemQuantity);
             }
-
-            return purchaseItemQuantities;
         }
 
-        /// <summary>
-        /// This takes a resource Id and finds that resource in the raw config received from the service. It then returns
-        /// this resource as a PurchaseItemQuantity, so it can be used in a purchases' Costs/Rewards.
-        /// </summary>
-        /// <param name="resourceId">The config item Id of the Cost/Reward</param>
-        /// <param name="amount">The amount of the Cost/Reward</param>
-        /// <param name="rawConfig">The entire raw config response received from the service.
-        /// This is required to set up the Costs/Rewards of the purchase.</param>
-        /// <returns></returns>
-        private static PurchaseItemQuantity GetPurchaseItemQuantity(string resourceId, int amount, List<PlayerConfigurationResponseResultsOneOf> rawConfig)
+        private void ProcessReferences(List<ConfigurationItemDefinition> definitions, List<PurchaseItemQuantity> items)
         {
-            PurchaseItemQuantity purchaseItemQuantity = new PurchaseItemQuantity { Amount = amount };
-
-            foreach (var resource in rawConfig)
+            foreach (var item in items)
             {
-                string serializedResourceValue = JsonConvert.SerializeObject(resource.Value);
-                switch (resource.Type.Name)
-                {
-                    case k_CurrencyTypeString:
-                    {
-                        CurrencyDefinition convertedCurrency = JsonConvert.DeserializeObject<CurrencyDefinition>(serializedResourceValue);
-                        if (convertedCurrency == null) return null;
+                item.Item = new EconomyReference(GetReference(item.ResourceId, definitions));
+            }
+        }
 
-                        if (convertedCurrency.Id == resourceId)
-                        {
-                            convertedCurrency.CustomDataDeserializable = new JsonObject(convertedCurrency.CustomData);
-                            purchaseItemQuantity.Item = new EconomyReference(convertedCurrency);
-                            return purchaseItemQuantity;
-                        }
-
-                        break;
-                    }
-                    case k_InventoryItemTypeString:
-                    {
-                        InventoryItemDefinition convertedItem = JsonConvert.DeserializeObject<InventoryItemDefinition>(serializedResourceValue);
-                        if (convertedItem == null) return null;
-
-                        if (convertedItem.Id == resourceId)
-                        {
-                            convertedItem.CustomDataDeserializable = new JsonObject(convertedItem.CustomData);
-                            purchaseItemQuantity.Item = new EconomyReference(convertedItem);
-                            return purchaseItemQuantity;
-                        }
-
-                        break;
-                    }
-                }
+        private ConfigurationItemDefinition GetReference(string resourceId, List<ConfigurationItemDefinition> definitions)
+        {
+            foreach (var definition in definitions)
+            {
+                if (definition.Id == resourceId)
+                    return definition;
             }
 
-            return null;
+            throw new EconomyException(EconomyExceptionReason.UnprocessableTransaction, 422, "Failed to find the reference in the Economy configuration.");
         }
     }
 }

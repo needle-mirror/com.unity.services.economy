@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using Unity.Services.Economy.Internal.Models;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
@@ -11,16 +11,30 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class StoreIdentifiers
     {
+        [Preserve]
+        public StoreIdentifiers()
+        {
+        }
+
+        [Preserve]
+        internal StoreIdentifiers(RealMoneyPurchaseResourceStoreIdentifiers data)
+        {
+            AppleAppStore = data.AppleAppStore;
+            GooglePlayStore = data.GooglePlayStore;
+        }
+
         /// <summary>
         /// Apple App Store identifier
         /// </summary>
-        [Preserve][JsonProperty("appleAppStore")]
+        [Preserve]
+        [JsonProperty("appleAppStore")]
         public string AppleAppStore;
 
         /// <summary>
         /// Google Play Store identifier
         /// </summary>
-        [Preserve][JsonProperty("googlePlayStore")]
+        [Preserve]
+        [JsonProperty("googlePlayStore")]
         public string GooglePlayStore;
     }
 
@@ -30,16 +44,47 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class RealMoneyPurchaseDefinition : ConfigurationItemDefinition
     {
+        [Preserve]
+        public RealMoneyPurchaseDefinition()
+        {
+        }
+
+        [Preserve]
+        internal RealMoneyPurchaseDefinition(RealMoneyPurchaseResource resource)
+        {
+            Id = resource.Id;
+            Name = resource.Name;
+            Type = ConfigurationInternal.RealMoneyPurchaseType;
+            Created = EconomyDate.From(resource.Created);
+            Modified = EconomyDate.From(resource.Modified);
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+            CustomDataDeserializable = resource.CustomData;
+            StoreIdentifiers = new StoreIdentifiers(resource.StoreIdentifiers);
+            Rewards = new List<PurchaseItemQuantity>();
+
+            if (resource.Rewards != null)
+            {
+                foreach (var reward in resource.Rewards)
+                {
+                    Rewards.Add(new PurchaseItemQuantity(reward));
+                }
+            }
+        }
+
         /// <summary>
         /// The store identifiers for this purchase.
         /// </summary>
-        [Preserve][JsonRequired][JsonProperty("storeIdentifiers")]
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("storeIdentifiers")]
         public StoreIdentifiers StoreIdentifiers;
 
         /// <summary>
         /// The rewards associated with this purchase
         /// </summary>
-        [Preserve][JsonRequired][JsonProperty("rewards")]
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("rewards")]
         public List<PurchaseItemQuantity> Rewards;
     }
 }

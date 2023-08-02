@@ -432,9 +432,6 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <summary>Accessor for playersInventoryItemId </summary>
         [Preserve]
         public string PlayersInventoryItemId { get; }
-        /// <summary>Accessor for inventoryDeleteRequest </summary>
-        [Preserve]
-        public Unity.Services.Economy.Internal.Models.InventoryDeleteRequest InventoryDeleteRequest { get; }
         /// <summary>Accessor for configAssignmentHash </summary>
         [Preserve]
         public string ConfigAssignmentHash { get; }
@@ -447,6 +444,9 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <summary>Accessor for writeLock </summary>
         [Preserve]
         public string WriteLock { get; }
+        /// <summary>Accessor for inventoryDeleteRequest </summary>
+        [Preserve]
+        public Unity.Services.Economy.Internal.Models.InventoryDeleteRequest InventoryDeleteRequest { get; }
         string PathAndQueryParams;
 
         /// <summary>
@@ -456,13 +456,13 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <param name="projectId">ID of the project.</param>
         /// <param name="playerId">ID of the player.</param>
         /// <param name="playersInventoryItemId">The `playersInventoryItemId` of the item to be updated.</param>
-        /// <param name="inventoryDeleteRequest">InventoryDeleteRequest param</param>
         /// <param name="configAssignmentHash">Configuration assignment hash that should be used when processing this request.</param>
         /// <param name="unityInstallationId">Unique identifier that identifies an installation on the client’s device. The same player can have different installationIds if they have the game installed on different devices. It is available to all Unity packages that integrate with the Services SDK Core package.</param>
         /// <param name="analyticsUserId">A unique string that identifies the player and is consistent across their subsequent play sessions for analytics purposes. It is the primary user identifier and it comes from the Core package.</param>
         /// <param name="writeLock">The writelock for a database entry.</param>
+        /// <param name="inventoryDeleteRequest">InventoryDeleteRequest param</param>
         [Preserve]
-        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string), string writeLock = default(string))
+        public DeleteInventoryItemRequest(string projectId, string playerId, string playersInventoryItemId, string configAssignmentHash = default(string), string unityInstallationId = default(string), string analyticsUserId = default(string), string writeLock = default(string), Unity.Services.Economy.Internal.Models.InventoryDeleteRequest inventoryDeleteRequest = default(Unity.Services.Economy.Internal.Models.InventoryDeleteRequest))
         {
             ProjectId = projectId;
 
@@ -470,11 +470,11 @@ namespace Unity.Services.Economy.Internal.Inventory
 
             PlayersInventoryItemId = playersInventoryItemId;
 
-            InventoryDeleteRequest = inventoryDeleteRequest;
             ConfigAssignmentHash = configAssignmentHash;
             UnityInstallationId = unityInstallationId;
             AnalyticsUserId = analyticsUserId;
             WriteLock = writeLock;
+            InventoryDeleteRequest = inventoryDeleteRequest;
             PathAndQueryParams = $"/v2/projects/{projectId}/players/{playerId}/inventory/{playersInventoryItemId}";
 
             List<string> queryParams = new List<string>();
@@ -510,7 +510,11 @@ namespace Unity.Services.Economy.Internal.Inventory
         /// <returns>A list of IMultipartFormSection representing the request body.</returns>
         public byte[] ConstructBody()
         {
-            return ConstructBody(InventoryDeleteRequest);
+            if(InventoryDeleteRequest != null)
+            {
+                return ConstructBody(InventoryDeleteRequest);
+            }
+            return null;
         }
 
         /// <summary>

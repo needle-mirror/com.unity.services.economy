@@ -33,7 +33,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         /// <param name="resourceId">The ID of a currency or inventory item resource that is credited as part of the purchase.</param>
         /// <param name="amount">The amount of the resource credited as part of the purchase.</param>
-        /// <param name="defaultInstanceData">When the reward is an inventory item resource, this specifies instance data automatically saved against the new inventory item. Max size when serialised 5 KB.</param>
+        /// <param name="defaultInstanceData">When the reward is an inventory item resource, this specifies instance data automatically saved against the new inventory item. Max size when serialised 5 KB. This property has been deprecated and will only return \&quot;null\&quot;.</param>
         [Preserve]
         public Reward(string resourceId, int amount, object defaultInstanceData = default)
         {
@@ -57,7 +57,7 @@ namespace Unity.Services.Economy.Internal.Models
         public int Amount{ get; }
         
         /// <summary>
-        /// When the reward is an inventory item resource, this specifies instance data automatically saved against the new inventory item. Max size when serialised 5 KB.
+        /// When the reward is an inventory item resource, this specifies instance data automatically saved against the new inventory item. Max size when serialised 5 KB. This property has been deprecated and will only return \&quot;null\&quot;.
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
         [DataMember(Name = "defaultInstanceData", EmitDefaultValue = false)]

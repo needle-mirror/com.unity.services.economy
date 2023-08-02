@@ -1,8 +1,8 @@
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Unity.Services.Economy.Internal.Models;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -14,16 +14,57 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class VirtualPurchaseDefinition : ConfigurationItemDefinition
     {
+        [Preserve]
+        public VirtualPurchaseDefinition()
+        {
+        }
+
+        [Preserve]
+        internal VirtualPurchaseDefinition(VirtualPurchaseResource resource)
+        {
+            Id = resource.Id;
+            Name = resource.Name;
+            Type = ConfigurationInternal.VirtualPurchaseType;
+            Created = EconomyDate.From(resource.Created);
+            Modified = EconomyDate.From(resource.Modified);
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+            CustomDataDeserializable = resource.CustomData;
+
+            Costs = new List<PurchaseItemQuantity>();
+
+            if (resource.Costs != null)
+            {
+                foreach (var cost in resource.Costs)
+                {
+                    Costs.Add(new PurchaseItemQuantity(cost));
+                }
+            }
+
+            Rewards = new List<PurchaseItemQuantity>();
+
+            if (resource.Rewards != null)
+            {
+                foreach (var reward in resource.Rewards)
+                {
+                    Rewards.Add(new PurchaseItemQuantity(reward));
+                }
+            }
+        }
+
         /// <summary>
         /// A list of costs associated with this purchase.
         /// </summary>
-        [Preserve][JsonRequired][JsonProperty("costs")]
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("costs")]
         public List<PurchaseItemQuantity> Costs;
 
         /// <summary>
         /// A list of rewards associated with this purchase.
         /// </summary>
-        [Preserve][JsonRequired][JsonProperty("rewards")]
+        [Preserve]
+        [JsonRequired]
+        [JsonProperty("rewards")]
         public List<PurchaseItemQuantity> Rewards;
 
         /// <summary>
@@ -46,7 +87,7 @@ namespace Unity.Services.Economy.Model
         public async Task<MakeVirtualPurchaseResult> MakePurchaseAsync(List<PlayersInventoryItem> playersInventoryItems)
         {
             List<string> playerInventoryItemIds = playersInventoryItems.Select(i => i.PlayersInventoryItemId).ToList();
-            return await EconomyService.Instance.Purchases.MakeVirtualPurchaseAsync(Id, new MakeVirtualPurchaseOptions{ PlayersInventoryItemIds = playerInventoryItemIds });
+            return await EconomyService.Instance.Purchases.MakeVirtualPurchaseAsync(Id, new MakeVirtualPurchaseOptions { PlayersInventoryItemIds = playerInventoryItemIds });
         }
 
         /// <summary>

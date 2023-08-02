@@ -184,11 +184,11 @@ namespace Unity.Services.Economy
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
                 playersInventoryItemId,
-                new InventoryDeleteRequest(options?.WriteLock),
                 m_EconomyAuthentication.configAssignmentHash,
                 m_EconomyAuthentication.GetUnityInstallationId(),
                 m_EconomyAuthentication.GetAnalyticsUserId(),
-                options?.WriteLock);
+                options?.WriteLock,
+                new InventoryDeleteRequest(options?.WriteLock));
 
             try
             {

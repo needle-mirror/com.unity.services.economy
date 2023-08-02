@@ -372,8 +372,8 @@ namespace Unity.Services.Economy.Model
     {
         [Newtonsoft.Json.JsonProperty(@"initial")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public int Initial;
         [Newtonsoft.Json.JsonProperty(@"max")] [UnityEngine.Scripting.Preserve] public int Max;
-        public CurrencyDefinition() {}
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.CurrencyDefinition.<GetPlayerBalanceAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> GetPlayerBalanceAsync();
+        [UnityEngine.Scripting.Preserve] public CurrencyDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.CurrencyDefinition.<GetPlayerBalanceAsync>d__4))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.PlayerBalance> GetPlayerBalanceAsync();
     }
 
     [UnityEngine.Scripting.Preserve] public class CurrencyExchangeItem
@@ -441,8 +441,8 @@ namespace Unity.Services.Economy.Model
 
     [UnityEngine.Scripting.Preserve] public class InventoryItemDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
     {
-        public InventoryItemDefinition() {}
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.InventoryItemDefinition.<GetAllPlayersInventoryItemsAsync>d__0))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetAllPlayersInventoryItemsAsync();
+        [UnityEngine.Scripting.Preserve] public InventoryItemDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.InventoryItemDefinition.<GetAllPlayersInventoryItemsAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.GetInventoryResult> GetAllPlayersInventoryItemsAsync();
     }
 
     [UnityEngine.Scripting.Preserve] public class MakeVirtualPurchaseResult
@@ -488,16 +488,16 @@ namespace Unity.Services.Economy.Model
 
     [UnityEngine.Scripting.Preserve] public class PurchaseItemQuantity
     {
-        [Newtonsoft.Json.JsonProperty(@"amount")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public int Amount;
-        [Newtonsoft.Json.JsonProperty(@"itemId")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyReference Item;
-        public PurchaseItemQuantity() {}
+        [UnityEngine.Scripting.Preserve] public int Amount;
+        [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.EconomyReference Item;
+        [UnityEngine.Scripting.Preserve] public PurchaseItemQuantity() {}
     }
 
     [UnityEngine.Scripting.Preserve] public class RealMoneyPurchaseDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
     {
         [Newtonsoft.Json.JsonProperty(@"rewards")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Rewards;
         [Newtonsoft.Json.JsonProperty(@"storeIdentifiers")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public Unity.Services.Economy.Model.StoreIdentifiers StoreIdentifiers;
-        public RealMoneyPurchaseDefinition() {}
+        [UnityEngine.Scripting.Preserve] public RealMoneyPurchaseDefinition() {}
     }
 
     public class RedeemAppleAppStorePurchaseResult
@@ -525,17 +525,17 @@ namespace Unity.Services.Economy.Model
     {
         [Newtonsoft.Json.JsonProperty(@"appleAppStore")] [UnityEngine.Scripting.Preserve] public string AppleAppStore;
         [Newtonsoft.Json.JsonProperty(@"googlePlayStore")] [UnityEngine.Scripting.Preserve] public string GooglePlayStore;
-        public StoreIdentifiers() {}
+        [UnityEngine.Scripting.Preserve] public StoreIdentifiers() {}
     }
 
     [UnityEngine.Scripting.Preserve] public class VirtualPurchaseDefinition : Unity.Services.Economy.Model.ConfigurationItemDefinition
     {
         [Newtonsoft.Json.JsonProperty(@"costs")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Costs;
         [Newtonsoft.Json.JsonProperty(@"rewards")] [Newtonsoft.Json.JsonRequired] [UnityEngine.Scripting.Preserve] public System.Collections.Generic.List<Unity.Services.Economy.Model.PurchaseItemQuantity> Rewards;
-        public VirtualPurchaseDefinition() {}
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<CanPlayerAffordPurchaseAsync>d__4))] public System.Threading.Tasks.Task<bool> CanPlayerAffordPurchaseAsync();
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__3))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(System.Collections.Generic.List<Unity.Services.Economy.Model.PlayersInventoryItem> playersInventoryItems);
-        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__2))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(Unity.Services.Economy.MakeVirtualPurchaseOptions options = default(Unity.Services.Economy.MakeVirtualPurchaseOptions));
+        [UnityEngine.Scripting.Preserve] public VirtualPurchaseDefinition() {}
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<CanPlayerAffordPurchaseAsync>d__6))] public System.Threading.Tasks.Task<bool> CanPlayerAffordPurchaseAsync();
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__5))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(System.Collections.Generic.List<Unity.Services.Economy.Model.PlayersInventoryItem> playersInventoryItems);
+        [System.Diagnostics.DebuggerStepThrough] [System.Runtime.CompilerServices.AsyncStateMachine(typeof(Unity.Services.Economy.Model.VirtualPurchaseDefinition.<MakePurchaseAsync>d__4))] public System.Threading.Tasks.Task<Unity.Services.Economy.Model.MakeVirtualPurchaseResult> MakePurchaseAsync(Unity.Services.Economy.MakeVirtualPurchaseOptions options = default(Unity.Services.Economy.MakeVirtualPurchaseOptions));
     }
 }
 

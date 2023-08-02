@@ -1,6 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Unity.Services.Economy.Internal.Models;
 using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
@@ -19,6 +20,25 @@ namespace Unity.Services.Economy.Model
         /// (Optional, a value of 0 indicates no maximum) The maximum amount of this currency a player can own.
         /// </summary>
         [Preserve][JsonProperty("max")] public int Max;
+
+        [Preserve]
+        public CurrencyDefinition()
+        {
+        }
+
+        [Preserve]
+        internal CurrencyDefinition(CurrencyResource resource)
+        {
+            Id = resource.Id;
+            Name = resource.Name;
+            Type = ConfigurationInternal.CurrencyType;
+            Created = EconomyDate.From(resource.Created);
+            Modified = EconomyDate.From(resource.Modified);
+            Initial = resource.Initial;
+            Max = resource.Max;
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+            CustomDataDeserializable = resource.CustomData;
+        }
 
         /// <summary>
         /// Gets the current balance of this currency for the currently signed in player.

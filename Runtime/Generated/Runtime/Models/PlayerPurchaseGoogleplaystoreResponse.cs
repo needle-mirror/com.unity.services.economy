@@ -34,7 +34,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <param name="verification">verification param</param>
         /// <param name="rewards">rewards param</param>
         [Preserve]
-        public PlayerPurchaseGoogleplaystoreResponse(PlayerPurchaseGoogleplaystoreResponseVerification verification, PlayerPurchaseVirtualResponseRewards rewards)
+        public PlayerPurchaseGoogleplaystoreResponse(PlayerPurchaseGoogleplaystoreResponseVerification verification, PlayerPurchaseGoogleplaystoreResponseRewards rewards)
         {
             Verification = verification;
             Rewards = rewards;
@@ -52,7 +52,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// </summary>
         [Preserve]
         [DataMember(Name = "rewards", IsRequired = true, EmitDefaultValue = true)]
-        public PlayerPurchaseVirtualResponseRewards Rewards{ get; }
+        public PlayerPurchaseGoogleplaystoreResponseRewards Rewards{ get; }
     
         /// <summary>
         /// Formats a PlayerPurchaseGoogleplaystoreResponse into a string of key-value pairs for use as a path parameter.

@@ -75,7 +75,7 @@ namespace Unity.Services.Economy
         {
             IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken, unityProjectId, analyticsUserId);
 
-            ConfigurationInternal configurationInternal = new ConfigurationInternal(configurationApiClient, economyAuth);
+            ConfigurationInternal configurationInternal = new ConfigurationInternal(cloudProjectId, configurationApiClient, economyAuth);
             PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(cloudProjectId, currenciesApiClient, economyAuth);
             PlayerInventoryInternal playerInventoryInternal = new PlayerInventoryInternal(cloudProjectId, inventoryApiClient, economyAuth);
             PurchasesInternal purchasesInternal = new PurchasesInternal(cloudProjectId, purchasesApiClient, economyAuth, playerBalancesInternal, playerInventoryInternal);

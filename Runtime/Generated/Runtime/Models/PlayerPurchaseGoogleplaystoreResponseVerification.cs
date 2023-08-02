@@ -31,7 +31,7 @@ namespace Unity.Services.Economy.Internal.Models
         /// <summary>
         /// Creates an instance of PlayerPurchaseGoogleplaystoreResponseVerification.
         /// </summary>
-        /// <param name="status">Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.</param>
+        /// <param name="status">Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt. * &#x60;CURRENCY_MAX_EXCEEDED&#x60;: Could not add the rewards because one or more currencies would be taken over the specified maximum balance.</param>
         /// <param name="store">store param</param>
         [Preserve]
         public PlayerPurchaseGoogleplaystoreResponseVerification(StatusOptions status, PlayerPurchaseGoogleplaystoreResponseVerificationStore store)
@@ -41,7 +41,7 @@ namespace Unity.Services.Economy.Internal.Models
         }
 
         /// <summary>
-        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.
+        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt. * &#x60;CURRENCY_MAX_EXCEEDED&#x60;: Could not add the rewards because one or more currencies would be taken over the specified maximum balance.
         /// </summary>
         [Preserve]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -56,9 +56,9 @@ namespace Unity.Services.Economy.Internal.Models
         public PlayerPurchaseGoogleplaystoreResponseVerificationStore Store{ get; }
     
         /// <summary>
-        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.
+        /// Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt. * &#x60;CURRENCY_MAX_EXCEEDED&#x60;: Could not add the rewards because one or more currencies would be taken over the specified maximum balance.
         /// </summary>
-        /// <value>Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt.</value>
+        /// <value>Status of the receipt verification.  * &#x60;VALID&#x60;: The purchase was valid.  * &#x60;VALID_NOT_REDEEMED&#x60;: The purchase was valid but seen before, and had not yet been redeemed.  * &#x60;INVALID_ALREADY_REDEEMED&#x60;: The purchase has already been redeemed.  * &#x60;INVALID_VERIFICATION_FAILED&#x60;: The receipt verification Service returned that the receipt data was not valid.  * &#x60;INVALID_ANOTHER_PLAYER&#x60;: The receipt has previously been used by a different player and validated.  * &#x60;INVALID_CONFIGURATION&#x60;: The service configuration is invalid, further information in the details section of the response.  * &#x60;INVALID_PRODUCT_ID_MISMATCH&#x60;: The purchase configuration store product identifier does not match the one in the receipt. * &#x60;CURRENCY_MAX_EXCEEDED&#x60;: Could not add the rewards because one or more currencies would be taken over the specified maximum balance.</value>
         [Preserve]
         [JsonConverter(typeof(StringEnumConverter))]
         public enum StatusOptions
@@ -97,7 +97,12 @@ namespace Unity.Services.Economy.Internal.Models
             /// Enum INVALIDPRODUCTIDMISMATCH for value: INVALID_PRODUCT_ID_MISMATCH
             /// </summary>
             [EnumMember(Value = "INVALID_PRODUCT_ID_MISMATCH")]
-            INVALIDPRODUCTIDMISMATCH = 7
+            INVALIDPRODUCTIDMISMATCH = 7,
+            /// <summary>
+            /// Enum CURRENCYMAXEXCEEDED for value: CURRENCY_MAX_EXCEEDED
+            /// </summary>
+            [EnumMember(Value = "CURRENCY_MAX_EXCEEDED")]
+            CURRENCYMAXEXCEEDED = 8
         }
 
         /// <summary>
