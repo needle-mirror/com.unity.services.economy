@@ -1,12 +1,12 @@
 {
   "name": "com.unity.services.economy",
   "displayName": "Economy",
-  "version": "3.1.4",
+  "version": "3.2.1",
   "unity": "2020.3",
   "description": "Economy is a cloud service that enables game developers to create their in-game economy and gives them seamless purchases, currency conversion, player inventory management, and more. By using Economy, you have the power to integrate a fully-featured marketplace into your game, and manage it through a streamlined dashboard. \n\nEconomy can be configured through the Unity Dashboard. This package allows you to interact with your Economy configuration, player’s balances, inventories and purchases.",
   "dependencies": {
     "com.unity.services.authentication": "2.0.0",
-    "com.unity.services.core": "1.8.1"
+    "com.unity.services.core": "1.11.0"
   },
   "samples": [
     {
@@ -34,18 +34,18 @@
       "Windows 8 Universal",
       "Windows 10 Universal"
     ],
-    "changelog": "* Fixed a bug that could cause SyncConfigurationAsync to freeze the game loop."
+    "changelog": "* Add Economy resource deployment support through the Deployment Window or Deployment api."
   },
   "relatedPackages": {
-    "com.unity.services.economy.tests": "3.1.4"
+    "com.unity.services.economy.tests": "3.2.1"
   },
   "upmCi": {
-    "footprint": "b8a5155ebd17b81286c59939eb867ab2fee87f0a"
+    "footprint": "025d1004854b61ba0e95153a67409b8fd1879739"
   },
-  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.services.economy@3.1/manual/index.html",
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.services.economy@3.2/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/operate-services-sdk.git",
     "type": "git",
-    "revision": "a8bb6dfd2d99005cbf74bab386c025773a120b2a"
+    "revision": "2929be4decf739ed6acbbe8deec58c743dd7be7f"
   }
 }

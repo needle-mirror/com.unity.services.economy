@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Unity.Services.Economy.Editor.Settings
+namespace Unity.Services.Economy
 {
     class EconomySettingsProvider : EditorGameServiceSettingsProvider
     {

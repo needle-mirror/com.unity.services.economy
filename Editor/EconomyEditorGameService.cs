@@ -2,7 +2,7 @@ using Unity.Services.Core.Editor;
 using Unity.Services.Core.Editor.OrganizationHandler;
 using UnityEditor;
 
-namespace Unity.Services.Economy.Editor.Settings
+namespace Unity.Services.Economy
 {
     struct EconomyIdentifier : IEditorGameServiceIdentifier
     {

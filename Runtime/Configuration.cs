@@ -13,7 +13,7 @@ using Unity.Services.Economy.Internal.Models;
 using Unity.Services.Economy.Model;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("Unity.Services.Economy.Tests")]
+[assembly: InternalsVisibleTo("Unity.Services.Economy.Tests.Runtime")]
 
 namespace Unity.Services.Economy
 {
