@@ -13,7 +13,7 @@ using System;
 namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Http
 {
     /// <summary>Enum for how handling missing members when deserializing.</summary>
-    public enum MissingMemberHandling
+    enum MissingMemberHandling
     {
         /// <summary>Throw an error when a member is missing</summary>
         Error,

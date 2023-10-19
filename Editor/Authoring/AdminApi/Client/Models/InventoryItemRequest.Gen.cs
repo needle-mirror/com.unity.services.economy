@@ -40,7 +40,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
             Id = id;
             Name = name;
             Type = type;
-            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
+            CustomData = (IDeserializable)(customData is null ? new JsonObject(new object()) : JsonObject.GetNewJsonObjectResponse(customData));
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
         /// Max size when serialized 5 kilobits.
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
-        [DataMember(Name = "customData", EmitDefaultValue = false)]
+        [DataMember(Name = "customData", EmitDefaultValue = true)]
         public IDeserializable CustomData{ get; }
 
         /// <summary>

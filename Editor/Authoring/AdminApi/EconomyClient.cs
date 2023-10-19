@@ -10,10 +10,8 @@ using Unity.Services.Economy.Client.EconomyAdmin;
 using Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models;
 using Unity.Services.Economy.Editor.Authoring.Core.Model;
 using Unity.Services.Economy.Editor.Authoring.Core.Service;
-using Unity.Services.Economy.Editor.Authoring.Deployment;
 using Unity.Services.Economy.Editor.Authoring.Model;
 using Unity.Services.Economy.Editor.Authoring.Shared.Clients;
-using Unity.Services.Economy.Editor.Authoring.Shared.Infrastructure.Collections;
 using AddConfigResourceRequest = Unity.Services.Economy.Client.EconomyAdmin.AddConfigResourceRequest;
 
 namespace Unity.Services.Economy.Editor.Authoring.AdminApi
@@ -24,27 +22,29 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi
         readonly IEnvironmentProvider m_EnvironmentProvider;
         readonly IProjectIdProvider m_ProjectIdProvider;
         readonly IAccessTokens m_AccessTokens;
-        readonly IEconomyResourceSerializationUtility m_SerializationUtility;
+        readonly IEconomyClientParserHelper m_ParserHelper;
         internal const float k_PostOpProgress = 66;
+        const string k_EnvironmentNotFoundMsg =
+            "Environment not found. Please set your environment through the Services window under \"environments\".";
 
         public EconomyClient(
             IEnvironmentProvider environmentProvider,
             IProjectIdProvider projectIdProvider,
             IEconomyAdminApiClient client,
             IAccessTokens accessTokens,
-            IEconomyResourceSerializationUtility serializationUtility)
+            IEconomyClientParserHelper parserHelper)
         {
             m_EnvironmentProvider = environmentProvider;
             m_ProjectIdProvider = projectIdProvider;
             m_Client = client;
             m_AccessTokens = accessTokens;
-            m_SerializationUtility = serializationUtility;
+            m_ParserHelper = parserHelper;
         }
 
         public async Task Update(IEconomyResource economyResource, CancellationToken token = default)
         {
             await UpdateToken();
-            (object obj, Type type) requestData = GetDataAndTypeFromEconomyResource(economyResource);
+            (object obj, Type type) requestData = m_ParserHelper.GetClientRequestFromEconomyResource(economyResource);
 
             var request = new EditConfigResourceRequest(
                 m_ProjectIdProvider.ProjectId,
@@ -61,7 +61,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi
         public async Task Create(IEconomyResource economyResource, CancellationToken token = default)
         {
             await UpdateToken();
-            (object obj, Type type) requestData = GetDataAndTypeFromEconomyResource(economyResource);
+            (object obj, Type type) requestData = m_ParserHelper.GetClientRequestFromEconomyResource(economyResource);
 
             var request = new AddConfigResourceRequest(
                 m_ProjectIdProvider.ProjectId,
@@ -100,7 +100,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi
             await UpdateToken();
             var request = new GetResourcesRequest(
                     m_ProjectIdProvider.ProjectId,
-                   Guid.Parse(m_EnvironmentProvider.Current));
+                    Guid.Parse(m_EnvironmentProvider.Current));
 
             var response = await m_Client.GetResourcesAsync(request);
 
@@ -120,8 +120,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi
 
             foreach (var remoteResource in remoteResources)
             {
-                resources.Add(m_SerializationUtility
-                    .GetEconomyResourceFromGetResourcesResponseResultsInner(remoteResource));
+                resources.Add(m_ParserHelper.GetEconomyResourceFromListResponse(remoteResource));
 
                 if (token.IsCancellationRequested)
                 {
@@ -146,97 +145,6 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi
                 null,
                 null,
                 headers.ToDictionary());
-        }
-
-        (object, Type) GetDataAndTypeFromEconomyResource(IEconomyResource economyResource)
-        {
-            var errorMsg = "Could not cast Economy Resource to Economy Resource type. Make sure the file " +
-                           "contains valid JSON and follows the structure of valid economy files.";
-
-            switch (economyResource.EconomyType)
-            {
-                case EconomyResourceTypes.Currency:
-                    var currencyResource = economyResource as EconomyCurrency;
-
-                    if (currencyResource == null)
-                    {
-                        throw new InvalidCastException(errorMsg);
-                    }
-
-                    var currencyRequest = new CurrencyItemRequest(
-                        currencyResource.Id,
-                        currencyResource.Name,
-                        CurrencyItemRequest.TypeOptions.CURRENCY,
-                        currencyResource.Initial,
-                        currencyResource.Max ?? 0,
-                        currencyResource.CustomData);
-                    return (currencyRequest, typeof(CurrencyItemRequest));
-                case EconomyResourceTypes.InventoryItem:
-                    var inventoryResource = economyResource as EconomyInventoryItem;
-
-                    if (inventoryResource == null)
-                    {
-                        throw new InvalidCastException(errorMsg);
-                    }
-
-                    var inventoryItemRequest = new InventoryItemRequest(
-                        inventoryResource.Id,
-                        inventoryResource.Name,
-                        InventoryItemRequest.TypeOptions.INVENTORYITEM,
-                        inventoryResource.CustomData);
-                    return (inventoryItemRequest, typeof(InventoryItemRequest));
-                case EconomyResourceTypes.MoneyPurchase:
-                    var moneyPurchaseResource = economyResource as EconomyRealMoneyPurchase;
-
-                    if (moneyPurchaseResource == null)
-                    {
-                        throw new InvalidCastException(errorMsg);
-                    }
-
-                    var storeIds = new RealMoneyPurchaseItemRequestStoreIdentifiers(
-                        moneyPurchaseResource.StoreIdentifiers?.AppleAppStore,
-                        moneyPurchaseResource.StoreIdentifiers?.GooglePlayStore);
-
-                    var rmpRewards = new List<RealMoneyPurchaseResourceRequestRewardsInner>();
-
-                    moneyPurchaseResource.Rewards?.ForEach(r =>
-                        rmpRewards.Add(new RealMoneyPurchaseResourceRequestRewardsInner(r.ResourceId, r.Amount)));
-
-                    var moneyPurchaseRequest = new RealMoneyPurchaseResourceRequest(
-                        moneyPurchaseResource.Id,
-                        moneyPurchaseResource.Name,
-                        RealMoneyPurchaseResourceRequest.TypeOptions.MONEYPURCHASE,
-                        storeIds,
-                        rmpRewards,
-                        moneyPurchaseResource.CustomData);
-                    return (moneyPurchaseRequest, typeof(RealMoneyPurchaseItemRequest));
-                case EconomyResourceTypes.VirtualPurchase:
-                    var virtualPurchaseResource = economyResource as EconomyVirtualPurchase;
-
-                    if (virtualPurchaseResource == null)
-                    {
-                        throw new InvalidCastException(errorMsg);
-                    }
-
-                    var costs = new List<VirtualPurchaseResourceRequestCostsInner>();
-                    var vpRewards = new List<VirtualPurchaseResourceRequestRewardsInner>();
-
-                    virtualPurchaseResource.Costs?.ForEach(c =>
-                        costs.Add(new VirtualPurchaseResourceRequestCostsInner(c.ResourceId, c.Amount)));
-
-                    virtualPurchaseResource.Rewards?.ForEach(r =>
-                        vpRewards.Add(new VirtualPurchaseResourceRequestRewardsInner(r.ResourceId, r.Amount)));
-
-                    var virtualPurchaseRequest = new VirtualPurchaseResourceRequest(
-                        virtualPurchaseResource.Id,
-                        virtualPurchaseResource.Name,
-                        VirtualPurchaseResourceRequest.TypeOptions.VIRTUALPURCHASE,
-                        costs,
-                        vpRewards,
-                        virtualPurchaseResource.CustomData);
-                    return (virtualPurchaseRequest, typeof(VirtualPurchaseItemRequest));
-            }
-            throw new InvalidCastException(errorMsg);
         }
     }
 }

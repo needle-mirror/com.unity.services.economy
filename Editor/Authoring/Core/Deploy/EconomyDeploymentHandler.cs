@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Services.DeploymentApi.Editor;
@@ -16,6 +15,10 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
     {
         readonly IEconomyClient m_Client;
         readonly ILogger m_Logger;
+        const double k_DelayBetweenBatches = 1;
+        const int k_BatchSize = 10;
+        readonly object m_ResultLock = new();
+        readonly object m_ToPublishLock = new();
 
         internal EconomyDeploymentHandler(IEconomyClient client, ILogger logger)
         {
@@ -23,6 +26,16 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             m_Logger = logger;
         }
 
+        /*
+         * We have two types of resources: Basic ones (like Currency and Inventory Item)
+         * and Purchase ones (like Virtual Purchase and Real Money Purchase)
+         * Purchase resources depend on basic ones, so we need to follow a specific
+         * behavior to avoid conflicts:
+         * - Create basic resources then create purchase resources
+         * Ensuring no purchase resource is created before the basic ones it uses
+         * - Delete purchase resources then delete basic resources
+         * Avoiding any resource to be deleted while another one depends on it
+         */
         public async Task<DeployResult> DeployAsync(
             IReadOnlyList<IEconomyResource> localResources,
             bool dryRun = false,
@@ -34,7 +47,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             localResources = DuplicateResourceValidation.FilterDuplicateResources(
                 localResources, out var duplicateGroups);
 
-
+            localResources = localResources.Where(r => !string.IsNullOrEmpty(r.EconomyType)).ToList();
 
             var remoteResources = await m_Client.List(cancellationToken);
 
@@ -42,17 +55,9 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
                 .Except(remoteResources)
                 .ToList();
 
-            var upToDate = localResources
-                .Where(r => IsLocalResourceUpToDateWithRemote(r, remoteResources))
-                .ToList();
-
             var toUpdate = localResources
                 .Except(toCreate)
-                .Except(upToDate)
                 .ToList();
-
-            upToDate.ForEach(r =>
-                r.Status = new DeploymentStatus(Statuses.UpToDate, "", SeverityLevel.Success));
 
             var toDelete = new List<IEconomyResource>();
             if (reconcile && localResources.Count > 0)
@@ -95,84 +100,66 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
                 return res;
             }
 
-            var createBasicResourceTasks = new List<(IEconomyResource, Task)>();
-            var updateTasks = new List<(IEconomyResource, Task)>();
-            var deletePurchaseTasks = new List<(IEconomyResource, Task)>();
-
-
-            /*
-             * We have two types of resources: Basic ones (like Currency and Inventory Item)
-             * and Purchase ones (like Virtual Purchase and Real Money Purchase)
-             * Purchase resources depend on basic ones, so we need to follow a specific
-             * behavior to avoid conflicts:
-             * - Create basic resources then create purchase resources
-             * Ensuring no purchase resource is created before the basic ones it uses
-             * - Delete purchase resources then delete basic resources
-             * Avoiding any resource to be deleted while another one depends on it
-             */
-
-            // Create Basic Resources
-            var basicResources = toCreate.FindAll(r => !IsResourcePurchaseType(r.EconomyType));
-            foreach (var resource in basicResources)
-            {
-                createBasicResourceTasks.Add((resource, m_Client.Create(resource, cancellationToken)));
-            }
-
-            foreach (var resource in toUpdate)
-            {
-                updateTasks.Add((resource, m_Client.Update(resource, cancellationToken)));
-            }
-
-            if (reconcile)
-            {
-                // Delete Virtual and Money Purchase Resources
-                var purchaseToDeleteResources = toDelete.FindAll(r => IsResourcePurchaseType(r.EconomyType));
-                foreach (var resource in purchaseToDeleteResources)
-                {
-                    deletePurchaseTasks.Add((resource, m_Client.Delete(resource.Id, cancellationToken)));
-                }
-            }
-
             var toPublish = new List<IEconomyResource>();
 
-            Task[] firstBatchOfTasks = new Task[3]
-            {
-                UpdateResult(createBasicResourceTasks, toPublish, res),
-                UpdateResult(updateTasks, toPublish, res),
-                UpdateResult(deletePurchaseTasks, toPublish, res)
-            };
+            // Sort resources
+            var basicResourcesToCreate = toCreate
+                .FindAll(r => !IsResourcePurchaseType(r.EconomyType));
+            var complexResourcesToDelete = toDelete
+                .FindAll(r => IsResourcePurchaseType(r.EconomyType));
+            var complexResourcesToCreate = toCreate
+                .FindAll(r => IsResourcePurchaseType(r.EconomyType));
+            var basicResourcesToDelete = toDelete
+                .FindAll(r => !IsResourcePurchaseType(r.EconomyType));
 
-            // Update, Create and Delete first batch of resources
-            await Task.WhenAll(firstBatchOfTasks);
-
-            var createPurchaseTasks = new List<(IEconomyResource, Task)>();
-            var deleteResourceTasks = new List<(IEconomyResource, Task)>();
+            // Deployment tasks (order is important)
+            var createBasicResourceTasks =
+                GetTasks(basicResourcesToCreate, m_Client.Create, toPublish, res, cancellationToken);
+            var updateResourceTasks =
+                GetTasks(toUpdate, m_Client.Update, toPublish, res, cancellationToken);
+            IEnumerable<Task> deleteComplexResourceTasks = null;
+            var createComplexResourceTasks =
+                GetTasks(complexResourcesToCreate, m_Client.Create, toPublish, res, cancellationToken);
+            IEnumerable<Task> deleteBasicResourceTasks = null;
 
             if (reconcile)
             {
-                // Delete Non-Purchase Resources
-                var basicResourceToDelete = toDelete.FindAll(r => !IsResourcePurchaseType(r.EconomyType));
-                foreach (var resource in basicResourceToDelete)
+                deleteComplexResourceTasks =
+                    GetTasks(complexResourcesToDelete, m_Client.Delete, toPublish, res, cancellationToken);
+                deleteBasicResourceTasks =
+                    GetTasks(basicResourcesToDelete, m_Client.Delete, toPublish, res, cancellationToken);
+            }
+
+            var allTaskListsQueue = new Queue<(IEnumerable<Task> tasks, int nbTasks)>(new []
+            {
+                (createBasicResourceTasks, basicResourcesToCreate.Count),
+                (updateResourceTasks, toUpdate.Count),
+                (deleteComplexResourceTasks, complexResourcesToDelete.Count),
+                (createComplexResourceTasks, complexResourcesToCreate.Count),
+                (deleteBasicResourceTasks, basicResourcesToDelete.Count)
+            });
+
+            // Execute all tasks (in batches and in order)
+            while (allTaskListsQueue.Count > 0)
+            {
+                var taskList = allTaskListsQueue.Dequeue();
+
+                if (taskList.tasks == null || taskList.nbTasks == 0)
                 {
-                    deleteResourceTasks.Add((resource, m_Client.Delete(resource.Id, cancellationToken)));
+                    continue;
+                }
+
+                await Batching.Batching.ExecuteInBatchesAsync(
+                    taskList.tasks,
+                    cancellationToken,
+                    k_BatchSize,
+                    k_DelayBetweenBatches);
+
+                if (allTaskListsQueue.Count != 0)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(k_DelayBetweenBatches), cancellationToken);
                 }
             }
-
-            // Create Virtual and Money Purchase Resources
-            var purchaseResources = toCreate.FindAll(r => IsResourcePurchaseType(r.EconomyType));
-            foreach (var localResource in purchaseResources)
-            {
-                createPurchaseTasks.Add((localResource, m_Client.Create(localResource, cancellationToken)));
-            }
-
-            Task[] secondBatchOfTasks = new Task[2]
-            {
-                UpdateResult(createPurchaseTasks, toPublish, res),
-                UpdateResult(deleteResourceTasks, toPublish, res)
-            };
-
-            // Create and Delete second batch of resources
-            await Task.WhenAll(secondBatchOfTasks);
 
             await PublishAndUpdateResult(toPublish, res, cancellationToken);
 
@@ -184,10 +171,33 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             return res;
         }
 
+        IEnumerable<Task> GetTasks(
+            List<IEconomyResource> resources,
+            Func<IEconomyResource, CancellationToken, Task> resourceOperation,
+            List<IEconomyResource> toPublish,
+            DeployResult result,
+            CancellationToken token)
+            => resources.Select(r => GetResourceTask(
+                () => resourceOperation(r, token),
+                r,
+                toPublish,
+                result));
+
+        IEnumerable<Task> GetTasks(
+            List<IEconomyResource> resources,
+            Func<string, CancellationToken, Task> resourceOperation,
+            List<IEconomyResource> toPublish,
+            DeployResult result,
+            CancellationToken token)
+            => resources.Select(r => GetResourceTask(
+                () => resourceOperation(r.Id, token),
+                r,
+                toPublish,
+                result));
+
         static bool IsResourcePurchaseType(string resourceType)
-        {
-            return resourceType.Equals(EconomyResourceTypes.VirtualPurchase) || resourceType.Equals(EconomyResourceTypes.MoneyPurchase);
-        }
+            => resourceType.Equals(EconomyResourceTypes.VirtualPurchase) ||
+               resourceType.Equals(EconomyResourceTypes.MoneyPurchase);
 
         void UpdateDuplicateResourceStatus(
             DeployResult result,
@@ -195,35 +205,32 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
         {
             foreach (var group in duplicateGroups)
             {
-                foreach (var res in group)
+                foreach (var r in group)
                 {
-                    result.Failed.Add(res);
-                    var (shortMessage, _) = DuplicateResourceValidation.GetDuplicateResourceErrorMessages(res, group.ToList());
-                    res.Status = new DeploymentStatus(Statuses.FailedToDeploy, shortMessage);
+                    result.Failed.Add(r);
+                    var (shortMessage, _) = DuplicateResourceValidation.GetDuplicateResourceErrorMessages(r, group.ToList());
+                    r.Status = new DeploymentStatus(Statuses.FailedToDeploy, shortMessage);
                 }
             }
         }
 
-        async Task UpdateResult(
-            List<(IEconomyResource, Task)> tasks,
+        async Task GetResourceTask(
+            Func<Task> resourceOperation,
+            IEconomyResource resource,
             List<IEconomyResource> toPublish,
-            DeployResult res)
+            DeployResult result)
         {
-            foreach (var (resource, task) in tasks)
+            try
             {
-                try
+                await resourceOperation();
+                lock (m_ToPublishLock)
                 {
-                    await task;
-                    if (task.Exception != null)
-                    {
-                        throw task.Exception;
-                    }
                     toPublish.Add(resource);
                 }
-                catch (Exception e)
-                {
-                    HandleException(e, resource, res);
-                }
+            }
+            catch (Exception e)
+            {
+                HandleException(e, resource, result);
             }
         }
 
@@ -249,9 +256,10 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
 
             foreach (var failed in result.Failed)
             {
+                var msg = string.Join(" ", failed.Status.Message, failed.Status.MessageDetail);
                 failed.Status = new DeploymentStatus(
                     Statuses.FailedToDeploy,
-                    failed.Status.MessageDetail,
+                    msg,
                     SeverityLevel.Error);
             }
         }
@@ -285,7 +293,10 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
 
         internal virtual void HandleException(Exception exception, IEconomyResource resource, DeployResult result)
         {
-            result.Failed.Add(resource);
+            lock (m_ResultLock)
+            {
+                result.Failed.Add(resource);
+            }
             resource.Status = new DeploymentStatus(
                 Statuses.FailedToDeploy,
                 exception.Message,

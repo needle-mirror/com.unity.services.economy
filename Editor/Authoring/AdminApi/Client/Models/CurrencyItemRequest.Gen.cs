@@ -44,7 +44,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
             Type = type;
             Initial = initial;
             Max = max;
-            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
+            CustomData = (IDeserializable)(customData is null ? new JsonObject(new object()) : JsonObject.GetNewJsonObjectResponse(customData));
         }
 
         /// <summary>
@@ -73,22 +73,23 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
         /// The initial amount of currency that a player is credited upon first interaction. When &#x60;max&#x60; is used, &#x60;initial&#x60; must be less than &#x60;max&#x60;.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "initial", EmitDefaultValue = false)]
+        [DataMember(Name = "initial", EmitDefaultValue = true)]
         public long Initial{ get; }
 
         /// <summary>
         /// The maximum currency balance that a player can have. Calls that would result in the maximum being exceeded return an error.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "max", EmitDefaultValue = false)]
+        [DataMember(Name = "max", EmitDefaultValue = true)]
         public long Max{ get; }
 
         /// <summary>
         /// Max size when serialized 5 kilobits.
         /// </summary>
-        [Preserve][JsonConverter(typeof(JsonObjectConverter))]
-        [DataMember(Name = "customData", EmitDefaultValue = false)]
-        public IDeserializable CustomData{ get; }
+        [Preserve]
+        [JsonConverter(typeof(JsonObjectConverter))]
+        [DataMember(Name = "customData", EmitDefaultValue = true)]
+        public IDeserializable CustomData { get; }
 
         /// <summary>
         /// Defines Type

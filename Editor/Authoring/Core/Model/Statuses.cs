@@ -2,14 +2,18 @@
 {
     class Statuses
     {
-        public static string UpToDate = "Up to date";
-
-        public static readonly string FailedToFetch = "Failed to fetch";
-        public static readonly string Fetching = "Fetching";
-        public static readonly string Fetched = "Fetched";
-
-        public static readonly string FailedToDeploy = "Failed to deploy";
-        public static readonly string Deploying = "Deploying";
-        public static readonly string Deployed = "Deployed";
+        public const string UpToDate = "Up to date";
+        public const string FailedToRead = "Failed To Read";
+        public const string Created = "Created";
+        public const string Updated = "Updated";
+        public const string Deleted = "Deleted";
+        public const string Loading = "Loading";
+        public const string Loaded = "Loaded";
+        public const string Deployed = "Deployed";
+        public const string Deploying = "Deploying";
+        public const string FailedToDeploy = "Failed to deploy";
+        public const string Fetching = "Fetching";
+        public const string Fetched = "Fetched";
+        public const string FailedToFetch = "Failed to fetch";
     }
 }

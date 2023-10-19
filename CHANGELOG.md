@@ -4,6 +4,13 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2023-10-19
+* Added schema field to economy resource files.
+* Fixed a bug preventing from deploying economy resource containing schema field.
+* Fixed a bug where deploying a local Currency resource file that omits `initial` and `max` would not update the remote resource to their default values.
+* Fixed a bug where deploying a local resource file that omits `customData` would not update the remote resource to a default customData.
+* Fixed a bug that would halt the deployment's execution when a local resource file's content failed to be deserialized.
+
 ## [3.2.1] - 2023-09-19
 * Add Economy resource deployment support through the Deployment Window or Deployment api.
 

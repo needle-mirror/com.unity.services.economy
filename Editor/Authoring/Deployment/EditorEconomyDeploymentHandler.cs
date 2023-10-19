@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using Unity.Services.DeploymentApi.Editor;
 using Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Http;
 using Unity.Services.Economy.Editor.Authoring.Core.Deploy;
@@ -23,17 +20,6 @@ namespace Unity.Services.Economy.Editor.Authoring.Deployment
 
         internal EditorEconomyDeploymentHandler(IEconomyClient client, ILogger logger) : base(client, logger)
         {
-        }
-
-        internal override bool IsLocalResourceUpToDateWithRemote(
-            IEconomyResource resource,
-            List<IEconomyResource> remoteResources)
-        {
-            var nbEqualResources = remoteResources
-                .Where(r => r.Id.Equals(resource.Id))
-                .Count(r => JsonConvert.SerializeObject(resource).Equals(JsonConvert.SerializeObject(r)));
-
-            return nbEqualResources > 0;
         }
 
         internal override void HandleException(Exception exception, IEconomyResource resource, DeployResult result)

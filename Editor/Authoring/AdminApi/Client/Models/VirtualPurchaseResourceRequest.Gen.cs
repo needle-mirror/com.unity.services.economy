@@ -44,7 +44,7 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
             Type = type;
             Costs = costs;
             Rewards = rewards;
-            CustomData = (IDeserializable) JsonObject.GetNewJsonObjectResponse(customData);
+            CustomData = (IDeserializable)(customData is null ? new JsonObject(new object()) : JsonObject.GetNewJsonObjectResponse(customData));
         }
 
         /// <summary>
@@ -73,21 +73,21 @@ namespace Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Models
         /// The costs deducted from the player when making the purchase. A cost is an ID of a currency or inventory item, plus an amount. An item can be used in more than one cost line.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "costs", EmitDefaultValue = false)]
+        [DataMember(Name = "costs", EmitDefaultValue = true)]
         public List<VirtualPurchaseResourceRequestCostsInner> Costs{ get; }
 
         /// <summary>
         /// The rewards credited to the player when making the purchase. A reward is an ID of a currency or inventory item, an amount and default instance data for inventory items. An item can be used in more than one reward line.
         /// </summary>
         [Preserve]
-        [DataMember(Name = "rewards", EmitDefaultValue = false)]
+        [DataMember(Name = "rewards", EmitDefaultValue = true)]
         public List<VirtualPurchaseResourceRequestRewardsInner> Rewards{ get; }
 
         /// <summary>
         /// Max size when serialized 5 kilobits.
         /// </summary>
         [Preserve][JsonConverter(typeof(JsonObjectConverter))]
-        [DataMember(Name = "customData", EmitDefaultValue = false)]
+        [DataMember(Name = "customData", EmitDefaultValue = true)]
         public IDeserializable CustomData{ get; }
 
         /// <summary>
