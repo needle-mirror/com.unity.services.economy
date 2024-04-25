@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.4.0] - 2024-04-25
+* Adding support for services instances and global point of access.
+* Added Apple privacy manifest to comply with Apple's new privacy requirements. More details on how the Unity Engine supports this can be found [here](https://forum.unity.com/threads/apple-privacy-manifest-updates-for-unity-engine.1529026/).
+* Upgraded `com.unity.services.core` from 1.12.0 to 1.12.5 to include their Apple privacy manifest.
+* Upgraded `com.unity.services.authentication` from 3.1.0 to 3.3.1 to include their Apple privacy manifest.
+
 ## [3.3.0] - 2023-10-19
 * Added schema field to economy resource files.
 * Fixed a bug preventing from deploying economy resource containing schema field.

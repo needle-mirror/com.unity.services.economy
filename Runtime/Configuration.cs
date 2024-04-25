@@ -385,10 +385,10 @@ namespace Unity.Services.Economy
 
         public async Task<List<CurrencyDefinition>> GetCurrenciesAsync()
         {
-            GetConfigurationResult config = await GetConfigurationAsync();
+            var configItems = await SyncConfigurationAsync();
 
             List<CurrencyDefinition> currencies = new List<CurrencyDefinition>();
-            foreach (var configItem in config.Results)
+            foreach (var configItem in configItems)
             {
                 if (configItem.Type == CurrencyType)
                 {
@@ -401,10 +401,10 @@ namespace Unity.Services.Economy
 
         public async Task<List<InventoryItemDefinition>> GetInventoryItemsAsync()
         {
-            GetConfigurationResult config = await GetConfigurationAsync();
+            var configItems = await SyncConfigurationAsync();
 
             List<InventoryItemDefinition> inventoryItems = new List<InventoryItemDefinition>();
-            foreach (var configItem in config.Results)
+            foreach (var configItem in configItems)
             {
                 if (configItem.Type == InventoryItemType)
                 {
@@ -417,10 +417,10 @@ namespace Unity.Services.Economy
 
         public async Task<List<VirtualPurchaseDefinition>> GetVirtualPurchasesAsync()
         {
-            GetConfigurationResult config = await GetConfigurationAsync();
+            var configItems = await SyncConfigurationAsync();
 
             List<VirtualPurchaseDefinition> virtualPurchases = new List<VirtualPurchaseDefinition>();
-            foreach (var configItem in config.Results)
+            foreach (var configItem in configItems)
             {
                 if (configItem.Type == VirtualPurchaseType)
                 {
@@ -433,10 +433,10 @@ namespace Unity.Services.Economy
 
         public async Task<List<RealMoneyPurchaseDefinition>> GetRealMoneyPurchasesAsync()
         {
-            GetConfigurationResult config = await GetConfigurationAsync();
+            var configItems = await SyncConfigurationAsync();
 
             List<RealMoneyPurchaseDefinition> realMoneyPurchases = new List<RealMoneyPurchaseDefinition>();
-            foreach (var configItem in config.Results)
+            foreach (var configItem in configItems)
             {
                 if (configItem.Type == RealMoneyPurchaseType)
                 {
@@ -469,9 +469,9 @@ namespace Unity.Services.Economy
 
         private async Task<T> GetConfigurationItem<T>(string id)
         {
-            GetConfigurationResult config = await GetConfigurationAsync();
+            var configItems = await SyncConfigurationAsync();
 
-            foreach (var configItem in config.Results)
+            foreach (var configItem in configItems)
             {
                 if (configItem.Id == id)
                 {

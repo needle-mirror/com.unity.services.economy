@@ -9,7 +9,6 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Model
             string path,
             CancellationToken cancellationToken);
 
-        string ConstructResourceFile(
-            IEconomyResource resource);
+        string CreateAndSerialize(IEconomyResource resource);
     }
 }

@@ -27,8 +27,12 @@ namespace Unity.Services.Economy.Model
             Type = ConfigurationInternal.VirtualPurchaseType;
             Created = EconomyDate.From(resource.Created);
             Modified = EconomyDate.From(resource.Modified);
-            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
             CustomDataDeserializable = resource.CustomData;
+
+#pragma warning disable CS0618
+            // obsolete apis now throw errors in CI
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+#pragma warning restore CS0618
 
             Costs = new List<PurchaseItemQuantity>();
 

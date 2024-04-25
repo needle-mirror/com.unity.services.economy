@@ -70,23 +70,5 @@ namespace Unity.Services.Economy
                 return instance;
             }
         }
-
-        internal static void InitializeEconomy(ICloudProjectId cloudProjectId, IAccessToken accessToken, IPlayerId playerId, IInternalConfigurationApiClient configurationApiClient, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient, string unityProjectId, string analyticsUserId)
-        {
-            IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken, unityProjectId, analyticsUserId);
-
-            ConfigurationInternal configurationInternal = new ConfigurationInternal(cloudProjectId, configurationApiClient, economyAuth);
-            PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(cloudProjectId, currenciesApiClient, economyAuth);
-            PlayerInventoryInternal playerInventoryInternal = new PlayerInventoryInternal(cloudProjectId, inventoryApiClient, economyAuth);
-            PurchasesInternal purchasesInternal = new PurchasesInternal(cloudProjectId, purchasesApiClient, economyAuth, playerBalancesInternal, playerInventoryInternal);
-
-            instance = new EconomyInstance(configurationInternal, playerBalancesInternal, playerInventoryInternal, purchasesInternal);
-
-            // Used to support the old static interface
-            Economy.Configuration = new Configuration();
-            Economy.PlayerBalances = new PlayerBalances();
-            Economy.PlayerInventory = new PlayerInventory();
-            Economy.Purchases = new Purchases();
-        }
     }
 }

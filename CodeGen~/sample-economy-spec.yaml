@@ -1,0 +1,12 @@
+generatorName: csharp-unity
+outputDir: /Users/george.burslem/dev/generated-economy-sdk
+inputSpec: /Users/george.burslem/dev/unity-services-api-docs/docs/public/v2/economy.yaml
+packageName: com.unity.services.economy.internal
+additionalProperties:
+  unityVersion: "2020.3"
+  packageVersion: "2.0.0"
+  unityPackageNamespace: "Unity.Services.Economy.Internal"
+  unityServiceName: "Economy"
+  unityPackageDescription: Client API SDK Package for communicating with Economy
+  publicAccess: [deserializable]
+  useUnityAuthentication: true

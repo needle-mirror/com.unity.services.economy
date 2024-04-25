@@ -1,6 +1,14 @@
 // This file is generated. Do not modify by hand.
 // XML documentation file not found. To check if public methods have XML comments,
 // make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.Services.Core
+{
+    public static class UnityServicesExtensions
+    {
+        public static Unity.Services.Economy.IEconomyService GetEconomyService(this IUnityServices unityServices);
+    }
+}
+
 namespace Unity.Services.Economy
 {
     public class AddInventoryItemOptions
@@ -296,7 +304,7 @@ namespace Unity.Services.Economy.Internal.Http
 {
     public class DeserializationSettings
     {
-        public MissingMemberHandling MissingMemberHandling;
+        public MissingMemberHandling MissingMemberHandling = MissingMemberHandling.Error;
         public DeserializationSettings() {}
     }
 

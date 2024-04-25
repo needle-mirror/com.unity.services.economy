@@ -43,13 +43,32 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             CancellationToken cancellationToken = default)
         {
             var res = new DeployResult();
+            res.Deployed = new List<IEconomyResource>();
+            res.Failed = new List<IEconomyResource>();
 
             localResources = DuplicateResourceValidation.FilterDuplicateResources(
                 localResources, out var duplicateGroups);
+            UpdateDuplicateResourceStatus(res, duplicateGroups);
 
             localResources = localResources.Where(r => !string.IsNullOrEmpty(r.EconomyType)).ToList();
 
-            var remoteResources = await m_Client.List(cancellationToken);
+            List<IEconomyResource> remoteResources;
+            try
+            {
+                remoteResources = await m_Client.List(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                foreach (var resource in localResources)
+                {
+                    resource.Status =
+                        new DeploymentStatus(
+                            Statuses.FailedToDeploy,
+                            "Failed to fetch remote resources: " + e.Message,
+                            SeverityLevel.Error);
+                }
+                throw;
+            }
 
             var toCreate = localResources
                 .Except(remoteResources)
@@ -70,15 +89,12 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             res.Created = toCreate;
             res.Deleted = toDelete;
             res.Updated = toUpdate;
-            res.Deployed = new List<IEconomyResource>();
-            res.Failed = new List<IEconomyResource>();
+
 
             foreach (var economyResource in localResources)
             {
                 UpdateResourceProgress(economyResource, 33);
             }
-
-            UpdateDuplicateResourceStatus(res, duplicateGroups);
 
             if (reconcile && localResources.Count == 0)
             {
@@ -199,7 +215,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
             => resourceType.Equals(EconomyResourceTypes.VirtualPurchase) ||
                resourceType.Equals(EconomyResourceTypes.MoneyPurchase);
 
-        void UpdateDuplicateResourceStatus(
+        static void UpdateDuplicateResourceStatus(
             DeployResult result,
             IReadOnlyList<IGrouping<string, IEconomyResource>> duplicateGroups)
         {
@@ -209,7 +225,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Deploy
                 {
                     result.Failed.Add(r);
                     var (shortMessage, _) = DuplicateResourceValidation.GetDuplicateResourceErrorMessages(r, group.ToList());
-                    r.Status = new DeploymentStatus(Statuses.FailedToDeploy, shortMessage);
+                    r.Status = new DeploymentStatus(Statuses.FailedToDeploy, shortMessage, SeverityLevel.Error);
                 }
             }
         }

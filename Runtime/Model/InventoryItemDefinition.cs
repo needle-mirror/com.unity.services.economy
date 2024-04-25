@@ -25,8 +25,11 @@ namespace Unity.Services.Economy.Model
             Type = ConfigurationInternal.InventoryItemType;
             Created = EconomyDate.From(resource.Created);
             Modified = EconomyDate.From(resource.Modified);
-            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
             CustomDataDeserializable = resource.CustomData;
+#pragma warning disable CS0618
+            // obsolete member
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+#pragma warning disable CS0618
         }
 
         /// <summary>

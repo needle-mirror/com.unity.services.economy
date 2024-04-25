@@ -36,8 +36,11 @@ namespace Unity.Services.Economy.Model
             Modified = EconomyDate.From(resource.Modified);
             Initial = resource.Initial;
             Max = resource.Max;
-            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
             CustomDataDeserializable = resource.CustomData;
+#pragma warning disable CS0618
+            // obsolete member
+            CustomData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resource.CustomData.GetAsString());
+#pragma warning disable CS0618
         }
 
         /// <summary>

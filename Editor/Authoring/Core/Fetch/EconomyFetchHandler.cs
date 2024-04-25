@@ -39,10 +39,10 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
             localResources = DuplicateResourceValidation.FilterDuplicateResources(
                 localResources, out var duplicateGroups);
 
-            var remoteResources = await m_Client.List(cancellationToken);
+            var remoteResources = await GetRemoteResources(rootDirectory, localResources, cancellationToken);
 
-            var toUpdate = localResources
-                .Intersect(remoteResources)
+            var toUpdate = remoteResources
+                .Intersect(localResources)
                 .ToList();
 
             var toDelete = localResources
@@ -55,8 +55,6 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
                 toCreate = remoteResources
                     .Except(localResources)
                     .ToList();
-
-                toCreate.ForEach(r => ((EconomyResource)r).Path = Path.Combine(rootDirectory, r.Id) + ((EconomyResource)r).EconomyExtension);
             }
 
             res.Created = toCreate;
@@ -81,7 +79,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
             {
                 var task = m_FileSystem.WriteAllText(
                     resource.Path,
-                    m_EconomyResourcesLoader.ConstructResourceFile(remoteResources.Find(r => r.Id == resource.Id)),
+                    m_EconomyResourcesLoader.CreateAndSerialize(resource),
                     cancellationToken);
                 updateTasks.Add((resource, task));
             }
@@ -98,7 +96,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
             {
                 var task = m_FileSystem.WriteAllText(
                     resource.Path,
-                    m_EconomyResourcesLoader.ConstructResourceFile(resource),
+                    m_EconomyResourcesLoader.CreateAndSerialize(resource),
                     cancellationToken);
                 createTasks.Add((resource, task));
             }
@@ -108,6 +106,24 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
             await UpdateResult(createTasks, res, new DeploymentStatus(Statuses.Fetched, "Created locally", SeverityLevel.Success));
 
             return res;
+        }
+
+        async Task<List<IEconomyResource>> GetRemoteResources(string rootDirectory, IReadOnlyList<IEconomyResource> localResources, CancellationToken cancellationToken)
+        {
+            var remoteResources = await m_Client.List(cancellationToken);
+
+            foreach (var remote in remoteResources)
+            {
+                var local = localResources.FirstOrDefault(l => Equals(l, remote));
+
+                ((EconomyResource)remote).Path = local != null ? local.Path : CreateRemoteResourceName(rootDirectory, remote);
+            }
+            return remoteResources;
+        }
+
+        static string CreateRemoteResourceName(string rootDirectory, IEconomyResource remote)
+        {
+            return Path.Combine(rootDirectory, remote.Id) + ((EconomyResource)remote).EconomyExtension;
         }
 
         protected virtual void UpdateStatus(
@@ -135,7 +151,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
                 foreach (var res in group)
                 {
                     result.Failed.Add(res);
-                    var (shortMessage, _) = DuplicateResourceValidation.GetDuplicateResourceErrorMessages(res, group.ToList());
+                    var(shortMessage, _) = DuplicateResourceValidation.GetDuplicateResourceErrorMessages(res, group.ToList());
                     UpdateStatus(res, new DeploymentStatus(Statuses.FailedToFetch, shortMessage));
                 }
             }
@@ -145,17 +161,17 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
         {
             foreach (var created in result.Created)
             {
-                UpdateStatus(created, new DeploymentStatus(Statuses.Fetched, "Created locally"));
+                UpdateStatus(created, new DeploymentStatus(Statuses.Fetched, "Created locally", SeverityLevel.Success));
             }
 
             foreach (var updated in result.Updated)
             {
-                UpdateStatus(updated, new DeploymentStatus(Statuses.Fetched, "Updated locally"));
+                UpdateStatus(updated, new DeploymentStatus(Statuses.Fetched, "Updated locally", SeverityLevel.Success));
             }
 
             foreach (var deleted in result.Deleted)
             {
-                UpdateStatus(deleted, new DeploymentStatus(Statuses.Fetched, "Deleted locally"));
+                UpdateStatus(deleted, new DeploymentStatus(Statuses.Fetched, "Deleted locally", SeverityLevel.Success));
             }
         }
 
@@ -164,7 +180,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Core.Fetch
             FetchResult res,
             DeploymentStatus status)
         {
-            foreach (var (resource, task) in tasks)
+            foreach (var(resource, task) in tasks)
             {
                 try
                 {

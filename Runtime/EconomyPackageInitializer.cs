@@ -14,15 +14,21 @@ using UnityEngine;
 
 namespace Unity.Services.Economy
 {
-    class EconomyPackageInitializer : IInitializablePackage
+    class EconomyPackageInitializer : IInitializablePackageV2
     {
         const string k_CloudEnvironmentKey = "com.unity.services.core.cloud-environment";
         const string k_StagingEnvironment = "staging";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void Register()
+        static void InitializeOnLoad()
         {
-            CoreRegistry.Instance.RegisterPackage(new EconomyPackageInitializer())
+            var initializer = new EconomyPackageInitializer();
+            initializer.Register(CorePackageRegistry.Instance);
+        }
+
+        public void Register(CorePackageRegistry registry)
+        {
+            registry.Register(this)
                 .DependsOn<IAccessToken>()
                 .DependsOn<ICloudProjectId>()
                 .DependsOn<IPlayerId>()
@@ -32,6 +38,28 @@ namespace Unity.Services.Economy
         }
 
         public Task Initialize(CoreRegistry registry)
+        {
+            EconomyService.instance = InitializeService(registry);
+
+            // Used to support the old static interface
+            // Note: CI transforms warning into errors, and this code is there to explicitly support legacy systems, let's ignore this one
+#pragma warning disable CS0618
+            Economy.Configuration = new Configuration();
+            Economy.PlayerBalances = new PlayerBalances();
+            Economy.PlayerInventory = new PlayerInventory();
+            Economy.Purchases = new Purchases();
+#pragma warning restore CS0618
+
+            return Task.CompletedTask;
+        }
+
+        public Task InitializeInstanceAsync(CoreRegistry registry)
+        {
+            InitializeService(registry);
+            return Task.CompletedTask;
+        }
+
+        IEconomyService InitializeService(CoreRegistry registry)
         {
             var projectConfiguration = registry.GetServiceComponent<IProjectConfiguration>();
             var cloudProjectId = registry.GetServiceComponent<ICloudProjectId>();
@@ -49,16 +77,28 @@ namespace Unity.Services.Economy
             IPurchasesApiClient purchasesApiClient = new PurchasesApiClient(httpClient, accessToken, configuration);
 
             var analyticsUserId = GetAnalyticsUserId(registry);
-            EconomyService.InitializeEconomy(cloudProjectId, accessToken, registry.GetServiceComponent<IPlayerId>(), configurationApiClient, currenciesApiClient, inventoryApiClient, purchasesApiClient, registry.GetServiceComponent<IInstallationId>().GetOrCreateIdentifier(), analyticsUserId);
+            var service = InitializeEconomy(cloudProjectId, accessToken, registry.GetServiceComponent<IPlayerId>(), configurationApiClient, currenciesApiClient, inventoryApiClient, purchasesApiClient, registry.GetServiceComponent<IInstallationId>().GetOrCreateIdentifier(), analyticsUserId);
+            registry.RegisterService<IEconomyService>(service);
+            return service;
+        }
 
-            return Task.CompletedTask;
+        internal EconomyInstance InitializeEconomy(ICloudProjectId cloudProjectId, IAccessToken accessToken, IPlayerId playerId, IInternalConfigurationApiClient configurationApiClient, ICurrenciesApiClient currenciesApiClient, IInventoryApiClient inventoryApiClient, IPurchasesApiClient purchasesApiClient, string unityProjectId, string analyticsUserId)
+        {
+            IEconomyAuthentication economyAuth = new EconomyAuthentication(playerId, accessToken, unityProjectId, analyticsUserId);
+
+            ConfigurationInternal configurationInternal = new ConfigurationInternal(cloudProjectId, configurationApiClient, economyAuth);
+            PlayerBalancesInternal playerBalancesInternal = new PlayerBalancesInternal(cloudProjectId, currenciesApiClient, economyAuth);
+            PlayerInventoryInternal playerInventoryInternal = new PlayerInventoryInternal(cloudProjectId, inventoryApiClient, economyAuth);
+            PurchasesInternal purchasesInternal = new PurchasesInternal(cloudProjectId, purchasesApiClient, economyAuth, playerBalancesInternal, playerInventoryInternal);
+
+            return new EconomyInstance(configurationInternal, playerBalancesInternal, playerInventoryInternal, purchasesInternal);
         }
 
         static string GetAnalyticsUserId(CoreRegistry registry)
         {
             var externalUserId = registry.GetServiceComponent<IExternalUserId>();
 
-            if (!String.IsNullOrEmpty(externalUserId.UserId))
+            if (!string.IsNullOrEmpty(externalUserId.UserId))
             {
                 return externalUserId.UserId;
             }

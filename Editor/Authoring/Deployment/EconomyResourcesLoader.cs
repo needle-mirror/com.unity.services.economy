@@ -28,7 +28,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Deployment
             m_FileSystem = fileSystem;
         }
 
-        public string ConstructResourceFile(IEconomyResource resource)
+        public string CreateAndSerialize(IEconomyResource resource)
         {
             EconomyResourceFile resourceFile = null;
 
@@ -142,7 +142,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Deployment
                 resource.Status = new DeploymentStatus(Statuses.Loaded, "");
             }
             catch (Exception ex) when (ex is SerializationException or FileNotFoundException or
-                                           InvalidOperationException or JsonSerializationException or JsonReaderException)
+                                       InvalidOperationException or JsonSerializationException or JsonReaderException)
             {
                 resource.Status = new DeploymentStatus(Statuses.FailedToRead, ex.Message, SeverityLevel.Error);
             }
