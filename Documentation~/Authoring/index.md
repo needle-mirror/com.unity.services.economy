@@ -25,7 +25,7 @@ They are all using the JSON format, and support a JSON Schema definition.
 
 ### Currency assets
 
-Right-click on the `Project Window` then select `Create > Economy File > Currency` to create a Currency file.
+Right-click on the `Project Window` then select `Create > Services > Economy Currency Configuration` to create a Currency file.
 
 The Deployment Window automatically detects these files to be deployed at a later time.
 
@@ -34,7 +34,7 @@ please see the [Currency assets](./currency_assets.md) documentation.
 
 ### Inventory Item assets
 
-Right-click on the `Project Window` then select `Create > Economy File > Inventory Item` to create an Inventory Item file.
+Right-click on the `Project Window` then select `Create > Services > Economy Inventory Item Configuration` to create an Inventory Item file.
 
 The Deployment Window automatically detects these files to be deployed at a later time.
 
@@ -43,7 +43,7 @@ please see the [Inventory Item assets](./inventory_item_assets.md) documentation
 
 ### Virtual Purchase assets
 
-Right-click on the `Project Window` then select `Create > Economy File > Virtual Purchase` to create a Virtual Purchase file.
+Right-click on the `Project Window` then select `Create > Services > Economy Virtual Purchase Configuration` to create a Virtual Purchase file.
 
 The Deployment Window automatically detects these files to be deployed at a later time.
 
@@ -52,7 +52,7 @@ please see the [Virtual Purchase assets](./virtual_purchase_assets.md) documenta
 
 ### Money Purchase assets
 
-Right-click on the `Project Window` then select `Create > Economy File > Money Purchase` to create a Money Purchase file.
+Right-click on the `Project Window` then select `Create > Services > Economy Money Purchase Configuration` to create a Money Purchase file.
 
 The Deployment Window automatically detects these files to be deployed at a later time.
 

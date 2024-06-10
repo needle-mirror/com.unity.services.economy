@@ -6,7 +6,7 @@ An Inventory Item asset file has `.eci` for extension.
 
 ## Creation
 
-Right-click on the `Project Window` then select `Create > Economy File > Inventory Item` to create a Inventory Item asset.
+Right-click on the `Project Window` then select `Create > Services > Economy Inventory Configuration` to create a Inventory Item asset.
 
 Once created, a corresponding item will appear in the deployment window, and will allow you to deploy the newly created Inventory Item file.
 

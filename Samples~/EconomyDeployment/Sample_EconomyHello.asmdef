@@ -1,0 +1,38 @@
+{
+    "name": "Sample_Economy",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Services.Authentication",
+        "Unity.Services.Core",
+        "Unity.Services.Economy",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "ECONOMY_PRESENT",
+        "AUTHENTICATION_PRESENT"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.economy",
+            "expression": "3.3.0",
+            "define": "ECONOMY_PRESENT"
+        },
+        {
+            "name": "com.unity.services.authentication",
+            "expression": "3.1.0",
+            "define": "AUTHENTICATION_PRESENT"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "INPUT_SYSTEM_PRESENT"
+        }
+    ],
+    "noEngineReferences": false
+}

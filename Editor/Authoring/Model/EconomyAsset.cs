@@ -102,7 +102,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Model
 
             if (Resource != null && Resource.Status.MessageSeverity != SeverityLevel.Error)
             {
-                Resource!.PropertyChanged += OnEconomyResourcePropertyChanged;
+                Resource !.PropertyChanged += OnEconomyResourcePropertyChanged;
             }
 
             if (Resource != null)
@@ -162,28 +162,28 @@ namespace Unity.Services.Economy.Editor.Authoring.Model
             }
         }
 
-        [MenuItem("Assets/Create/Economy File/Currency", false, 81)]
+        [MenuItem("Assets/Create/Services/Economy Currency Configuration", false, 81)]
         public static void CreateConfigCurrency()
             => CreateFile(
                 k_DefaultFileNameCurrency + EconomyResourcesExtensions.Currency,
                 nameof(EconomyResourceTypes.Currency),
                 new EconomyCurrencyFile().FileBodyText);
 
-        [MenuItem("Assets/Create/Economy File/Inventory Item", false, 81)]
+        [MenuItem("Assets/Create/Services/Economy Inventory Item Configuration", false, 81)]
         public static void CreateConfigInventoryItem()
             => CreateFile(
                 k_DefaultFileNameInventoryItem + EconomyResourcesExtensions.InventoryItem,
                 nameof(EconomyResourceTypes.InventoryItem),
                 new EconomyInventoryItemFile().FileBodyText);
 
-        [MenuItem("Assets/Create/Economy File/Virtual Purchase", false, 81)]
+        [MenuItem("Assets/Create/Services/Economy Virtual Purchase Configuration", false, 81)]
         public static void CreateConfigVirtualPurchase()
             => CreateFile(
                 k_DefaultFileNameVirtualPurchase + EconomyResourcesExtensions.VirtualPurchase,
                 nameof(EconomyResourceTypes.VirtualPurchase),
                 new EconomyVirtualPurchaseFile().FileBodyText);
 
-        [MenuItem("Assets/Create/Economy File/Money Purchase", false, 81)]
+        [MenuItem("Assets/Create/Services/Economy Money Purchase Configuration", false, 81)]
         public static void CreateConfigMoneyPurchase()
             => CreateFile(
                 k_DefaultFileNameRealMoneyPurchase + EconomyResourcesExtensions.MoneyPurchase,
