@@ -21,6 +21,7 @@ namespace Unity.Services.Economy.Model
         /// </summary>
         [Preserve][JsonProperty("max")] public int Max;
 
+        /// <summary>Creates an instance of currence definition</summary>
         [Preserve]
         public CurrencyDefinition()
         {

@@ -19,6 +19,7 @@ using UnityEngine;
 
 namespace Unity.Services.Economy.Editor.Authoring.Model
 {
+    [HelpURL("https://docs.unity3d.com/Packages/com.unity.services.economy@3.4/manual/Authoring/index.html")]
     class EconomyAsset : ScriptableObject, IPath, ISerializationCallbackReceiver, IDeploymentItem, ITypedItem
     {
         const string k_DefaultFileNameCurrency = "CURRENCY";

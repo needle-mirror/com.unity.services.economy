@@ -9,6 +9,9 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class MakeVirtualPurchaseResult
     {
+        /// <summary>Creates an instance of MakeVirtualPurchaseResult</summary>
+        /// <param name="costs">Represents the Costs that were spent in this purchase. </param>
+        /// <param name="rewards">Represents the Rewards that were given in exchange for this purchase.</param>
         [Preserve]
         [JsonConstructor]
         public MakeVirtualPurchaseResult(Costs costs, Rewards rewards)
@@ -18,7 +21,7 @@ namespace Unity.Services.Economy.Model
         }
 
         /// <summary>
-        /// Represents the Costs that were spent in this purchase. 
+        /// Represents the Costs that were spent in this purchase.
         /// </summary>
         [Preserve] public Costs Costs;
         /// <summary>

@@ -24,8 +24,13 @@
     "versionDefines": [
         {
             "name": "com.unity.services.deployment.api",
-            "expression": "[1.0.0,1.3.0-exp.1)",
+            "expression": "[1.0.0-pre.5,1.3.0-exp.1)",
             "define": "DEPLOYMENT_API_AVAILABLE_V1_0"
+        },
+        {
+            "name": "com.unity.services.deployment.api",
+            "expression": "[1.1.0-exp.3,1.3.0-exp.1)",
+            "define": "DEPLOYMENT_API_AVAILABLE_V1_1"
         }
     ],
     "noEngineReferences": false

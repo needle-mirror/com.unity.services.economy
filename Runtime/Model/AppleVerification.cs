@@ -10,6 +10,11 @@ namespace Unity.Services.Economy.Model
     /// </summary>
     public class AppleVerification
     {
+        /// <summary>
+        /// Creates an instance of AppleVerification
+        /// </summary>
+        /// <param name="status">StatusOption</param>
+        /// <param name="store">Apple Store data</param>
         [Preserve]
         public AppleVerification(StatusOptions status, AppleStore store)
         {
@@ -20,8 +25,8 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// Status of the receipt verification.
         /// </summary>
-        [Preserve]         
-        [JsonConverter(typeof(StringEnumConverter))] 
+        [Preserve]
+        [JsonConverter(typeof(StringEnumConverter))]
         public StatusOptions Status;
 
         /// <summary>
@@ -81,12 +86,16 @@ namespace Unity.Services.Economy.Model
 
         }
     }
-    
+
     /// <summary>
     /// Details from the receipt validation service.
     /// </summary>
     public class AppleStore
     {
+        /// <summary> Creates an instance of Apple store validation </summary>
+        /// <param name="code">Status code from the service</param>
+        /// <param name="message">Description of status code</param>
+        /// <param name="receipt">Receipt data</param>
         [Preserve]
         [JsonConstructor]
         public AppleStore(string code, string message, string receipt)
@@ -99,19 +108,19 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// The status code sent back from the verification service.
         /// </summary>
-        [Preserve] 
+        [Preserve]
         public string Code;
-        
+
         /// <summary>
         /// A textual description of the returned status code.
         /// </summary>
-        [Preserve] 
+        [Preserve]
         public string Message;
-        
+
         /// <summary>
         /// The purchase receipt data.
         /// </summary>
-        [Preserve] 
+        [Preserve]
         public string Receipt;
     }
 }

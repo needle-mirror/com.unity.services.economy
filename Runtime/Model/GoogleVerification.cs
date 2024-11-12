@@ -10,6 +10,9 @@ namespace Unity.Services.Economy.Model
     /// </summary>
     public class GoogleVerification
     {
+        /// <summary>Create an instance of the GoogleVerification class </summary>
+        /// <param name="status">See field for details</param>
+        /// <param name="store">See field for details</param>
         [Preserve]
         public GoogleVerification(StatusOptions status, GoogleStore store)
         {
@@ -20,8 +23,8 @@ namespace Unity.Services.Economy.Model
         /// <summary>
         /// Status of the receipt verification.
         /// </summary>
-        [Preserve]         
-        [JsonConverter(typeof(StringEnumConverter))] 
+        [Preserve]
+        [JsonConverter(typeof(StringEnumConverter))]
         public StatusOptions Status;
 
         /// <summary>
@@ -81,23 +84,25 @@ namespace Unity.Services.Economy.Model
 
         }
     }
-    
+
     /// <summary>
     /// Details from the receipt validation service.
     /// </summary>
     public class GoogleStore
     {
+        /// <summary> Create an instance of the GoogleStore class </summary>
+        /// <param name="receipt">Receipt data</param>
         [Preserve]
         [JsonConstructor]
         public GoogleStore(string receipt)
         {
             Receipt = receipt;
         }
-        
+
         /// <summary>
         /// The purchase receipt data.
         /// </summary>
-        [Preserve] 
+        [Preserve]
         public string Receipt;
     }
 }

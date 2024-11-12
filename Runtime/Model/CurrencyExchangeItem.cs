@@ -9,6 +9,9 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class CurrencyExchangeItem
     {
+        /// <summary>Creates an instance of the CurrencyExchangeItem </summary>
+        /// <param name="id">Currency ID</param>
+        /// <param name="amount">Amount of currency</param>
         [Preserve]
         [JsonConstructor]
         public CurrencyExchangeItem(string id, int amount)

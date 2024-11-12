@@ -10,6 +10,12 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class PlayerBalance
     {
+        /// <summary>Create an instance of PlayerBalance</summary>
+        /// <param name="currencyId">See field description</param>
+        /// <param name="balance">See field description</param>
+        /// <param name="writeLock">See field description</param>
+        /// <param name="created">See field description</param>
+        /// <param name="modified">See field description</param>
         [Preserve]
         public PlayerBalance(string currencyId = default(string), long balance = default(long), string writeLock = default(string), EconomyDate created = default(EconomyDate), EconomyDate modified = default(EconomyDate))
         {

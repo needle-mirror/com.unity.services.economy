@@ -46,10 +46,6 @@ namespace Unity.Services.Economy
             // Error code for an invalid config assignment hash (hash used for Game Overrides)
             if (errorCode == 10116)
             {
-                message = "Configuration assignment hash not found. Fetching your Economy configuration again should resolve this issue.";
-                // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-                // but typically the outer most exception is most relevant to the problem
-                Debug.LogError("EconomyException: " + message);
                 return new EconomyException(EconomyExceptionReason.ConfigAssignmentHashInvalid, errorCode, message, e);
             }
 
@@ -62,15 +58,8 @@ namespace Unity.Services.Economy
                     int.TryParse(retryAfterString, out retryAfter);
                 }
 
-                // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-                // but typically the outer most exception is most relevant to the problem
-                Debug.LogError("EconomyRateLimitedException: " + s_ErrorDetails[429]);
                 return new EconomyRateLimitedException(EconomyExceptionReason.RateLimited, errorCode, message, retryAfter, e);
             }
-
-            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-            // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyException: " + message);
 
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
@@ -86,10 +75,6 @@ namespace Unity.Services.Economy
             {
                 exception.Details.Add(new EconomyValidationErrorDetail(error));
             }
-
-            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-            // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyValidationException: " + message);
 
             return exception;
         }
@@ -110,10 +95,6 @@ namespace Unity.Services.Economy
                 message = s_ErrorDetails.ContainsKey(httpStatusCode) ? s_ErrorDetails[httpStatusCode] : "An unknown error occurred in the Economy SDK.";
             }
 
-            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-            // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyException: " + message);
-
             return new EconomyException(httpStatusCode, errorCode, message, e);
         }
 
@@ -121,20 +102,12 @@ namespace Unity.Services.Economy
         {
             RedeemAppleAppStorePurchaseResult convertedErrorData = PurchasesInternal.ConvertBackendApplePurchaseModelToSDKModel(e.ActualError.Data);
 
-            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-            // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyAppleAppStorePurchaseFailedException: " + e.ActualError.Detail);
-
             return new EconomyAppleAppStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }
 
         internal static EconomyGooglePlayStorePurchaseFailedException HandleGoogleStoreFailedExceptions(HttpException<ErrorResponsePurchaseGoogleplaystoreFailed> e)
         {
             RedeemGooglePlayPurchaseResult convertedErrorData = PurchasesInternal.ConvertBackendGooglePurchaseModelToSDKModel(e.ActualError.Data);
-
-            // Temporary fix while we wait for MPSSDK-89. Currently Unity logs the inner most exceptions
-            // but typically the outer most exception is most relevant to the problem
-            Debug.LogError("EconomyGooglePlayStorePurchaseFailedException: " + e.ActualError.Detail);
 
             return new EconomyGooglePlayStorePurchaseFailedException(EconomyExceptionReason.UnprocessableTransaction, e.ActualError.Code, e.ActualError.Detail, convertedErrorData, e);
         }

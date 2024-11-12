@@ -3,6 +3,20 @@ All notable changes to this package will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [3.5.0] - 2024-11-12
+
+### Added
+- View in Deployment Window button for Economy resource files, dependent on Deployment package version 1.4.0.
+- Added unity-installation-id in the header of the REST API request in order to return the overridden economy content.
+- Added analytics-user-id in the header of the REST API request as it can be set as ExternalUserId if needed.
+
+### Fixed
+- Fix Economy deployment assets help URLs
+- Fix redundant logging when an exception is thrown
+- Raised log when deployment window is not available to error
+- Added missing table of contents to package documentation
+
 ## [3.4.1] - 2024-06-10
 * Remove feature flag for services instances global point of access
 * Moved create configuration menu items under "Services"

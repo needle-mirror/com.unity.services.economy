@@ -14,34 +14,32 @@ using Unity.Services.Core.Configuration.Internal;
 
 namespace Unity.Services.Economy
 {
+    /// <summary> Interface to the economy service </summary>
     public interface IEconomyService
     {
+        /// <summary> The Configuration methods allow you to access the global Economy configuration for your game. </summary>
         IEconomyConfigurationApiClient Configuration { get; }
+        /// <summary> The PlayerBalances methods provide access to the current player's balances, and allow you to update them.</summary>
         IEconomyPlayerBalancesApiClient PlayerBalances { get; }
+        /// <summary> The PlayerInventory methods provide access to the current player's inventory items, and allow you to update them. </summary>
         IEconomyPlayerInventoryApiClient PlayerInventory { get; }
+        /// <summary> The Purchases methods allow you to make virtual and real world purchases. </summary>
         IEconomyPurchasesApiClientApi Purchases { get; }
     }
 
+    /// <inheritdoc />
     public class EconomyInstance : IEconomyService
     {
-        /// <summary>
-        /// The Configuration methods allow you to access the global Economy configuration for your game.
-        /// </summary>
+        /// <inheritdoc />
         public IEconomyConfigurationApiClient Configuration { get; internal set; }
 
-        /// <summary>
-        /// The PlayerBalances methods provide access to the current player's balances, and allow you to update them.
-        /// </summary>
+        /// <inheritdoc />
         public IEconomyPlayerBalancesApiClient PlayerBalances { get; }
 
-        /// <summary>
-        /// The PlayerInventory methods provide access to the current player's inventory items, and allow you to update them.
-        /// </summary>
+        /// <inheritdoc />
         public IEconomyPlayerInventoryApiClient PlayerInventory { get; }
 
-        /// <summary>
-        /// The Purchases methods allow you to make virtual and real world purchases.
-        /// </summary>
+        /// <inheritdoc />
         public IEconomyPurchasesApiClientApi Purchases { get; }
 
         internal EconomyInstance(ConfigurationInternal configuration, PlayerBalancesInternal playerBalances, PlayerInventoryInternal playerInventory,
@@ -54,10 +52,13 @@ namespace Unity.Services.Economy
         }
     }
 
+    /// <summary>Provides access to the economy service</summary>
     public static class EconomyService
     {
         internal static IEconomyService instance;
 
+        /// <summary>Singleton of the Economy Service </summary>
+        /// <exception cref="ServicesInitializationException">Throws ServicesInitializationException if the service has not been initailized</exception>
         public static IEconomyService Instance
         {
             get

@@ -1,0 +1,12 @@
+<ui:UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns="UnityEngine.UIElements"
+    editor-extension-mode="False">
+    <ui:VisualElement name="deployment-container" class="deployment-inspector-container">
+        <VisualElement class="separator"/>
+        <ui:Label text="Deployment" class="deployment-title-label"/>
+        <ui:VisualElement class="view-in-deployment-btn-container">
+            <ui:Button name="view-in-deployment-window-btn" text="View in Deployment Window" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

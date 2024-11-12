@@ -63,6 +63,7 @@ namespace Unity.Services.Economy
         {
             var projectConfiguration = registry.GetServiceComponent<IProjectConfiguration>();
             var cloudProjectId = registry.GetServiceComponent<ICloudProjectId>();
+            var installationId = registry.GetServiceComponent<IInstallationId>().GetOrCreateIdentifier();
             var externalUserId = registry.GetServiceComponent<IExternalUserId>();
             var httpClient = new HttpClient();
 
@@ -77,7 +78,7 @@ namespace Unity.Services.Economy
             IPurchasesApiClient purchasesApiClient = new PurchasesApiClient(httpClient, accessToken, configuration);
 
             var analyticsUserId = GetAnalyticsUserId(registry);
-            var service = InitializeEconomy(cloudProjectId, accessToken, registry.GetServiceComponent<IPlayerId>(), configurationApiClient, currenciesApiClient, inventoryApiClient, purchasesApiClient, registry.GetServiceComponent<IInstallationId>().GetOrCreateIdentifier(), analyticsUserId);
+            var service = InitializeEconomy(cloudProjectId, accessToken, registry.GetServiceComponent<IPlayerId>(), configurationApiClient, currenciesApiClient, inventoryApiClient, purchasesApiClient, installationId, analyticsUserId);
             registry.RegisterService<IEconomyService>(service);
             return service;
         }

@@ -20,18 +20,19 @@ namespace Unity.Services.Economy
     /// </summary>
     public interface IEconomyPlayerInventoryApiClient
     {
+        /// <summary>
         /// Fires when the SDK updates a player's inventory item (e.g. by editing the custom data). The called function will be passed the player inventory item ID
         /// that was updated. (Note: this is the ID of the individual inventory item owned by the player, not the item configuration).
-        ///
         /// Note that this will NOT fire for balance changes from elsewhere not in this instance of the SDK, for example other
         /// server-side updates or updates from other devices.
+        /// </summary>
         event Action<string> PlayersInventoryItemUpdated;
 
         /// <summary>
         /// Gets the inventory items in the inventory of the player that is currently signed in.
-        /// The players items are available on the returned object using the <code>PlayersInventoryItems</code> property.
-        /// The results are paginated - the first set of results are initially returned, and more can be requested with the <code>GetNextAsync</code> method.
-        /// The <code>HasNext</code> property indicates whether there are more results to be returned.
+        /// The players items are available on the returned object using the <c>PlayersInventoryItems</c> property.
+        /// The results are paginated - the first set of results are initially returned, and more can be requested with the <c>GetNextAsync</c> method.
+        /// The <c>HasNext</c> property indicates whether there are more results to be returned.
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
         /// </summary>
         /// <param name="options">(Optional) Use to set request options. See GetInventoryOptions for more details.</param>
@@ -63,6 +64,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        /// <returns>Object representing the continuation of the task</returns>
         Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null);
 
         /// <summary>
@@ -76,10 +78,12 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        /// <returns>The updated item</returns>
         Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId,
             object instanceData, UpdatePlayersInventoryItemOptions options = null);
     }
 
+    /// <inheritdoc/>
     class PlayerInventoryInternal : IEconomyPlayerInventoryApiClient
     {
         readonly IInventoryApiClient m_InventoryApiClient;
@@ -93,8 +97,10 @@ namespace Unity.Services.Economy
             m_EconomyAuthentication = economyAuthentication;
         }
 
+        /// <inheritdoc/>
         public event Action<string> PlayersInventoryItemUpdated;
 
+        /// <inheritdoc/>
         public async Task<GetInventoryResult> GetInventoryAsync(GetInventoryOptions options = null)
         {
             return await GetNextInventory(null, options);
@@ -141,6 +147,7 @@ namespace Unity.Services.Economy
             }
         }
 
+        /// <inheritdoc/>
         public async Task<PlayersInventoryItem> AddInventoryItemAsync(string inventoryItemId, AddInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -176,6 +183,7 @@ namespace Unity.Services.Economy
             }
         }
 
+        /// <inheritdoc/>
         public async Task DeletePlayersInventoryItemAsync(string playersInventoryItemId, DeletePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();
@@ -209,6 +217,7 @@ namespace Unity.Services.Economy
             }
         }
 
+        /// <inheritdoc/>
         public async Task<PlayersInventoryItem> UpdatePlayersInventoryItemAsync(string playersInventoryItemId, object instanceData, UpdatePlayersInventoryItemOptions options = null)
         {
             m_EconomyAuthentication.CheckSignedIn();

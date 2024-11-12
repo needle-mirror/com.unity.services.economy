@@ -1,6 +1,8 @@
 <ui:UXML
     xmlns:ui="UnityEngine.UIElements"
     xmlns="UnityEngine.UIElements"
+    xmlns:fba="Unity.Services.Economy.Editor.Authoring.Shared.UI.DeploymentConfigInspectorFooter"
     editor-extension-mode="True">
     <ui:TextField name="script-body" multiline="true" readonly="true" />
+    <fba:DeploymentConfigInspectorFooter />
 </ui:UXML>

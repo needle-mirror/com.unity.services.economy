@@ -10,6 +10,7 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class PurchaseItemQuantity
     {
+        /// <summary>Creates an instance of PurchaseItemQuantity</summary>
         [Preserve]
         public PurchaseItemQuantity()
         {
@@ -29,11 +30,13 @@ namespace Unity.Services.Economy.Model
             ResourceId = cost.ResourceId;
         }
 
+        /// <summary>The amount of the purchase </summary>
         [Preserve]
         [JsonRequired]
         [JsonProperty("amount")]
         public int Amount;
 
+        /// <summary>Reference to the item</summary>
         [Preserve]
         [JsonRequired]
         [JsonProperty("itemId")]

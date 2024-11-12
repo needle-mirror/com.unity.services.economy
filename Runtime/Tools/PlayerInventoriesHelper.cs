@@ -6,23 +6,32 @@ using UnityEngine;
 
 namespace Unity.Services.Economy.Tools
 {
+    /// <summary>Helper for the PlayerInventoriesHelper</summary>
     [CreateAssetMenu(fileName = "PlayerInventoriesHelper", menuName = "Economy Tools/Player Inventories Helper")]
     public class PlayerInventoriesHelper : ScriptableObject
     {
+        /// <summary>InventoriesAction enum  </summary>
         public enum InventoriesAction
         {
+            /// <summary>Add to the inventory</summary>
             Add,
+            /// <summary>Update to the inventory</summary>
             Update,
+            /// <summary>Delete to the inventory</summary>
             Delete
         }
 
+        /// <summary>Action to take on the inventory </summary>
         [Header("Inventories Helper")]
         public InventoriesAction action;
+        /// <summary>Inventory item to affect </summary>
         public string playersInventoryItemId;
 
+        /// <summary>InventoryItem id to affect</summary>
         [Header("Add Instance Settings")]
         public string inventoryItemId;
 
+        /// <summary>Instance json</summary>
         [Header("Update Instance Settings")]
         [TextArea]
         public string instanceDataJson;

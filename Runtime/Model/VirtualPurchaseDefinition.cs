@@ -14,6 +14,7 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class VirtualPurchaseDefinition : ConfigurationItemDefinition
     {
+        /// <summary>Represents a virtual purchase configuration.</summary>
         [Preserve]
         public VirtualPurchaseDefinition()
         {

@@ -33,6 +33,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyException">Thrown if request is unsuccessful</exception>
         /// <exception cref="EconomyValidationException">Thrown if the service returned validation error.</exception>
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
+        /// <returns>The result of the virtual purchase</returns>
         Task<MakeVirtualPurchaseResult> MakeVirtualPurchaseAsync(string virtualPurchaseId, MakeVirtualPurchaseOptions options = null);
 
         /// <summary>
@@ -46,6 +47,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyRateLimitedException">Thrown if the service returned rate limited error.</exception>
         /// <exception cref="EconomyAppleAppStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
         /// invalid receipt, purchase already redeemed, product ID mismatch, product ID not defined, currency max would be exceeded.</exception>
+        /// <returns>The asynchronous continuation of the result</returns>
         Task<RedeemAppleAppStorePurchaseResult> RedeemAppleAppStorePurchaseAsync(RedeemAppleAppStorePurchaseArgs args);
 
         /// <summary>
@@ -60,6 +62,7 @@ namespace Unity.Services.Economy
         /// <exception cref="EconomyGooglePlayStorePurchaseFailedException">Thrown if the purchase fails in one of the following ways:
         /// invalid purchase data, invalid purchase data signature, purchase already redeemed, product ID mismatch,
         /// product ID not defined, currency max would be exceeded.</exception>
+        /// <returns>The asynchronous continuation of the result</returns>
         Task<RedeemGooglePlayPurchaseResult> RedeemGooglePlayPurchaseAsync(RedeemGooglePlayStorePurchaseArgs args);
     }
 
@@ -287,6 +290,7 @@ namespace Unity.Services.Economy
     /// </summary>
     public class MakeVirtualPurchaseOptions
     {
+        /// <summary> Item IDs to purchase </summary>
         public List<string> PlayersInventoryItemIds;
     }
 
@@ -347,8 +351,8 @@ namespace Unity.Services.Economy
         /// Takes a localCurrency. ISO-4217 code of the currency used in the purchase.
         /// </summary>
         /// <param name="realMoneyPurchaseId">Configuration ID of the purchase to be made</param>
-        /// <param name="purchaseData"></param>
-        /// <param name="purchaseDataSignature"></param>
+        /// <param name="purchaseData">A JSON encoded string returned from a successful in app billing purchase.</param>
+        /// <param name="purchaseDataSignature"> A signature of the PurchaseData returned from a successful in app billing purchase.</param>
         /// <param name="localCost">Cost of the purchase as an integer in the minor currency format, e.g. $1.99 USD would be 199</param>
         /// <param name="localCurrency">ISO-4217 code of the currency used in the purchase</param>
         public RedeemGooglePlayStorePurchaseArgs(string realMoneyPurchaseId, string purchaseData, string purchaseDataSignature, int localCost, string localCurrency)

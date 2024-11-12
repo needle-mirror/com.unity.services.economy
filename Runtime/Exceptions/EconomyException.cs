@@ -12,24 +12,39 @@ namespace Unity.Services.Economy
     /// </summary>
     public enum EconomyExceptionReason : long
     {
+        /// <summary>Unknown</summary>
         Unknown = 0,
+        /// <summary>NetworkError</summary>
         NetworkError = 1,
+        /// <summary>ConfigAssignmentHashInvalid</summary>
         ConfigAssignmentHashInvalid = 3,
+        /// <summary>ConfigNotSynced</summary>
         ConfigNotSynced = 4,
-
+        /// <summary>InvalidArgument</summary>
         InvalidArgument = 400,
+        /// <summary>Unauthorized</summary>
         Unauthorized = 401,
+        /// <summary>Forbidden</summary>
         Forbidden = 403,
+        /// <summary>EntityNotFound</summary>
         EntityNotFound = 404,
+        /// <summary>RequestTimeOut</summary>
         RequestTimeOut = 408,
+        /// <summary> Conflict </summary>
         Conflict = 409,
+        /// <summary>UnprocessableTransaction </summary>
         UnprocessableTransaction = 422,
+        /// <summary> RateLimited </summary>
         RateLimited = 429,
-
+        /// <summary>InternalServerError</summary>
         InternalServerError = 500,
+        /// <summary>NotImplemented</summary>
         NotImplemented = 501,
+        /// <summary>BadGateway</summary>
         BadGateway = 502,
+        /// <summary>ServiceUnavailable</summary>
         ServiceUnavailable = 503,
+        /// <summary>GatewayTimeout</summary>
         GatewayTimeout = 504,
     }
 
@@ -100,6 +115,7 @@ namespace Unity.Services.Economy
         }
     }
 
+    /// <summary>Single error in the Validation Error Response.</summary>
     public class EconomyValidationErrorDetail
     {
         /// <summary>

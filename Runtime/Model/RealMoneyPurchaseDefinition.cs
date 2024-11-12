@@ -11,10 +11,9 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class StoreIdentifiers
     {
+        /// <summary>Create an instance of the StoreIdentifiers class </summary>
         [Preserve]
-        public StoreIdentifiers()
-        {
-        }
+        public StoreIdentifiers() { }
 
         [Preserve]
         internal StoreIdentifiers(RealMoneyPurchaseResourceStoreIdentifiers data)
@@ -44,6 +43,7 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class RealMoneyPurchaseDefinition : ConfigurationItemDefinition
     {
+        /// <summary>Create an instance of the RealMoneyPurchaseDefinition class </summary>
         [Preserve]
         public RealMoneyPurchaseDefinition()
         {

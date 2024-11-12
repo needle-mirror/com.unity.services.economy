@@ -12,6 +12,8 @@ namespace Unity.Services.Economy.Model
         [Preserve]
         ConfigurationItemDefinition m_ReferencedItem;
 
+        /// <summary>Creates an instance of EconomyReference</summary>
+        /// <param name="configItem">Config item</param>
         [Preserve]
         [JsonConstructor]
         public EconomyReference(ConfigurationItemDefinition configItem)

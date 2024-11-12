@@ -12,6 +12,7 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class InventoryItemDefinition : ConfigurationItemDefinition
     {
+        /// <summary>Creates an instance of the InventoryItemDefinition </summary>
         [Preserve]
         public InventoryItemDefinition()
         {

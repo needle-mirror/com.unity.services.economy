@@ -9,7 +9,7 @@ namespace Unity.Services.Economy.Model
     /// The base class used for providing pageable results from the service e.g. GetBalancesResult.
     /// </summary>
     /// <typeparam name="T">The type of resource that is being fetched. E.g. for GetBalancesResult, the type is PlayerBalance.</typeparam>
-    /// <typeparam name="TSelf"></typeparam>
+    /// <typeparam name="TSelf">The type of the request result</typeparam>
     [Preserve]
     public abstract class PageableResult<T,TSelf> where TSelf: PageableResult<T,TSelf>
     {
@@ -21,7 +21,10 @@ namespace Unity.Services.Economy.Model
         /// True if there are more pages of results to fetch.
         /// </summary>
         [Preserve] public bool HasNext;
-        
+
+        /// <summary>Creates an instance of PageableResult</summary>
+        /// <param name="results">List of results</param>
+        /// <param name="hasNext">Whether there's more results</param>
         [Preserve]
         protected PageableResult(List<T> results, bool hasNext)
         {
@@ -29,6 +32,9 @@ namespace Unity.Services.Economy.Model
             HasNext = hasNext;
         }
 
+        /// <summary>Gets the next page </summary>
+        /// <param name="itemsPerFetch">How many items to fetch</param>
+        /// <returns>Task with the next page</returns>
         [Preserve] protected abstract Task<TSelf> GetNextResultsAsync(int itemsPerFetch);
 
         /// <summary>

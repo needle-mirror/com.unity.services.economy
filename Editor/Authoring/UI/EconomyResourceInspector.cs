@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Unity.Services.Economy.Editor.Authoring.Model;
+using Unity.Services.Economy.Editor.Authoring.Shared.Analytics;
+using Unity.Services.Economy.Editor.Authoring.Shared.UI.DeploymentConfigInspectorFooter;
 using UnityEditor;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -22,8 +24,18 @@ namespace Unity.Services.Economy.Editor.Authoring.UI
             visualTree.CloneTree(myInspector);
 
             ShowResourceBody(myInspector);
+            SetupConfigFooter(myInspector);
 
             return myInspector;
+        }
+
+        void SetupConfigFooter(VisualElement myInspector)
+        {
+            var deploymentConfigInspectorFooter = myInspector.Q<DeploymentConfigInspectorFooter>();
+            deploymentConfigInspectorFooter.BindGUI(
+                AssetDatabase.GetAssetPath(target),
+                EconomyAuthoringServices.Instance.GetService<ICommonAnalytics>(),
+                "economy");
         }
 
         void ShowResourceBody(VisualElement myInspector)

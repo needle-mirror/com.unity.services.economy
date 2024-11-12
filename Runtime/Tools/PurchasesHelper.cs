@@ -2,9 +2,11 @@ using UnityEngine;
 
 namespace Unity.Services.Economy.Tools
 {
+    /// <summary>PurchaseHelper class</summary>
     [CreateAssetMenu(fileName = "PurchasesHelper", menuName = "Economy Tools/Purchases Helper")]
     public class PurchasesHelper : ScriptableObject
     {
+        /// <summary> The ID of the purchase </summary>
         [Header("Make Purchase")]
         public string purchaseId;
 

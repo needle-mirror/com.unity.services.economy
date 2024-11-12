@@ -1,0 +1,6 @@
+* [Economy](index)
+* [Author In Unity](Authoring/index)
+  * [Currencies](Authoring/currency_assets)
+  * [Inventory Items](Authoring/inventory_item_assets)
+  * [Money Purchase](Authoring/money_purchase_assets)
+  * [Virtual Purchase](Authoring/virtual_purchase_assets)

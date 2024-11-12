@@ -4,19 +4,27 @@ using UnityEngine;
 
 namespace Unity.Services.Economy.Tools
 {
+    /// <summary>Helper to work with player balances </summary>
     [CreateAssetMenu(fileName = "PlayerBalancesHelper", menuName = "Economy Tools/Player Balances Helper")]
     public class PlayerBalancesHelper : ScriptableObject
     {
+        /// <summary>CurrencyAction enum</summary>
         public enum CurrencyAction
         {
+            /// <summary> Set the currency </summary>
             Set,
+            /// <summary> Increment the currency </summary>
             Increment,
+            /// <summary> Decrement the currency </summary>
             Decrement
         }
 
+        /// <summary> Action to apply to the currency </summary>
         [Header("Currencies Helper")]
         public CurrencyAction action;
+        /// <summary>ID of the currency to modify </summary>
         public string currencyId;
+        /// <summary>Amount to apply to the currency </summary>
         public int amount;
 
         /// <summary>

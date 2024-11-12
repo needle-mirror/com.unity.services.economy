@@ -7,9 +7,11 @@ using UnityEngine.Scripting;
 
 namespace Unity.Services.Economy.Model
 {
+    /// <summary> EconomyDate data </summary>
     [Preserve]
     public class EconomyDate
     {
+        /// <summary> The date </summary>
         [Preserve] [JsonProperty("date")] public DateTime Date;
 
         internal static EconomyDate From(ModifiedMetadata data) =>

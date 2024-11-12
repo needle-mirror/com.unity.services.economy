@@ -1,8 +1,8 @@
 {
   "name": "com.unity.services.economy",
   "displayName": "Economy",
-  "version": "3.4.1",
-  "unity": "2020.3",
+  "version": "3.5.0",
+  "unity": "2021.3",
   "description": "Economy is a cloud service that enables game developers to create their in-game economy and gives them seamless purchases, currency conversion, player inventory management, and more. By using Economy, you have the power to integrate a fully-featured marketplace into your game, and manage it through a streamlined dashboard. \n\nEconomy can be configured through the Unity Dashboard. This package allows you to interact with your Economy configuration, player’s balances, inventories and purchases.",
   "dependencies": {
     "com.unity.services.authentication": "3.3.3",
@@ -39,18 +39,18 @@
       "Windows 8 Universal",
       "Windows 10 Universal"
     ],
-    "changelog": "* Remove feature flag for services instances global point of access\n* Moved create configuration menu items under \"Services\""
+    "changelog": "### Added\n- View in Deployment Window button for Economy resource files, dependent on Deployment package version 1.4.0.\n- Added unity-installation-id in the header of the REST API request in order to return the overridden economy content.\n- Added analytics-user-id in the header of the REST API request as it can be set as ExternalUserId if needed.\n\n### Fixed\n- Fix Economy deployment assets help URLs\n- Fix redundant logging when an exception is thrown\n- Raised log when deployment window is not available to error\n- Added missing table of contents to package documentation"
   },
   "relatedPackages": {
-    "com.unity.services.economy.tests": "3.4.1"
+    "com.unity.services.economy.tests": "3.5.0"
   },
   "upmCi": {
-    "footprint": "5c67226bbcac9f4e88a4c9fc4adc074d727d7d69"
+    "footprint": "101fd90bbe4db130eea85f5e44f99a02652df685"
   },
-  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.services.economy@3.4/manual/index.html",
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.services.economy@3.5/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/operate-services-sdk.git",
     "type": "git",
-    "revision": "9d637f79269bf111f964409520051e8f1db0ada8"
+    "revision": "c3ad2a239be2b4fd0bca3f236f20927ed4906977"
   }
 }

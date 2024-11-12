@@ -30,9 +30,9 @@ namespace Unity.Services.Economy
 
         /// <summary>
         /// Gets the current balances for the currently signed in player.
-        /// The balances are available on the returned object using the <code>Balances</code> property.
-        /// The results are paginated - the first set of results are initially returned, and more can be requested with the <code>GetNextAsync</code> method.
-        /// The <code>HasNext</code> property indicates whether there are more results to be returned.
+        /// The balances are available on the returned object using the <c>Balances</c> property.
+        /// The results are paginated - the first set of results are initially returned, and more can be requested with the <c>GetNextAsync</c> method.
+        /// The <c>HasNext</c> property indicates whether there are more results to be returned.
         /// Throws a EconomyException with a reason code and explanation if the request is badly formed, unauthorized or uses a missing resource.
         /// </summary>
         /// <param name="options">(Optional) Use to set the number of items to fetch per call.</param>

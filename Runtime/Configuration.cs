@@ -26,35 +26,35 @@ namespace Unity.Services.Economy
         /// Gets the currently published Economy configuration and caches it.
         /// </summary>
         /// <returns>A list of ConfigurationItemDefinition</returns>
-        /// <exception cref="EconomyException"></exception>
+        /// <exception cref="EconomyException">>Thrown if request is unsuccessful</exception>
         Task<List<ConfigurationItemDefinition>> SyncConfigurationAsync();
 
         /// <summary>
         /// Gets the currencies from the cached configuration.
         /// </summary>
         /// <returns>A list of CurrencyDefinition</returns>
-        /// <exception cref="EconomyException"></exception>
+        /// <exception cref="EconomyException">>Thrown if request is unsuccessful</exception>
         List<CurrencyDefinition> GetCurrencies();
 
         /// <summary>
         /// Gets the inventory items from the cached configuration.
         /// </summary>
         /// <returns>A list of InventoryItemDefinition</returns>
-        /// <exception cref="EconomyException"></exception>
+        /// <exception cref="EconomyException">>Thrown if request is unsuccessful</exception>
         List<InventoryItemDefinition> GetInventoryItems();
 
         /// <summary>
         /// Gets the virtual purchases from the cached configuration.
         /// </summary>
         /// <returns>A list of VirtualPurchaseDefinition</returns>
-        /// <exception cref="EconomyException"></exception>
+        /// <exception cref="EconomyException">>Thrown if request is unsuccessful</exception>
         List<VirtualPurchaseDefinition> GetVirtualPurchases();
 
         /// <summary>
         /// Gets the real money purchases from the cached configuration.
         /// </summary>
         /// <returns>A list of RealMoneyPurchaseDefinition</returns>
-        /// <exception cref="EconomyException"></exception>
+        /// <exception cref="EconomyException">>Thrown if request is unsuccessful</exception>
         List<RealMoneyPurchaseDefinition> GetRealMoneyPurchases();
 
         /// <summary>
@@ -209,7 +209,9 @@ namespace Unity.Services.Economy
             GetPlayerConfigurationRequest request = new GetPlayerConfigurationRequest(
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
-                null
+                null,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId()
             );
 
             try
@@ -358,7 +360,9 @@ namespace Unity.Services.Economy
             GetPlayerConfigurationRequest request = new GetPlayerConfigurationRequest(
                 m_CloudProjectId.GetCloudProjectId(),
                 m_EconomyAuthentication.GetPlayerId(),
-                m_EconomyAuthentication.configAssignmentHash
+                m_EconomyAuthentication.configAssignmentHash,
+                m_EconomyAuthentication.GetUnityInstallationId(),
+                m_EconomyAuthentication.GetAnalyticsUserId()
             );
 
             try

@@ -11,6 +11,9 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class Costs
     {
+        /// <summary> Creates an instance of the Costs object </summary>
+        /// <param name="currencies">Currencies list with cost</param>
+        /// <param name="inventory">Inventory list with cost</param>
         [Preserve]
         [JsonConstructor]
         public Costs(List<CurrencyExchangeItem> currencies, List<InventoryExchangeItem> inventory)

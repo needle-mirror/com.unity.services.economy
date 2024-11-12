@@ -12,6 +12,13 @@ namespace Unity.Services.Economy.Model
     [Preserve]
     public class PlayersInventoryItem
     {
+        /// <summary>Creates an instance of the PlayersInventoryItem</summary>
+        /// <param name="playersInventoryItemId">The ID of the unique item specific to this player's inventory.</param>
+        /// <param name="inventoryItemId">The configuration ID of the inventory item.</param>
+        /// <param name="instanceData">Any instance data specific to this unique item in the player's inventory.</param>
+        /// <param name="writeLock">The current WriteLock string.</param>
+        /// <param name="created">The date this players inventory item was created as an EconomyDate object.</param>
+        /// <param name="modified">The date this players inventory item was modified as an EconomyDate object.</param>
         [Preserve]
         public PlayersInventoryItem(string playersInventoryItemId = default(string), string inventoryItemId = default(string), IDeserializable instanceData = default(IDeserializable),
                                     string writeLock = default(string), EconomyDate created = default(EconomyDate), EconomyDate modified = default(EconomyDate))

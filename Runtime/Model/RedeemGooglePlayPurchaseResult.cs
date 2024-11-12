@@ -8,6 +8,9 @@ namespace Unity.Services.Economy.Model
     /// </summary>
     public class RedeemGooglePlayPurchaseResult
     {
+        /// <summary>Create an instance of the RedeemGooglePlayPurchaseResult class </summary>
+        /// <param name="verification">The receipt verification details from the Google Play Store validation service.</param>
+        /// <param name="rewards">The Rewards given in exchange for this purchase.</param>
         [Preserve]
         [JsonConstructor]
         public RedeemGooglePlayPurchaseResult(GoogleVerification verification, Rewards rewards)
