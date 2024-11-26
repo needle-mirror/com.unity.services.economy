@@ -12,10 +12,12 @@ namespace Unity.Services.Economy.Editor.Authoring.Deployment
 
         public EconomyDeploymentProvider(
             DeployCommand deployCommand,
+            OpenEconomyDashboardCommand openEconomyDashboardCommand,
             ObservableCollection<IDeploymentItem> deploymentItems)
             : base(deploymentItems)
         {
             DeployCommand = deployCommand;
+            Commands.Add(openEconomyDashboardCommand);
         }
     }
 }

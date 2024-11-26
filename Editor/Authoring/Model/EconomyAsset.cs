@@ -99,7 +99,16 @@ namespace Unity.Services.Economy.Editor.Authoring.Model
                 Resource.PropertyChanged -= OnEconomyResourcePropertyChanged;
             }
 
-            Resource = await resourceLoader.LoadResourceAsync(Path, cancellationToken);
+            try
+            {
+                Resource = await resourceLoader.LoadResourceAsync(Path, cancellationToken);
+            }
+            catch (AggregateException e)
+            {
+                var logger = EconomyAuthoringServices.Instance
+                    .GetService<Unity.Services.Economy.Editor.Authoring.Core.Logging.ILogger>();
+                logger.LogError($"Failed to load economy asset '{Path}'. Reason: {e.InnerException.Message}.");
+            }
 
             if (Resource != null && Resource.Status.MessageSeverity != SeverityLevel.Error)
             {

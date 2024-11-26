@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using Unity.Services.Economy.Editor.Authoring.Core.Model;
+using Unity.Services.Economy.Editor.Authoring.Deployment;
 using Unity.Services.Economy.Editor.Authoring.Model;
 using Unity.Services.Economy.Editor.Authoring.Shared.Analytics;
 using Unity.Services.Economy.Editor.Authoring.Shared.UI.DeploymentConfigInspectorFooter;
@@ -36,6 +39,20 @@ namespace Unity.Services.Economy.Editor.Authoring.UI
                 AssetDatabase.GetAssetPath(target),
                 EconomyAuthoringServices.Instance.GetService<ICommonAnalytics>(),
                 "economy");
+
+            var loader = EconomyAuthoringServices.Instance.GetService<IEconomyResourcesLoader>();
+
+            // nb different instance than at import time, dont know why
+            var economyAsset = target as EconomyAsset;
+
+            // cannot null-coalesce, because its a unity object
+            if (economyAsset != null)
+            {
+                economyAsset.BuildAndValidateEconomyResource(loader, CancellationToken.None)?.Wait();
+                deploymentConfigInspectorFooter.DashboardLinkUrlGetter = () => EconomyAuthoringServices.Instance
+                    .GetService<IEconomyDashboardUrlResolver>()
+                    .EconomyResource(economyAsset.Resource?.Id);
+            }
         }
 
         void ShowResourceBody(VisualElement myInspector)

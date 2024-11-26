@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using Unity.Services.Authentication.Internal;
 using Unity.Services.Core.Editor;
 using Unity.Services.Core.Editor.Environments;
+using Unity.Services.Core.Editor.OrganizationHandler;
 using Unity.Services.DeploymentApi.Editor;
 using Unity.Services.Economy.Editor.Authoring.AdminApi.Client.Configuration;
 using Unity.Services.Economy.Client.Apis.EconomyAdmin;
@@ -62,6 +63,9 @@ namespace Unity.Services.Economy.Editor.Authoring
             collection.Register(_ => new Configuration(null, null, null, null));
             collection.Register(Default<IEconomyClientParserHelper, EconomyClientParserHelper>);
             collection.Register(Default<IEconomyClient, EconomyClient>);
+            collection.Register(_ => OrganizationProvider.Organization);
+            collection.Register(Default<OpenEconomyDashboardCommand>);
+            collection.Register(Default<IEconomyDashboardUrlResolver, EconomyDashboardUrlResolver>);
         }
     }
 }
