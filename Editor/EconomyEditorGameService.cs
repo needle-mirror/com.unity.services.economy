@@ -21,7 +21,7 @@ namespace Unity.Services.Economy
 
         public string GetFormattedDashboardUrl()
         {
-            return $"https://dashboard.unity3d.com/organizations/{OrganizationProvider.Organization.Key}/projects/{CloudProjectSettings.projectId}/economy/about";
+            return $"https://cloud.unity3d.com/organizations/{OrganizationProvider.Organization.Key}/projects/{CloudProjectSettings.projectId}/economy/about";
         }
     }
 }

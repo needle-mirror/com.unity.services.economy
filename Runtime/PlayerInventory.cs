@@ -135,7 +135,7 @@ namespace Unity.Services.Economy
 
                 List<PlayersInventoryItem> playersInventoryItems = ConvertToPlayersInventoryItems(response.Result.Results);
 
-                return new GetInventoryResult(playersInventoryItems, ResponseHasNextLinks(response.Result), options.PlayersInventoryItemIds, options.InventoryItemIds, this);
+                return new GetInventoryResult(playersInventoryItems, ResponseHasNextLinks(response.Result), options.InventoryItemIds, options.PlayersInventoryItemIds, this);
             }
             catch (HttpException<BasicErrorResponse> e)
             {
