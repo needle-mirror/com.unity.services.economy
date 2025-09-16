@@ -22,7 +22,11 @@ namespace Unity.Services.Economy.Editor.Authoring.Model
         public ObservableEconomyAssets(IEconomyResourcesLoader resourcesLoader)
         {
             m_ResourcesLoader = resourcesLoader;
-            m_MyServiceAssets = new ObservableAssets<EconomyAsset>();
+            m_MyServiceAssets = new ObservableAssets<EconomyAsset>(new[]{
+                EconomyResourcesExtensions.Currency,
+                EconomyResourcesExtensions.InventoryItem,
+                EconomyResourcesExtensions.MoneyPurchase,
+                EconomyResourcesExtensions.VirtualPurchase});
             foreach (var asset in m_MyServiceAssets)
             {
                 Add(asset);

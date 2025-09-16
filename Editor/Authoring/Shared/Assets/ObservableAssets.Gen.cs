@@ -1,3 +1,5 @@
+// WARNING: Auto generated code. Modifications will be lost!
+// Original source 'com.unity.services.shared' @0.0.12.
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,11 +13,13 @@ namespace Unity.Services.Economy.Editor.Authoring.Shared.Assets
     {
         readonly AssetPostprocessorProxy m_Postprocessor;
         protected readonly Dictionary<string, T> m_AssetPaths = new Dictionary<string, T>();
+        readonly IReadOnlyList<string> m_Extensions;
 
-        public ObservableAssets() : this(new AssetPostprocessorProxy(), true) {}
+        public ObservableAssets(IReadOnlyList<string> extensions) : this(extensions, new AssetPostprocessorProxy(), true) {}
 
-        public ObservableAssets(AssetPostprocessorProxy assetPostprocessor, bool loadAssets)
+        public ObservableAssets(IReadOnlyList<string> extensions, AssetPostprocessorProxy assetPostprocessor, bool loadAssets)
         {
+            m_Extensions = extensions;
             m_Postprocessor = assetPostprocessor;
             m_Postprocessor.AllAssetsPostprocessed += AllAssetsPostprocessed;
             if (loadAssets)
@@ -62,6 +66,9 @@ namespace Unity.Services.Economy.Editor.Authoring.Shared.Assets
 
             foreach (var imported in args.ImportedAssetPaths)
             {
+                if (!ShouldProcess(imported))
+                    continue;
+
                 var asset = AssetDatabase.LoadAssetAtPath<T>(imported);
                 if (asset != null)
                 {
@@ -87,6 +94,25 @@ namespace Unity.Services.Economy.Editor.Authoring.Shared.Assets
                     MovePath(movedToPath, movedFromPath);
                 }
             }
+        }
+
+        bool ShouldProcess(string importedPath)
+        {
+            if (m_Extensions != null && m_Extensions.Any())
+            {
+                var matchingExt = m_Extensions.Any(ext => importedPath.EndsWith(ext));
+                if (!matchingExt)
+                    return false; // Asset does not match any given extension, skip
+            }
+            else
+            {
+                // If we dont have a limited set of extensions, use the the DB type
+                var assetType = AssetDatabase.GetMainAssetTypeAtPath(importedPath);
+                if (assetType == null || !typeof(T).IsAssignableFrom(assetType))
+                    return false;
+            }
+
+            return true;
         }
 
         protected virtual void Dispose(bool disposing)

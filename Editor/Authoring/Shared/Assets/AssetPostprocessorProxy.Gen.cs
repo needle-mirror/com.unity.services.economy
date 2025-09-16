@@ -1,3 +1,5 @@
+// WARNING: Auto generated code. Modifications will be lost!
+// Original source 'com.unity.services.shared' @0.0.12.
 using System;
 using UnityEditor;
 
@@ -13,6 +15,7 @@ namespace Unity.Services.Economy.Editor.Authoring.Shared.Assets
             remove => s_AllAssetsPostprocessed -= value;
         }
 
+        // ReSharper disable once UnusedMember.Local implicit usage
         static void OnPostprocessAllAssets(
             string[] importedAssetPaths,
             string[] deletedAssetPaths,
